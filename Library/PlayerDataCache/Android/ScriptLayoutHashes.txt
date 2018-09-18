@@ -220,7 +220,7 @@ aac9c55ae7ba4b95b852a7d9c191acd1 Unity.TextMeshPro.dll:TMPro.TextMeshProUGUI
 fd1e15b01c6e8d9c3c753ad322216267 Assembly-CSharp.dll:.PhotonLagSimulationGui
 0a006f3734181ba8b26758f0866152c0 UnityEngine.SpatialTracking.dll:UnityEngine.SpatialTracking.TrackedPoseDriver
 5ebaa6b87c1ce9eb1f72e26dc3889813 Assembly-CSharp.dll:.Lobby
-dbc40438a976f85ca073e24ed3879482 Assembly-CSharp.dll:.GameController
+012704fce09bd2692439beda209de253 Assembly-CSharp.dll:.GameController
 a2651694e7b6c8dd699b038f729bf69b Assembly-CSharp.dll:.SupportLogger
 45408ba338308c31fb2453abc6b827e1 Assembly-CSharp.dll:.ShowStatusWhenConnecting
 0dd5a5498a86898723d72fa57d634012 Assembly-CSharp.dll:.PickupItemSimple

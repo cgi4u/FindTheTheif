@@ -5,25 +5,25 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
+using Hashtable = ExitGames.Client.Photon.Hashtable;
+
 public class Lobby : Photon.PunBehaviour
 {
     #region Public Properties
 
     [Tooltip("The maximum number of players per room. When a room is full, it can't be joined by new players, and so new room will be created")]
-    public byte MaxPlayersPerRoom = 5;
+    public byte maxPlayersPerRoom;
 
     public InputField nameInputField;
+
+    //UI for game match wait screen
+    public GameObject curPlayerNumPanel;
+    public Text curPlayerNum;
 
     #endregion
 
 
     #region Unity Callbacks
-
-    // Use this for initialization
-    private void Awake()
-    {
-        
-    }
 
     void Start () {
         
@@ -45,8 +45,11 @@ public class Lobby : Photon.PunBehaviour
 
     // Update is called once per frame
     void Update () {
-		
-	}
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            ExitLobby();
+        }
+    }
 
     #endregion
 
@@ -88,7 +91,8 @@ public class Lobby : Photon.PunBehaviour
     {
         Debug.Log("DemoAnimator/Launcher:OnPhotonRandomJoinFailed() was called by PUN. No random room available, so we create one.");
         // #Critical: we failed to join a random room, maybe none exists or they are all full. No worries, we create a new room.
-        PhotonNetwork.CreateRoom(null, new RoomOptions() { MaxPlayers = MaxPlayersPerRoom }, null);
+        PhotonNetwork.CreateRoom(null, new RoomOptions() { MaxPlayers = maxPlayersPerRoom }, null);
+        curPlayerNumPanel.SetActive(true);
     }
 
     public override void OnJoinedRoom()
@@ -97,77 +101,40 @@ public class Lobby : Photon.PunBehaviour
         Debug.Log("PlayerName: " + PhotonNetwork.playerName);
         Debug.Log("Maximum Player:" + PhotonNetwork.room.MaxPlayers);
 
-        // #Critical: We only load if we are the first player, 
-        //     else we rely on  PhotonNetwork.automaticallySyncScene to sync our instance scene.
-        // 즉, 룸에 참가했을 때 플레이어 수가 1명일 때, 한 마디로 나만 있을때만 레벨을 로드한다는 것이고
-        //  그게 아니라면 자동 싱크를 통해 룸을 로드해야 한다는 것.
-        if (PhotonNetwork.room.PlayerCount == 1)
-        {
-            Debug.Log("We load the 'Demo Room' ");
+        curPlayerNum.text = PhotonNetwork.room.PlayerCount.ToString();
+    }
 
-            // 룸을 로드. 동기화를 위해 LoadLevel 사용.
+    public override void OnPhotonPlayerConnected(PhotonPlayer newPlayer)
+    {
+        curPlayerNum.text = PhotonNetwork.room.PlayerCount.ToString();
+
+        // Load scene when the local player is the master client
+        if (PhotonNetwork.room.PlayerCount == maxPlayersPerRoom
+            && PhotonNetwork.player.ID == PhotonNetwork.masterClient.ID)
+        {
+
+            /*
+            string[] users = PhotonNetwork.room.ExpectedUsers;  //들어올것이라 예상되는 플레이어, 즉 특정 플레이어가 들어올 자리를 미리 비워놓는것
+            foreach (string user in users)
+                Debug.Log(user);
+            */
+
+            PhotonPlayer[] users = PhotonNetwork.playerList;
+            foreach (PhotonPlayer user in users)
+            {
+                Hashtable cp = new Hashtable();
+                cp["Test"] = "Text";
+                user.SetCustomProperties(cp);
+                Debug.Log(user.ID);
+            }
+            
+
+            Debug.Log("We load the 'Demo Room' ");
+            //Load the game level. Use LoadLevel to synchronize(automaticallySyncScene is true)
             PhotonNetwork.LoadLevel("Demo Room");
         }
     }
 
-    /*public override void OnReceivedRoomListUpdate()
-    {
-        roomList.text = "";
-
-        RoomInfo[] roomInfo = PhotonNetwork.GetRoomList();
-        for (int i = 0; i < roomInfo.Length; i++)
-        {
-            Debug.Log(roomInfo[i].Name);
-            roomList.text += roomInfo[i].Name + "\n";
-        }
-    }*/
-
-    #endregion
-
-
-    #region Legacy
-    /*
-    public void OpenRoomPanel()
-    {
-        roomCreatePanel.SetActive(true);
-    }
-
-    string roomName;
-    int maxMember;
-    public void CreateRoom()
-    {
-        if (roomNameInputField.text.Length == 0)
-        {
-            Debug.Log("Error: Room name field is empty.");
-            return;
-        }
-
-        if (maxMemberInputField.text.Length == 0)
-        {
-            Debug.Log("Error: The maximum number of members is empty.");
-            return;
-        }
-
-        roomName = roomNameInputField.text;
-        int.TryParse(maxMemberInputField.text, out maxMember);
-        PhotonNetwork.CreateRoom(roomName, new RoomOptions() { MaxPlayers = (byte)maxMember }, null);
-    }
-
-    public void CancelCreate()
-    {
-        roomCreatePanel.SetActive(false);
-    }
-
-    private char NumberValidate(char addedChar)
-    {
-        if (addedChar < '0' || addedChar > '9')
-        {
-            addedChar = '\0';
-        }
-
-        return addedChar;
-    }
-    */
     #endregion
 
 }

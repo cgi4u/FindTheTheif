@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+using UnityEngine.EventSystems;
+
 enum Direction { stop, up, down, right, left };
 
 public class PlayerController : Photon.PunBehaviour, IPunObservable
@@ -17,7 +19,7 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
     #region Private Properties
 
     private Vector2 raycastBox;          // Collider of the player
-
+    
     private int[] buttons = new int[4];         // The state of each button(Pushed or not pushed, pushed order)
                                                 // Up = 0, Down = 1, Left = 2, Right = 3
     private int btnCount = 0;                   // The number of buttons pushed now.
@@ -27,7 +29,12 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
     private Vector2 startPoint;
     private Vector2 targetPoint;
 
+    public Team teamOfPlayer;
+
     #endregion
+
+
+    #region Unity Callbacks
 
     private void Awake()
     {
@@ -65,7 +72,15 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
             Move();
 	}
 
+    #endregion
+
+
     #region Public Methods
+
+    public void SetTeam(Team team)
+    {
+        teamOfPlayer = team;
+    }
 
     public void OnMoveButtonPushed(string dir)
     {
@@ -203,7 +218,19 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
+        //if (stream.isReading && teamOfPlayer == Team.undefined) ;
+    }
 
+    #endregion
+
+    #region On Pointer Event
+
+    void OnMouseDown()
+    {
+        if (teamOfPlayer == Team.theif)
+            Debug.Log("Theif");
+        else
+            Debug.Log("Detective");
     }
 
     #endregion

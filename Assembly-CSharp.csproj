@@ -146,6 +146,7 @@
     <Compile Include="Assets\Scripts\ChatController.cs" />
     <Compile Include="Assets\Scripts\ChatSyncPort.cs" />
     <Compile Include="Assets\Scripts\GameController.cs" />
+    <Compile Include="Assets\Scripts\Global.cs" />
     <Compile Include="Assets\Scripts\Launcher.cs" />
     <Compile Include="Assets\Scripts\Lobby.cs" />
     <Compile Include="Assets\Scripts\MoveButton.cs" />
