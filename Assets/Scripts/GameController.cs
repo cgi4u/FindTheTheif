@@ -13,16 +13,16 @@ public class GameController: MonoBehaviour {
     [Tooltip("The prefab to use for representing the player")]
     public GameObject playerPrefab;
     /*
-    [Tooltip("The singleton og the game controller")]
+    [Tooltip("The singleton of the game controller")]
     public static GameController gameController;
     */
     public Text teamLabel;
-    
+
     #endregion
 
     #region Private Properties
 
-    Team myTeam;
+    Team MyTeam;
 
     #endregion  
 
@@ -44,19 +44,19 @@ public class GameController: MonoBehaviour {
             //Determine team of the local player(For test. At release, it should be determined randomly.)
             if (PhotonNetwork.room.PlayerCount % 2 == 0)
             {
-                myTeam = Team.detective;
+                MyTeam = Team.detective;
                 teamLabel.text = "탐정";
             }
             else
             {
-                myTeam = Team.theif;
+                MyTeam = Team.theif;
                 teamLabel.text = "도둑";
             }
 
             Debug.Log("We are Instantiating LocalPlayer from " + SceneManager.GetActiveScene().name);
             // we're in a room. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate
             GameObject localPlayer = PhotonNetwork.Instantiate(playerPrefab.name, new Vector3(.5f, .5f, 0f), Quaternion.identity, 0);
-            localPlayer.GetComponent<PlayerController>().SetTeam(myTeam);
+            localPlayer.GetComponent<PlayerController>().SetTeam(MyTeam);
         }
     }
 	

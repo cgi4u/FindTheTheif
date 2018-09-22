@@ -10,7 +10,7 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
 {
     #region Public Properties
 
-    public float moveSpeed;
+    public float moveSpeed = 5.0f;
 
     public static PlayerController localPlayer; // Singleton of the local player
                                                 // 생각: GameObject로 해야 하나? 버튼 말고 다른데서 얘한테 접근할일이 있나?                                    
@@ -29,7 +29,7 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
     private Vector2 startPoint;
     private Vector2 targetPoint;
 
-    public Team teamOfPlayer;
+    public Team TeamOfPlayer { get; set; }
 
     #endregion
 
@@ -40,7 +40,7 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
     {
         raycastBox = GetComponent<BoxCollider2D>().size -  new Vector2(0.05f, 0.05f);   // To ignore collisions on edges
 
-        if (photonView.isMine)
+        if (!PhotonNetwork.connected || photonView.isMine)
         {
             if (localPlayer == null)
                 localPlayer = this;
@@ -79,7 +79,7 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
 
     public void SetTeam(Team team)
     {
-        teamOfPlayer = team;
+        TeamOfPlayer = team;
     }
 
     public void OnMoveButtonPushed(string dir)
@@ -196,7 +196,7 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
             }
             if (ifHit) break;
 
-            yield return new WaitForSeconds(.5f);
+            yield return new WaitForSeconds(1.0f / moveSpeed);
         }
     
         isCheckRunning = false;
@@ -205,7 +205,7 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
     void Move()
     {
         //설정 속도에 따라 움직일 위치를 계산(MoveTowards) 이후 이동
-        Vector2 nextPos =  Vector2.MoveTowards(transform.position, targetPoint, 2 * Time.deltaTime);
+        Vector2 nextPos =  Vector2.MoveTowards(transform.position, targetPoint, moveSpeed * Time.deltaTime);
         transform.position = (Vector3)nextPos;
 
         return;
@@ -223,15 +223,15 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
 
     #endregion
 
-    #region On Pointer Event
-
+    /*
     void OnMouseDown()
     {
         if (teamOfPlayer == Team.theif)
             Debug.Log("Theif");
-        else
+        else if (teamOfPlayer == Team.detective)
             Debug.Log("Detective");
+        else
+            Debug.Log("Error: Undefined");
     }
-
-    #endregion
+    */
 }
