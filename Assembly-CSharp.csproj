@@ -142,31 +142,37 @@
     <Compile Include="Assets\PhotonChatApi\ChatState.cs" />
     <Compile Include="Assets\PhotonChatApi\ChatUserStatus.cs" />
     <Compile Include="Assets\PhotonChatApi\IChatClientListener.cs" />
-    <Compile Include="Assets\Scripts\CameraWork.cs" />
-    <Compile Include="Assets\Scripts\CharTouchEvent.cs" />
-    <Compile Include="Assets\Scripts\ChatController.cs" />
-    <Compile Include="Assets\Scripts\ChatSyncPort.cs" />
-    <Compile Include="Assets\Scripts\GameController.cs" />
+    <Compile Include="Assets\Scripts\Chat\ChatController.cs" />
+    <Compile Include="Assets\Scripts\Chat\ChatSyncPort.cs" />
     <Compile Include="Assets\Scripts\Global.cs" />
+    <Compile Include="Assets\Scripts\Ingame\CameraWork.cs" />
+    <Compile Include="Assets\Scripts\Ingame\CharTouchButton.cs" />
+    <Compile Include="Assets\Scripts\Ingame\CharTouchEvent.cs" />
+    <Compile Include="Assets\Scripts\Ingame\GameController.cs" />
+    <Compile Include="Assets\Scripts\Ingame\ItemController.cs" />
+    <Compile Include="Assets\Scripts\Ingame\ItemPopUp.cs" />
+    <Compile Include="Assets\Scripts\Ingame\MoveButton.cs" />
+    <Compile Include="Assets\Scripts\Ingame\NPCController.cs" />
+    <Compile Include="Assets\Scripts\Ingame\PlayerController.cs" />
+    <Compile Include="Assets\Scripts\Ingame\TouchEvent.cs" />
+    <Compile Include="Assets\Scripts\Ingame\UIController.cs" />
     <Compile Include="Assets\Scripts\Launcher.cs" />
     <Compile Include="Assets\Scripts\Lobby.cs" />
-    <Compile Include="Assets\Scripts\MoveButton.cs" />
-    <Compile Include="Assets\Scripts\PlayerController.cs" />
     <None Include="Assets\Photon Unity Networking\link.xml" />
     <None Include="Assets\FacebookSDK\link.xml" />
     <None Include="Assets\Photon Unity Networking\readme.txt" />
     <None Include="Assets\Photon Unity Networking\changelog.txt" />
     <Reference Include="UnityEditor.StandardEvents">
-      <HintPath>C:/Users/CGI/Desktop/Unity Projects/FindTheTheif/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
+      <HintPath>C:/Users/MJT/Desktop/FindTheTheif/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro.Editor">
-      <HintPath>C:/Users/CGI/Desktop/Unity Projects/FindTheTheif/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
+      <HintPath>C:/Users/MJT/Desktop/FindTheTheif/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.PackageManagerUI.Editor">
-      <HintPath>C:/Users/CGI/Desktop/Unity Projects/FindTheTheif/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
+      <HintPath>C:/Users/MJT/Desktop/FindTheTheif/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro">
-      <HintPath>C:/Users/CGI/Desktop/Unity Projects/FindTheTheif/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
+      <HintPath>C:/Users/MJT/Desktop/FindTheTheif/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AIModule">
       <HintPath>C:/Program Files/Unity/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
@@ -364,28 +370,28 @@
       <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/UnitySpatialTracking/RuntimeEditor/UnityEngine.SpatialTracking.dll</HintPath>
     </Reference>
     <Reference Include="Facebook.Unity">
-      <HintPath>C:/Users/CGI/Desktop/Unity Projects/FindTheTheif/Assets/FacebookSDK/Plugins/Facebook.Unity.dll</HintPath>
+      <HintPath>C:/Users/MJT/Desktop/FindTheTheif/Assets/FacebookSDK/Plugins/Facebook.Unity.dll</HintPath>
     </Reference>
     <Reference Include="Facebook.Unity.Gameroom">
-      <HintPath>C:/Users/CGI/Desktop/Unity Projects/FindTheTheif/Assets/FacebookSDK/Plugins/Gameroom/Facebook.Unity.Gameroom.dll</HintPath>
+      <HintPath>C:/Users/MJT/Desktop/FindTheTheif/Assets/FacebookSDK/Plugins/Gameroom/Facebook.Unity.Gameroom.dll</HintPath>
     </Reference>
     <Reference Include="FacebookNamedPipeClient">
-      <HintPath>C:/Users/CGI/Desktop/Unity Projects/FindTheTheif/Assets/FacebookSDK/Plugins/Gameroom/FacebookNamedPipeClient.dll</HintPath>
+      <HintPath>C:/Users/MJT/Desktop/FindTheTheif/Assets/FacebookSDK/Plugins/Gameroom/FacebookNamedPipeClient.dll</HintPath>
     </Reference>
     <Reference Include="Facebook.Unity.Settings">
-      <HintPath>C:/Users/CGI/Desktop/Unity Projects/FindTheTheif/Assets/FacebookSDK/Plugins/Settings/Facebook.Unity.Settings.dll</HintPath>
+      <HintPath>C:/Users/MJT/Desktop/FindTheTheif/Assets/FacebookSDK/Plugins/Settings/Facebook.Unity.Settings.dll</HintPath>
     </Reference>
     <Reference Include="Photon3Unity3D">
-      <HintPath>C:/Users/CGI/Desktop/Unity Projects/FindTheTheif/Assets/Plugins/Photon3Unity3D.dll</HintPath>
+      <HintPath>C:/Users/MJT/Desktop/FindTheTheif/Assets/Plugins/Photon3Unity3D.dll</HintPath>
     </Reference>
     <Reference Include="websocket-sharp">
-      <HintPath>C:/Users/CGI/Desktop/Unity Projects/FindTheTheif/Assets/Plugins/WebSocket/websocket-sharp.dll</HintPath>
+      <HintPath>C:/Users/MJT/Desktop/FindTheTheif/Assets/Plugins/WebSocket/websocket-sharp.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.Analytics">
-      <HintPath>C:/Users/CGI/AppData/Local/Unity/cache/packages/packages.unity.com/com.unity.analytics@2.0.16/UnityEngine.Analytics.dll</HintPath>
+      <HintPath>C:/Users/MJT/AppData/Local/Unity/cache/packages/packages.unity.com/com.unity.analytics@2.0.16/UnityEngine.Analytics.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.StandardEvents">
-      <HintPath>C:/Users/CGI/AppData/Local/Unity/cache/packages/packages.unity.com/com.unity.standardevents@1.0.13/UnityEngine.StandardEvents.dll</HintPath>
+      <HintPath>C:/Users/MJT/AppData/Local/Unity/cache/packages/packages.unity.com/com.unity.standardevents@1.0.13/UnityEngine.StandardEvents.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib">
       <HintPath>C:/Program Files/Unity/Editor/Data/MonoBleedingEdge/lib/mono/unity/mscorlib.dll</HintPath>

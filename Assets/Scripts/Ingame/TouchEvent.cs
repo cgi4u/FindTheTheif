@@ -4,27 +4,28 @@ using UnityEngine;
 
 using UnityEngine.UI;
 
-public class CharTouchEvent : MonoBehaviour {
-    public Team teamOfPlayer;
-    public Text testUI;
+public class TouchEvent : MonoBehaviour {
+    public GameObject touchUI;
 
-    private void Start()
+    protected void Start()
     {
-        testUI.gameObject.SetActive(false);
+        touchUI.gameObject.SetActive(false);
     }
 
-    void OnMouseDown()
+    protected void OnMouseDown()
     {
         Vector3 screenPoint = Camera.main.WorldToScreenPoint(transform.position);
         Debug.Log(screenPoint);
-        testUI.gameObject.transform.position = screenPoint;
-        testUI.gameObject.SetActive(true);
+        touchUI.gameObject.transform.position = screenPoint;
+        touchUI.gameObject.SetActive(true);
 
+        /*
         if (teamOfPlayer == Team.theif)
             Debug.Log("Theif");
         else if (teamOfPlayer == Team.detective)
             Debug.Log("Detective");
         else
             Debug.Log("Error: Undefined");
+        */
     }
 }
