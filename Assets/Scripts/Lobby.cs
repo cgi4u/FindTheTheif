@@ -102,6 +102,7 @@ public class Lobby : Photon.PunBehaviour
         Debug.Log("Maximum Player:" + PhotonNetwork.room.MaxPlayers);
 
         curPlayerNum.text = PhotonNetwork.room.PlayerCount.ToString();
+        //PhotonNetwork.LoadLevel("Demo Room");
     }
 
     public override void OnPhotonPlayerConnected(PhotonPlayer newPlayer)

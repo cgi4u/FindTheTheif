@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
-public class GameController: MonoBehaviour {
+public class GameController: Photon.PunBehaviour {
     #region Public Properties
 
     [Tooltip("The prefab to use for representing the player")]
@@ -17,6 +17,8 @@ public class GameController: MonoBehaviour {
     public static GameController gameController;
     */
     public Text teamLabel;
+
+    public GameObject testNPCPrefab;
 
     #endregion
 
@@ -39,7 +41,7 @@ public class GameController: MonoBehaviour {
         {
             Debug.LogError("<Color=Red><a>Missing</a></Color> playerPrefab Reference. Please set it up in GameObject 'Game Room Controller'", this);
         }
-        else
+        else if (PhotonNetwork.connected)
         {
             //Determine team of the local player(For test. At release, it should be determined randomly.)
             if (PhotonNetwork.room.PlayerCount % 2 == 0)
@@ -57,7 +59,11 @@ public class GameController: MonoBehaviour {
             // we're in a room. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate
             GameObject localPlayer = PhotonNetwork.Instantiate(playerPrefab.name, new Vector3(.5f, .5f, 0f), Quaternion.identity, 0);
             localPlayer.GetComponent<PlayerController>().SetTeam(MyTeam);
+
         }
+
+        GameObject testNPC1 = PhotonNetwork.InstantiateSceneObject(testNPCPrefab.name, new Vector3(0f, 0f, 0f), Quaternion.identity, 0, null);
+        testNPC1.transform.position = new Vector3(0.0f, 0.0f);
     }
 	
 	// Update is called once per frame
@@ -77,4 +83,5 @@ public class GameController: MonoBehaviour {
     }
 
     #endregion
+
 }
