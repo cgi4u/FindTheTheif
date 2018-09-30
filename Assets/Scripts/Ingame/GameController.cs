@@ -31,11 +31,13 @@ public class GameController: Photon.PunBehaviour {
 
     #region Unity Callbacks
 
+    //TODO: 마스터 클라이언트일 경우, 룸컨트롤러 생성
+
     // Use this for initialization
     void Start () {
         //Instantiate the local player(my player)
         Hashtable cp = PhotonNetwork.player.CustomProperties;
-        Debug.Log(cp["Test"]);
+        Debug.Log(cp["Team"]);
 
         if (playerPrefab == null)
         {
@@ -43,16 +45,16 @@ public class GameController: Photon.PunBehaviour {
         }
         else if (PhotonNetwork.connected)
         {
-            //Determine team of the local player(For test. At release, it should be determined randomly.)
-            if (PhotonNetwork.room.PlayerCount % 2 == 0)
-            {
-                MyTeam = Team.detective;
-                teamLabel.text = "탐정";
-            }
+            if (cp["Team"] != null)
+                MyTeam = (Team)cp["Team"];
             else
+                MyTeam = Team.undefined;
+
+            switch (MyTeam)
             {
-                MyTeam = Team.theif;
-                teamLabel.text = "도둑";
+                case Team.theif: teamLabel.text = "도둑"; break;
+                case Team.detective: teamLabel.text = "탐정"; break;
+                default: teamLabel.text = "오류"; break;
             }
 
             Debug.Log("We are Instantiating LocalPlayer from " + SceneManager.GetActiveScene().name);
@@ -62,8 +64,8 @@ public class GameController: Photon.PunBehaviour {
 
         }
 
-        GameObject testNPC1 = PhotonNetwork.InstantiateSceneObject(testNPCPrefab.name, new Vector3(0f, 0f, 0f), Quaternion.identity, 0, null);
-        testNPC1.transform.position = new Vector3(0.0f, 0.0f);
+        //GameObject testNPC1 = PhotonNetwork.InstantiateSceneObject(testNPCPrefab.name, new Vector3(0f, 0f, 0f), Quaternion.identity, 0, null);
+        //testNPC1.transform.position = new Vector3(0.0f, 0.0f);
     }
 	
 	// Update is called once per frame

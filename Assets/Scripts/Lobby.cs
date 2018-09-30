@@ -12,7 +12,10 @@ public class Lobby : Photon.PunBehaviour
     #region Public Properties
 
     [Tooltip("The maximum number of players per room. When a room is full, it can't be joined by new players, and so new room will be created")]
-    public byte maxPlayersPerRoom;
+    public byte playersPerRoom;
+
+    //The number players in each team
+    public int theifPerRoom;
 
     public InputField nameInputField;
 
@@ -91,7 +94,7 @@ public class Lobby : Photon.PunBehaviour
     {
         Debug.Log("DemoAnimator/Launcher:OnPhotonRandomJoinFailed() was called by PUN. No random room available, so we create one.");
         // #Critical: we failed to join a random room, maybe none exists or they are all full. No worries, we create a new room.
-        PhotonNetwork.CreateRoom(null, new RoomOptions() { MaxPlayers = maxPlayersPerRoom }, null);
+        PhotonNetwork.CreateRoom(null, new RoomOptions() { MaxPlayers = playersPerRoom }, null);
         curPlayerNumPanel.SetActive(true);
     }
 
@@ -102,7 +105,12 @@ public class Lobby : Photon.PunBehaviour
         Debug.Log("Maximum Player:" + PhotonNetwork.room.MaxPlayers);
 
         curPlayerNum.text = PhotonNetwork.room.PlayerCount.ToString();
-        //PhotonNetwork.LoadLevel("Demo Room");
+
+        //Codes for Test
+        /*Hashtable cp = new Hashtable();
+        cp["Team"] = Team.detective;
+        PhotonNetwork.player.SetCustomProperties(cp);
+        PhotonNetwork.LoadLevel("Demo Room");*/
     }
 
     public override void OnPhotonPlayerConnected(PhotonPlayer newPlayer)
@@ -110,7 +118,7 @@ public class Lobby : Photon.PunBehaviour
         curPlayerNum.text = PhotonNetwork.room.PlayerCount.ToString();
 
         // Load scene when the local player is the master client
-        if (PhotonNetwork.room.PlayerCount == maxPlayersPerRoom
+        if (PhotonNetwork.room.PlayerCount == playersPerRoom
             && PhotonNetwork.player.ID == PhotonNetwork.masterClient.ID)
         {
 
@@ -120,13 +128,35 @@ public class Lobby : Photon.PunBehaviour
                 Debug.Log(user);
             */
 
+            //Choose theif players randomly
             PhotonPlayer[] users = PhotonNetwork.playerList;
-            foreach (PhotonPlayer user in users)
+            int theifCount = theifPerRoom;
+            bool [] isPlayerTheif = new bool[playersPerRoom];
+            while (theifCount != 0)
+            {
+                int rp = Random.Range(0, playersPerRoom - 1);
+
+                if (isPlayerTheif[rp] == false)
+                {
+                    isPlayerTheif[rp] = true;
+                    theifCount--;
+                }
+            } 
+
+            //Save players' team in their custom property
+            foreach (PhotonPlayer player in PhotonNetwork.playerList)
             {
                 Hashtable cp = new Hashtable();
-                cp["Test"] = "Text";
-                user.SetCustomProperties(cp);
-                Debug.Log(user.ID);
+                
+                if (isPlayerTheif[player.ID - 1] == true)
+                {
+                    cp["Team"] = Team.theif;
+                }
+                else
+                {
+                    cp["Team"] = Team.detective;
+                }
+                player.SetCustomProperties(cp);
             }
             
 

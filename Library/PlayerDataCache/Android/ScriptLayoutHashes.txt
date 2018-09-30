@@ -1,6 +1,6 @@
 Android
 PlayerPath?
-C:/Users/MJT/Desktop/FindTheTheif.apk
+C:/Users/CGI/Desktop/FindTheTheif.apk
 SceneListBegin?
 Assets/Scenes/Launcher.unity
 Assets/Scenes/Lobby.unity
@@ -225,7 +225,7 @@ dfd33ff9ae3ce8d7ca1f22b475ec2387 UnityEngine.HoloLens.dll:UnityEngine.XR.WSA.Spa
 aac9c55ae7ba4b95b852a7d9c191acd1 Unity.TextMeshPro.dll:TMPro.TextMeshProUGUI
 fd1e15b01c6e8d9c3c753ad322216267 Assembly-CSharp.dll:.PhotonLagSimulationGui
 0a006f3734181ba8b26758f0866152c0 UnityEngine.SpatialTracking.dll:UnityEngine.SpatialTracking.TrackedPoseDriver
-d01356b0bf3bf0de1d3292169ae62562 Assembly-CSharp.dll:.Lobby
+9c28974fc17357abf8799f4cf07a7078 Assembly-CSharp.dll:.Lobby
 c411ab8494fe29629b2bf13ac23e6345 Assembly-CSharp.dll:.GameController
 a2651694e7b6c8dd699b038f729bf69b Assembly-CSharp.dll:.SupportLogger
 486cd95c82d8305219c352c06b776e1f Assembly-CSharp.dll:.ItemController
@@ -244,3 +244,4 @@ ac4015b3f9c2f9a8f87357544349e470 Assembly-CSharp.dll:.InRoomChat
 cecf74a4a014467f492fa5579fb4b397 Facebook.Unity.Settings.dll:Facebook.Unity.Settings.FacebookSettings
 93307bd34e39d73fd24e00ec39c25a91 Unity.TextMeshPro.dll:TMPro.TMP_SubMesh
 486cd95c82d8305219c352c06b776e1f Assembly-CSharp.dll:Facebook.Unity.Example.AppRequests
+486cd95c82d8305219c352c06b776e1f Assembly-CSharp.dll:.RoomController
