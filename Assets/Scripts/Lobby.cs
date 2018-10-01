@@ -11,11 +11,11 @@ public class Lobby : Photon.PunBehaviour
 {
     #region Public Properties
 
-    [Tooltip("The maximum number of players per room. When a room is full, it can't be joined by new players, and so new room will be created")]
+    /* 이 둘은 현 시점에서 고정값이지만, 유저가 변경할 수 있도록 수정될 가능성이 있으니 여기서 결정하고 룸으로 전달하는 식으로 한다. */
+    //The number of players per room 
     public byte playersPerRoom;
-
     //The number players in each team
-    public int theifPerRoom;
+    public byte theifPerRoom;
 
     public InputField nameInputField;
 
@@ -121,13 +121,6 @@ public class Lobby : Photon.PunBehaviour
         if (PhotonNetwork.room.PlayerCount == playersPerRoom
             && PhotonNetwork.player.ID == PhotonNetwork.masterClient.ID)
         {
-
-            /*
-            string[] users = PhotonNetwork.room.ExpectedUsers;  //들어올것이라 예상되는 플레이어, 즉 특정 플레이어가 들어올 자리를 미리 비워놓는것
-            foreach (string user in users)
-                Debug.Log(user);
-            */
-
             //Choose theif players randomly
             PhotonPlayer[] users = PhotonNetwork.playerList;
             int theifCount = theifPerRoom;
@@ -146,19 +139,26 @@ public class Lobby : Photon.PunBehaviour
             //Save players' team in their custom property
             foreach (PhotonPlayer player in PhotonNetwork.playerList)
             {
-                Hashtable cp = new Hashtable();
+                Hashtable teamCp = new Hashtable();
                 
                 if (isPlayerTheif[player.ID - 1] == true)
                 {
-                    cp["Team"] = Team.theif;
+                    teamCp["Team"] = Team.theif;
                 }
                 else
                 {
-                    cp["Team"] = Team.detective;
+                    teamCp["Team"] = Team.detective;
                 }
                 player.SetCustomProperties(cp);
             }
-            
+
+            //Set room properties
+            //1. The Number of players in the room, 2. The number of thiefs in the room
+            // ISSUE:  플레이어 수를 건네줘야 할 필요가 있는가? PhotonNetWork에서 참조 가능하고 이게 더 정확할 수 있음
+            Hashtable roomCp = new Hashtable();
+            roomCp["Player Number"] = playersPerRoom;
+            roomCp["Theif Number"] = theifPerRoom;
+            PhotonNetwork.room.SetCustomProperties(roomCp);
 
             Debug.Log("We load the 'Demo Room' ");
             //Load the game level. Use LoadLevel to synchronize(automaticallySyncScene is true)

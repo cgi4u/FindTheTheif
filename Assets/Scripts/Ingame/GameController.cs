@@ -18,7 +18,7 @@ public class GameController: Photon.PunBehaviour {
     */
     public Text teamLabel;
 
-    public GameObject testNPCPrefab;
+    //public GameObject testNPCPrefab;
 
     #endregion
 
@@ -37,7 +37,6 @@ public class GameController: Photon.PunBehaviour {
     void Start () {
         //Instantiate the local player(my player)
         Hashtable cp = PhotonNetwork.player.CustomProperties;
-        Debug.Log(cp["Team"]);
 
         if (playerPrefab == null)
         {
