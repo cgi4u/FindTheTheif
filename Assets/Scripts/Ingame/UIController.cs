@@ -1,11 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class UIController : MonoBehaviour
 {
     public static UIController uIController;
+
+    //Label to show reamaing game time
+    public Text timeLabel;
 
     void Start()
     {
@@ -29,6 +34,10 @@ public class UIController : MonoBehaviour
                 itemPopUp.gameObject.SetActive(false);
             }
         }
+
+        //TODO: 나중에 timeLeft의 형식이 바뀌면, 변경되어야함
+        if (RoomManager.Instance != null)
+            timeLabel.text = Mathf.Floor(RoomManager.Instance.timeLeft).ToString();
     }
 
     #region Character(Theif, NPC) Pop-up

@@ -18,7 +18,8 @@ public class GameController: Photon.PunBehaviour {
     */
     public Text teamLabel;
 
-    //public GameObject testNPCPrefab;
+    [Tooltip("The prefab of the room controller")]
+    public GameObject roomManagerPrefab;
 
     #endregion
 
@@ -35,17 +36,30 @@ public class GameController: Photon.PunBehaviour {
 
     // Use this for initialization
     void Start () {
-        //Instantiate the local player(my player)
-        Hashtable cp = PhotonNetwork.player.CustomProperties;
+        //Inctantiate the room controller(only when the client is the master)
+        if (PhotonNetwork.player.IsMasterClient)
+        {
+            if (roomManagerPrefab == null)
+            {
+                Debug.LogError("Missing roomManagerPrefab Reference. Please set it up in GameObject 'Game Controller'", this);
+            }
+            else
+            {
+                PhotonNetwork.InstantiateSceneObject(roomManagerPrefab.name, new Vector3(0f, 0f, 10f), Quaternion.identity, 0, null);
+            }
+        }
 
+        //Instantiate the local player(my player)
         if (playerPrefab == null)
         {
-            Debug.LogError("<Color=Red><a>Missing</a></Color> playerPrefab Reference. Please set it up in GameObject 'Game Room Controller'", this);
+            Debug.LogError("Missing playerPrefab Reference. Please set it up in GameObject 'Game Controller'", this);
         }
         else if (PhotonNetwork.connected)
         {
-            if (cp["Team"] != null)
-                MyTeam = (Team)cp["Team"];
+            Hashtable playerCp = PhotonNetwork.player.CustomProperties;
+
+            if (playerCp["Team"] != null)
+                MyTeam = (Team)playerCp["Team"];
             else
                 MyTeam = Team.undefined;
 

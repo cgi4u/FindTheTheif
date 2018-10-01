@@ -2,9 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RoomController : Photon.PunBehaviour, IPunObservable{
+using Hashtable = ExitGames.Client.Photon.Hashtable;
+
+public class RoomManager : Photon.PunBehaviour, IPunObservable{
     //TODO: 룸 하나에서 전체가 공유해야 하는 데이터와 동작들을 관리
     //조건1. 권한을 주고 받을 수 있어야 함. OnRequest 구현
+
+    //Singleton
+    public static RoomManager Instance { get; private set; }
 
     //데이터
     // 1. 방 내 현재 남은 도둑의 수
@@ -17,13 +22,32 @@ public class RoomController : Photon.PunBehaviour, IPunObservable{
 
     //조건3. 게임이 시작하고 종료될 때 모든 플레이어를 통제할 수 있어야 함. RPC를 통해서 구현 가능할 듯
     //Player ready-check flag array
-    private List<bool> isPlayersReady;  
+    private List<bool> isPlayersReady;
 
-    void Awake () {
-        //Set all players' ready-check flag to false
-        int playerNum = PhotonNetwork.playerList.Length;
-        for (int i = 0; i < playerNum; i++)
-            isPlayersReady.Add(false);
+    void Awake() {
+        //Set singleton
+        //이 오류 체크는 사실 큰 필요가 없음.
+        if (Instance == null)
+        {
+            //Debug.Log("Room Manager Instantiation");
+            Instance = this;
+        }
+        else
+        {
+            Debug.LogError("Multiple instantiation of the room controller");
+        }
+
+        if (PhotonNetwork.connected)
+        {
+            //Get values sent by Lobby
+            Hashtable roomCp = PhotonNetwork.room.CustomProperties;
+            remainingThief = (int)roomCp["Theif Number"];
+
+            //Set all players' ready-check flag to false
+            int playerNum = PhotonNetwork.playerList.Length;
+            for (int i = 0; i < playerNum; i++)
+                isPlayersReady.Add(false);
+        }
 
         //TODO: Generate NPCs
 
@@ -32,10 +56,12 @@ public class RoomController : Photon.PunBehaviour, IPunObservable{
 	
 	void Update () {
         //Reduce spent time
-        timeLeft -= Time.deltaTime;
+        if (timeLeft - Time.deltaTime  > 0.0f)
+        {
+            timeLeft -= Time.deltaTime;
+        }
+        //TODO: Game End 처리하기. 일단 메소드 만들고 RPC화
 	}
-
-    public RoomController GetInstance
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {

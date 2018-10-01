@@ -139,17 +139,17 @@ public class Lobby : Photon.PunBehaviour
             //Save players' team in their custom property
             foreach (PhotonPlayer player in PhotonNetwork.playerList)
             {
-                Hashtable teamCp = new Hashtable();
+                Hashtable playerCp = new Hashtable();
                 
                 if (isPlayerTheif[player.ID - 1] == true)
                 {
-                    teamCp["Team"] = Team.theif;
+                    playerCp["Team"] = Team.theif;
                 }
                 else
                 {
-                    teamCp["Team"] = Team.detective;
+                    playerCp["Team"] = Team.detective;
                 }
-                player.SetCustomProperties(cp);
+                player.SetCustomProperties(playerCp);
             }
 
             //Set room properties
