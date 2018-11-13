@@ -12,11 +12,19 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
 
     public float moveSpeed = 5.0f;
 
-    public static PlayerController localPlayer; // Singleton of the local player
-                                                // 생각: GameObject로 해야 하나? 버튼 말고 다른데서 얘한테 접근할일이 있나?                                    
     #endregion
 
     #region Private Properties
+
+    private static PlayerController localPlayer; // Singleton of the local player
+                                                // 생각: GameObject로 해야 하나? 버튼 말고 다른데서 얘한테 접근할일이 있나?    
+    public static PlayerController LocalPlayer
+    {
+        get
+        {
+            return localPlayer;
+        }
+    }
 
     private Vector2 raycastBox;          // Collider of the player
     

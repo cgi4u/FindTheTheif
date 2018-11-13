@@ -30,16 +30,16 @@ public class MoveButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
         //Output the name of the GameObject that is being clicked
         //Debug.Log("Go " + direction);
-        if (PlayerController.localPlayer != null)
-            PlayerController.localPlayer.OnMoveButtonPushed(direction);
+        if (PlayerController.LocalPlayer != null)
+            PlayerController.LocalPlayer.OnMoveButtonPushed(direction);
     }
 
     //Detect if clicks are no longer registering
     public void OnPointerUp(PointerEventData pointerEventData)
     {
         //Debug.Log("End moving " + direction);
-        if (PlayerController.localPlayer != null)
-            PlayerController.localPlayer.OnMoveButtonReleased(direction);
+        if (PlayerController.LocalPlayer != null)
+            PlayerController.LocalPlayer.OnMoveButtonReleased(direction);
     }
 
     #endregion
