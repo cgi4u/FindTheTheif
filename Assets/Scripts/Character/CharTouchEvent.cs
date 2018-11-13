@@ -6,6 +6,6 @@ public class CharTouchEvent : MonoBehaviour
 {
     protected void OnMouseUp()
     {
-        UIController.uIController.SetCharPopUp(0, transform.position);
+        UIController.Instance.SetCharPopUp(0, transform.position);
     }
 }

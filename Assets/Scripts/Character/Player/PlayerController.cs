@@ -40,10 +40,13 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
     {
         raycastBox = GetComponent<BoxCollider2D>().size -  new Vector2(0.05f, 0.05f);   // To ignore collisions on edges
 
-        if (!PhotonNetwork.connected && photonView.isMine)
+        if (!PhotonNetwork.connected || photonView.isMine)
         {
             if (localPlayer == null)
+            {
                 localPlayer = this;
+                Debug.Log("Local Player Set");
+            }
             else
                 Debug.Log("Error: Multiple instantiation of the local player.");
         }

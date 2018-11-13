@@ -5,17 +5,28 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+// 1. UI를 띄우고 죽이는 컨트롤러의 경우 가능하면 각 오브젝트가 각자 가지고 알아서 처리하도록 하는게 바람직하다고 생각
+// 2. 그러나 UI의 종류와 상관없이 다른 영역을 터치하면 제거해야 하기 때문에 중앙 관리해줄 UI 컨트롤러가 필요해 제작
+// 3. 그 때문에 다소 난잡해진 감이 있어 주의해야함.
+
 public class UIController : MonoBehaviour
 {
-    public static UIController uIController;
+    static UIController instance;
+    public static UIController Instance
+    {
+        get
+        {
+            return instance;
+        }
+    }
 
     //Label to show reamaing game time
     public Text timeLabel;
 
     void Start()
     {
-        if (uIController == null)
-            uIController = this;
+        if (instance == null)
+            instance = this;
 
         charPopUp.SetActive(false);
         itemPopUp.gameObject.SetActive(false);
