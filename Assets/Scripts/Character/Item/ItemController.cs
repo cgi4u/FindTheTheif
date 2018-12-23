@@ -8,6 +8,6 @@ public class ItemController : MonoBehaviour {
 
     private void OnMouseUp()
     {
-        UIController.Instance.SetItemPopUp(attributes, transform.position);
+        UIManager.Instance.SetItemPopUp(attributes, transform.position);
     }
 }

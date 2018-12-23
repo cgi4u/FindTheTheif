@@ -6,14 +6,8 @@ using UnityEngine.EventSystems;
 
 enum Direction { stop, up, down, right, left };
 
-public class PlayerController : Photon.PunBehaviour, IPunObservable
+public class PlayerController : CharController, IPunObservable
 {
-    #region Public Properties
-
-    public float moveSpeed = 5.0f;
-
-    #endregion
-
     #region Private Properties
 
     private static PlayerController localPlayer; // Singleton of the local player
@@ -25,8 +19,6 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
             return localPlayer;
         }
     }
-
-    private Vector2 raycastBox;          // Collider of the player
     
     private int[] buttons = new int[4];         // The state of each button(Pushed or not pushed, pushed order)
                                                 // Up = 0, Down = 1, Left = 2, Right = 3
@@ -34,8 +26,6 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
 
     private bool ifCheckMove = false;                   // Flag for MoveCheck. Used to stop coroutine.
     private bool isCheckRunning = false;                // Flag to prevent to make a new coroutine.
-    private Vector2 startPoint;
-    private Vector2 targetPoint;
 
     public Team TeamOfPlayer { get; set; }
 
@@ -44,8 +34,12 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
 
     #region Unity Callbacks
 
-    private void Awake()
+    private new void Awake()
     {
+        base.Awake();   // Raycast box initiallize
+
+        moveSpeed = 5.0f;
+
         raycastBox = GetComponent<BoxCollider2D>().size -  new Vector2(0.05f, 0.05f);   // To ignore collisions on edges
 
         if (!PhotonNetwork.connected || photonView.isMine)
@@ -83,6 +77,17 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
             Move();
 	}
 
+    protected new void OnCollisionStay2D(Collision2D collision)
+    {
+        base.OnCollisionStay2D(collision);
+        
+        if (isCheckRunning)
+        {
+            StopCoroutine("MoveCheck");
+            isCheckRunning = false;
+        }
+    }
+
     #endregion
 
 
@@ -95,8 +100,11 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
 
     public void OnMoveButtonPushed(string dir)
     {
+        //현재 눌린 버튼의 갯수를 저장
         btnCount += 1;
 
+        //현재 눌린 버튼에 해당하는 배열 번호에 갯수와 동일한 수를 저장
+        //어떤 버튼이 마지막으로 눌렸는지를 판단하여 이동한다.
         switch (dir)
         {
             case "up":
@@ -118,10 +126,12 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
 
         if (btnCount == 1)
         {
-            Debug.Log("First pushed");
+            //Debug.Log("First pushed");
             ifCheckMove = true;
             if (!isCheckRunning)
+            {
                 StartCoroutine("MoveCheck");
+            }
         }
     }
 
@@ -155,7 +165,7 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
 
         if (btnCount == 0)
         {
-            Debug.Log("Last released");
+            //Debug.Log("Last released");
             ifCheckMove = false;
         }
     }
@@ -164,29 +174,29 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
 
     #region Private Methods
 
-    IEnumerator MoveCheck()
+    protected override IEnumerator MoveCheck()
     {
         isCheckRunning = true;
-
+        
         while (ifCheckMove) {
             startPoint = (Vector2)transform.position;   // Set starting point
 
             // Set target point
-            if (btnCount == buttons[0])         // Up
+            if (btnCount == buttons[0])     
             {
-                targetPoint = startPoint + new Vector2(0, 1.0f);
+                targetPoint = startPoint + Vector2.up;
             }   
-            else if (btnCount == buttons[1])    // Down
+            else if (btnCount == buttons[1])  
             {
-                targetPoint = startPoint + new Vector2(0, -1.0f);
+                targetPoint = startPoint + Vector2.down;
             }
-            else if (btnCount == buttons[2])    // Left
+            else if (btnCount == buttons[2])    
             {
-                targetPoint = startPoint + new Vector2(-1.0f, 0.0f);
+                targetPoint = startPoint + Vector2.left;
             }
-            else if (btnCount == buttons[3])    // Right
+            else if (btnCount == buttons[3])   
             {
-                targetPoint = startPoint + new Vector2(1.0f, 0.0f);
+                targetPoint = startPoint + Vector2.right;
             }
 
             //움직이는 과정에서 플레이어와 충돌하는 물체가 있을지를 판단.
@@ -197,10 +207,10 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
             bool ifHit = false;
             foreach (RaycastHit2D hit in hits)
             {
-                if (hit.collider.gameObject != gameObject)
+                if (hit.collider.gameObject != gameObject && !hit.collider.isTrigger)
                 {
                     //플레이어 오브젝트와 충돌체의 오브젝트가 같지 않는 상황, 즉 콜라이더를 갖는 다른 오브젝트에 부딫힌 상황
-                    Debug.Log(hit.collider.gameObject.name);
+                    //Debug.Log(hit.collider.gameObject.name);
                     ifHit = true;
                     break;
                 }
@@ -211,15 +221,6 @@ public class PlayerController : Photon.PunBehaviour, IPunObservable
         }
     
         isCheckRunning = false;
-    }
-
-    void Move()
-    {
-        //설정 속도에 따라 움직일 위치를 계산(MoveTowards) 이후 이동
-        Vector2 nextPos =  Vector2.MoveTowards(transform.position, targetPoint, moveSpeed * Time.deltaTime);
-        transform.position = (Vector3)nextPos;
-
-        return;
     }
 
     #endregion
