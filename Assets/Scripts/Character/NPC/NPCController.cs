@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class NPCController : CharController {
-    public int count = 0;
+    public GameObject currentRoute;
+    private Transform[] routeNodeSet;
+    private int curNodeNum;
 
     private new void Awake()
     {
@@ -12,6 +14,20 @@ public class NPCController : CharController {
 
     // Use this for initialization
     void Start () {
+       
+        if (currentRoute != null)
+        {
+            routeNodeSet = currentRoute.GetComponentsInChildren<Transform>();
+            curNodeNum = 1;
+            Debug.Log(routeNodeSet[curNodeNum].name);
+
+            transform.position = routeNodeSet[curNodeNum].position;
+        }
+        else
+        {
+            Debug.LogError("Route for NPC " + name + " is not set.");
+        }
+
         StartCoroutine("MoveCheck");
 	}
 
@@ -23,18 +39,14 @@ public class NPCController : CharController {
             Move();
 	}
 
-    protected new void OnCollisionStay2D(Collision2D collision)
+    protected new void OnCollisionEnter2D(Collision2D collision)
     {
-        base.OnCollisionStay2D(collision);
+        base.OnCollisionEnter2D(collision);
 
-        Vector3 colObjPos = collision.gameObject.transform.position;
-        if (Vector3.Magnitude(colObjPos - transform.position) < 0.95f)
-        {
-            moveLock = true;
-        }
+        moveLock = true;
     }
 
-    void OnMouseDown()
+    /*void OnMouseDown()
     {
         if (PhotonNetwork.connected) {
             photonView.RequestOwnership();
@@ -44,7 +56,7 @@ public class NPCController : CharController {
             }
         }
         //소유권을 이전받는것과 변수의 값이 싱크되는것과는 별개. 이것도 따로 계속 싱크를 해줘야함
-    }
+    }*/
 
     #region Routing
 
@@ -81,7 +93,14 @@ public class NPCController : CharController {
         {
             moveLock = false;
 
+            if (curNodeNum < routeNodeSet.Length && transform.position == routeNodeSet[curNodeNum + 1].position)
+                curNodeNum += 1;
+
             startPoint = (Vector2)transform.position;   // Set starting point
+            if (curNodeNum < routeNodeSet.Length)
+                direction = (routeNodeSet[curNodeNum + 1].position - transform.position).normalized;
+            else
+                direction = new Vector2(0, 0);
             targetPoint = startPoint + direction;
             
 
@@ -102,9 +121,7 @@ public class NPCController : CharController {
                 }
             }
             if (ifHit)
-            {
-                targetPoint = (Vector2)transform.position;
-            }
+                moveLock = true;
 
             yield return new WaitForSeconds(1.0f / moveSpeed);
         }

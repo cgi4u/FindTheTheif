@@ -10,7 +10,7 @@ public abstract class CharController : Photon.PunBehaviour
     protected Vector2 raycastBox; // Collider of a character
     protected void Awake()
     {
-        raycastBox = GetComponent<BoxCollider2D>().size - new Vector2(0.05f, 0.05f);   // To ignore collisions on edges
+        raycastBox = GetComponent<BoxCollider2D>().size;   // To ignore collisions on edges
     }
 
     protected Vector2 startPoint;
@@ -26,16 +26,28 @@ public abstract class CharController : Photon.PunBehaviour
         return;
     }
 
+    /*protected void Move2()
+    {
+        //대상 지점으로 이동
+        transform.position = targetPoint;
+
+        return;
+    }*/
+
     protected abstract IEnumerator MoveCheck();
 
     //충돌처리를 위한 부분, 미완성
-    protected void OnCollisionStay2D(Collision2D collision)
+    protected void OnCollisionEnter2D(Collision2D collision)
     {
-        Vector3 colObjPos = collision.gameObject.transform.position;
+        Debug.Log(collision.gameObject.name);
+
+        transform.position = startPoint;
+
+        /*Vector3 colObjPos = collision.gameObject.transform.position;
         if (Vector3.Magnitude(colObjPos - transform.position) < 0.95f)
         {
             transform.position = startPoint;
-        }
+        }*/
     }
 
     #endregion

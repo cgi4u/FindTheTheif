@@ -31,6 +31,11 @@ public class PlayerController : CharController, IPunObservable
 
     #endregion
 
+    #region Public Properties
+
+    //public GameObject myCollider;
+    
+    #endregion
 
     #region Unity Callbacks
 
@@ -40,7 +45,7 @@ public class PlayerController : CharController, IPunObservable
 
         moveSpeed = 5.0f;
 
-        raycastBox = GetComponent<BoxCollider2D>().size -  new Vector2(0.05f, 0.05f);   // To ignore collisions on edges
+        raycastBox = GetComponent<BoxCollider2D>().size; 
 
         if (!PhotonNetwork.connected || photonView.isMine)
         {
@@ -77,14 +82,15 @@ public class PlayerController : CharController, IPunObservable
             Move();
 	}
 
-    protected new void OnCollisionStay2D(Collision2D collision)
+    protected new void OnCollisionEnter2D(Collision2D collision)
     {
-        base.OnCollisionStay2D(collision);
+        base.OnCollisionEnter2D(collision);
         
         if (isCheckRunning)
         {
-            StopCoroutine("MoveCheck");
             isCheckRunning = false;
+            StopCoroutine("MoveCheck");
+            //StopCoroutine("MoveCheck2");
         }
     }
 
@@ -131,6 +137,7 @@ public class PlayerController : CharController, IPunObservable
             if (!isCheckRunning)
             {
                 StartCoroutine("MoveCheck");
+                //StartCoroutine("MoveCheck2");
             }
         }
     }
@@ -172,13 +179,16 @@ public class PlayerController : CharController, IPunObservable
 
     #endregion
 
+
     #region Private Methods
 
     protected override IEnumerator MoveCheck()
     {
-        isCheckRunning = true;
+        //isCheckRunning = true;
         
         while (ifCheckMove) {
+            isCheckRunning = true;
+
             startPoint = (Vector2)transform.position;   // Set starting point
 
             // Set target point
@@ -201,7 +211,7 @@ public class PlayerController : CharController, IPunObservable
 
             //움직이는 과정에서 플레이어와 충돌하는 물체가 있을지를 판단.
             //플레이어(자기자신)의 콜라이더와 무조건 충돌하므로 다른 콜라이더가 있는지 판단하기 위해 BoxCast가 아닌 BoxCastAll을 쓴다.
-            RaycastHit2D[] hits = Physics2D.BoxCastAll(startPoint, raycastBox, 0, targetPoint - startPoint, 1.0f);
+            RaycastHit2D[] hits = Physics2D.BoxCastAll(targetPoint, raycastBox, 0, new Vector2(0, 0), 1.0f);
 
             //플레이어 자기 자신 이외에 충돌 물체가 있다면 이동하지 않는다.
             bool ifHit = false;
@@ -215,13 +225,70 @@ public class PlayerController : CharController, IPunObservable
                     break;
                 }
             }
-            if (ifHit) break;
+
+            if (ifHit)
+                break;
+            //else
+            //    myCollider.transform.position = targetPoint;
 
             yield return new WaitForSeconds(1.0f / moveSpeed);
         }
     
         isCheckRunning = false;
     }
+
+    /*protected IEnumerator MoveCheck2()
+    {
+        isCheckRunning = true;
+
+        while (ifCheckMove)
+        {
+            Debug.Log("Check Start");
+            startPoint = (Vector2)transform.position;   // Set starting point
+
+            // Set target point
+            if (btnCount == buttons[0])
+            {
+                targetPoint = startPoint + Vector2.up;
+            }
+            else if (btnCount == buttons[1])
+            {
+                targetPoint = startPoint + Vector2.down;
+            }
+            else if (btnCount == buttons[2])
+            {
+                targetPoint = startPoint + Vector2.left;
+            }
+            else if (btnCount == buttons[3])
+            {
+                targetPoint = startPoint + Vector2.right;
+            }
+
+            //움직이는 과정에서 플레이어와 충돌하는 물체가 있을지를 판단.
+            //플레이어(자기자신)의 콜라이더와 무조건 충돌하므로 다른 콜라이더가 있는지 판단하기 위해 BoxCast가 아닌 BoxCastAll을 쓴다.
+            RaycastHit2D[] hits = Physics2D.BoxCastAll(targetPoint, raycastBox, 0, new Vector2(0, 0), 0.0f);
+
+            //플레이어 자기 자신 이외에 충돌 물체가 있다면 이동하지 않는다.
+            bool ifHit = false;
+            foreach (RaycastHit2D hit in hits)
+            {
+                if (hit.collider.gameObject != gameObject && !hit.collider.isTrigger)
+                {
+                    //플레이어 오브젝트와 충돌체의 오브젝트가 같지 않는 상황, 즉 콜라이더를 갖는 다른 오브젝트에 부딫힌 상황
+                    //Debug.Log(hit.collider.gameObject.name);
+                    ifHit = true;
+                    break;
+                }
+            }
+
+            if (ifHit) break;
+            else Move2();
+
+            yield return new WaitForSeconds(1.0f / moveSpeed);
+        }
+
+        isCheckRunning = false;
+    }*/
 
     #endregion
 
