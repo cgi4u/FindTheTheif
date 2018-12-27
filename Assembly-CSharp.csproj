@@ -148,6 +148,7 @@
     <Compile Include="Assets\Scripts\Character\Item\ItemPopUp.cs" />
     <Compile Include="Assets\Scripts\Character\MapData.cs" />
     <Compile Include="Assets\Scripts\Character\NPC\NPCController.cs" />
+    <Compile Include="Assets\Scripts\Character\NPC\Path.cs" />
     <Compile Include="Assets\Scripts\Character\NPC\PathNode.cs" />
     <Compile Include="Assets\Scripts\Character\Player\CameraWork.cs" />
     <Compile Include="Assets\Scripts\Character\Player\PlayerController.cs" />
