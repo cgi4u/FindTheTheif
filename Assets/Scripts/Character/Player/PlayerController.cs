@@ -4,11 +4,13 @@ using UnityEngine;
 
 using UnityEngine.EventSystems;
 
-enum Direction { stop, up, down, right, left };
+
 
 public class PlayerController : CharController, IPunObservable
 {
     #region Private Properties
+
+    public enum Direction { stop, up, down, right, left };
 
     private static PlayerController localPlayer; // Singleton of the local player
                                                 // 생각: GameObject로 해야 하나? 버튼 말고 다른데서 얘한테 접근할일이 있나?    

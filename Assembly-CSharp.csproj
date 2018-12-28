@@ -148,8 +148,6 @@
     <Compile Include="Assets\Scripts\Character\Item\ItemPopUp.cs" />
     <Compile Include="Assets\Scripts\Character\MapData.cs" />
     <Compile Include="Assets\Scripts\Character\NPC\NPCController.cs" />
-    <Compile Include="Assets\Scripts\Character\NPC\Path.cs" />
-    <Compile Include="Assets\Scripts\Character\NPC\PathNode.cs" />
     <Compile Include="Assets\Scripts\Character\Player\CameraWork.cs" />
     <Compile Include="Assets\Scripts\Character\Player\PlayerController.cs" />
     <Compile Include="Assets\Scripts\Character\TouchEvent.cs" />
@@ -159,8 +157,10 @@
     <Compile Include="Assets\Scripts\Controller\GameController.cs" />
     <Compile Include="Assets\Scripts\Controller\Launcher.cs" />
     <Compile Include="Assets\Scripts\Controller\Lobby.cs" />
+    <Compile Include="Assets\Scripts\Controller\NPC Routing\Route.cs" />
+    <Compile Include="Assets\Scripts\Controller\NPC Routing\RouteNode.cs" />
+    <Compile Include="Assets\Scripts\Controller\NPC Routing\RoutingManager.cs" />
     <Compile Include="Assets\Scripts\Controller\RoomManager.cs" />
-    <Compile Include="Assets\Scripts\Controller\RoutingManager.cs" />
     <Compile Include="Assets\Scripts\Global.cs" />
     <Compile Include="Assets\Scripts\Test\MoveTestManager.cs" />
     <Compile Include="Assets\Scripts\UI\MoveButton.cs" />

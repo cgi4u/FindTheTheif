@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ItemController : MonoBehaviour {
+public class ItemController : MonoBehaviour
+{
     string[] attributes
-        = new string[] {"Example", "Example", "Example"};
+        = new string[] { "Example", "Example", "Example" };
 
     private void OnMouseUp()
     {
         UIManager.Instance.SetItemPopUp(attributes, transform.position);
     }
 }
+
