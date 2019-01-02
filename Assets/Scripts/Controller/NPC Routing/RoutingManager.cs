@@ -2,79 +2,121 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RoutingManager : MonoBehaviour {
-    public int maxRoomNum; //나중에 const변경 필요
-
-    private static RoutingManager instance;
-    public static RoutingManager Instance
+namespace com.MJT.FindTheTheif
+{
+    public class RoutingManager : MonoBehaviour
     {
-        get
+        public int maxRoomNum; //나중에 const변경 필요
+
+        private static RoutingManager instance;
+        public static RoutingManager Instance
         {
-            return instance;
-        }
-    }
-
-    private List<Route> inRoomRouteSet;
-    public List<Route> InRoomRouteSet
-    {
-        get
-        {
-            return inRoomRouteSet;
-        }
-    } 
-
-    private List<List<Route>> roomToRoomRouteSet;
-    public List<List<Route>> RoomToRoomRouteSet
-    {
-        get
-        {
-            return roomToRoomRouteSet;
-        }
-    }
-
-    private void Awake()
-    {
-        //Routing Manager Singlton 생성
-        if (instance == null)
-        {
-            instance = this;
-        }
-        else
-            Debug.Log("Error: Multiple instantiation of the routing manager.");
-
-
-        //In-Room 루트와 Room-to-Room 루트를 각각 리스트화한다.
-        inRoomRouteSet = new List<Route>();
-        roomToRoomRouteSet = new List<List<Route>>();
-
-        for (int i = 0; i < maxRoomNum; i++)
-        {
-            inRoomRouteSet.Add(null);
-
-            List<Route> tempRouteSet = new List<Route>();
-            for (int j = 0; j < maxRoomNum; j++)
-                tempRouteSet.Add(null);
-            roomToRoomRouteSet.Add(tempRouteSet);
+            get
+            {
+                return instance;
+            }
         }
 
-        GameObject inRoomRoutesRoot
-            = transform.Find("In-Room Routes").gameObject;
-        Route[] inRoomRouteArray = inRoomRoutesRoot.GetComponentsInChildren<Route>();
-        foreach (Route route in inRoomRouteArray)
+           
+        private List<int> roomFloor;
+        public List<int> RoomFloor
         {
-            Debug.Log(route.curRoom);
-            inRoomRouteSet[route.curRoom] = route;
-            Debug.Log(inRoomRouteSet[route.curRoom].curRoom);
+            get
+            {
+                return roomFloor;
+            }
         }
-        Debug.Log(inRoomRouteSet.Count);
 
-        GameObject roomToRoomRoutesRoot
-            = transform.Find("Room-to-Room Routes").gameObject;
-        Route[] roomToRoomRouteArray = roomToRoomRoutesRoot.GetComponentsInChildren<Route>();
-        foreach (Route route in roomToRoomRouteArray)
+        private List<Route> inRoomRouteSet;
+        public List<Route> InRoomRouteSet
         {
-            roomToRoomRouteSet[route.startRoom][route.endRoom] = route;
+            get
+            {
+                return inRoomRouteSet;
+            }
         }
-        Debug.Log(roomToRoomRouteSet.Count);
+
+        private List<List<Route>> roomToRoomRouteSet;
+        public List<List<Route>> RoomToRoomRouteSet
+        {
+            get
+            {
+                return roomToRoomRouteSet;
+            }
+        }
+
+        private List<List<Route>> stairToRoomRouteSet;
+        public List<List<Route>> StairToRoomRouteSet
+        {
+            get
+            {
+                return stairToRoomRouteSet;
+            }
+        }
+
+        private List<List<Route>> roomToStairRouteSet;
+        public List<List<Route>> RoomToStairRouteSet
+        {
+            get
+            {
+                return roomToStairRouteSet;
+            }
+        }
+
+        private void Awake()
+        {
+            //Routing Manager Singlton 생성
+            if (instance == null)
+            {
+                instance = this;
+            }
+            else
+                Debug.Log("Error: Multiple instantiation of the routing manager.");
+
+
+            //In-Room 루트와 Room-to-Room 루트를 각각 리스트화한다.
+            inRoomRouteSet = new List<Route>();
+            roomToRoomRouteSet = new List<List<Route>>();
+            roomFloor = new List<int>();
+
+            for (int i = 0; i < maxRoomNum; i++)
+            {
+                roomFloor.Add(-1);
+                inRoomRouteSet.Add(null);
+
+                List<Route> tempRouteSet = new List<Route>();
+                for (int j = 0; j < maxRoomNum; j++)
+                    tempRouteSet.Add(null);
+                roomToRoomRouteSet.Add(tempRouteSet);
+            }
+
+            GameObject roomsRoute
+                = transform.Find("Exhibit Rooms").gameObject;
+            ExhibitRoom[] roomsRouteArray = roomsRoute.GetComponentsInChildren<ExhibitRoom>();
+            foreach (ExhibitRoom room in roomsRouteArray)
+            {
+                roomFloor[room.num] = room.floor;
+            }
+
+            GameObject inRoomRoutesRoot
+                = transform.Find("In-Room Routes").gameObject;
+            Route[] inRoomRoutesArray = inRoomRoutesRoot.GetComponentsInChildren<Route>();
+            foreach (Route route in inRoomRoutesArray)
+            {
+                Debug.Log(route.curRoom);
+                inRoomRouteSet[route.curRoom] = route;
+                Debug.Log(inRoomRouteSet[route.curRoom].curRoom);
+            }
+           
+
+            GameObject roomToRoomRoutesRoot
+                = transform.Find("Room-to-Room Routes").gameObject;
+            Route[] roomToRoomRoutesArray = roomToRoomRoutesRoot.GetComponentsInChildren<Route>();
+            foreach (Route route in roomToRoomRoutesArray)
+            {
+                roomToRoomRouteSet[route.startRoom][route.endRoom] = route;
+            } 
+
+        }
     }
 }

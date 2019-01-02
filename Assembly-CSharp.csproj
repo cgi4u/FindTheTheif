@@ -157,6 +157,7 @@
     <Compile Include="Assets\Scripts\Controller\GameController.cs" />
     <Compile Include="Assets\Scripts\Controller\Launcher.cs" />
     <Compile Include="Assets\Scripts\Controller\Lobby.cs" />
+    <Compile Include="Assets\Scripts\Controller\NPC Routing\ExhibitRoom.cs" />
     <Compile Include="Assets\Scripts\Controller\NPC Routing\Route.cs" />
     <Compile Include="Assets\Scripts\Controller\NPC Routing\RouteNode.cs" />
     <Compile Include="Assets\Scripts\Controller\NPC Routing\RoutingManager.cs" />

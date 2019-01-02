@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CharTouchEvent : MonoBehaviour
+namespace com.MJT.FindTheTheif
 {
-    protected void OnMouseUp()
+    public class CharTouchEvent : MonoBehaviour
     {
-        UIManager.Instance.SetCharPopUp(0, transform.position);
+        protected void OnMouseUp()
+        {
+            UIManager.Instance.SetCharPopUp(0, transform.position);
+        }
     }
 }

@@ -2,58 +2,61 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ChatSyncPort : Photon.PunBehaviour, IPunObservable
+namespace com.MJT.FindTheTheif
 {
-    #region Private Properties
-
-    ChatController chatController;
-
-    bool isMyTeam = true;
-
-    #endregion
-
-    #region Unity Callbacks
-
-    void Awake()
+    public class ChatSyncPort : Photon.PunBehaviour, IPunObservable
     {
-        /*if (!photonView.isMine)
-            isMyTeam = false;
-            //Destroy(this.gameObject);*/
-    }
+        #region Private Properties
 
-    void Update()
-    {
-        if (chatController == null && ChatController.chatController != null)
-            chatController = ChatController.chatController;
-    }
+        ChatController chatController;
 
-    #endregion
+        bool isMyTeam = true;
 
+        #endregion
 
-    #region Photon Serialization
+        #region Unity Callbacks
 
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        string msg;
-
-        if (stream.isWriting)
+        void Awake()
         {
-            if (chatController != null)
+            /*if (!photonView.isMine)
+                isMyTeam = false;
+                //Destroy(this.gameObject);*/
+        }
+
+        void Update()
+        {
+            if (chatController == null && ChatController.chatController != null)
+                chatController = ChatController.chatController;
+        }
+
+        #endregion
+
+
+        #region Photon Serialization
+
+        public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+        {
+            string msg;
+
+            if (stream.isWriting)
             {
-                msg = chatController.GetMsgToSend();
-                if (msg != null)
+                if (chatController != null)
                 {
-                    stream.SendNext(msg);
+                    msg = chatController.GetMsgToSend();
+                    if (msg != null)
+                    {
+                        stream.SendNext(msg);
+                    }
                 }
             }
+            else if (isMyTeam)
+            {
+                msg = (string)stream.ReceiveNext();
+                if (msg != null)
+                    chatController.AddChatMsg(msg);
+            }
         }
-        else if (isMyTeam)
-        {
-            msg = (string)stream.ReceiveNext();
-            if (msg != null)
-                chatController.AddChatMsg(msg);
-        }
-    }
 
-    #endregion
+        #endregion
+    }
 }

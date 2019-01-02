@@ -2,77 +2,83 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraWork : MonoBehaviour {
-    #region Public Properties
+namespace com.MJT.FindTheTheif
+{
+    public class CameraWork : MonoBehaviour
+    {
+        #region Public Properties
 
-    public Vector3 centerOffset = Vector3.zero; //Offset of the main camera's location from a player
+        public Vector3 centerOffset = Vector3.zero; //Offset of the main camera's location from a player
 
-    public bool followOnStart = false;          //In test, set true. In published game, set false
-    public float cameraHeight;                  //The height of the camera. 
+        public bool followOnStart = false;          //In test, set true. In published game, set false
+        public float cameraHeight;                  //The height of the camera. 
 
-    #endregion
+        #endregion
 
-    #region Private Properties
+        #region Private Properties
 
-    Transform cameraTransform;  //Transform of the main camera.
-    bool isFollowing;           //Maintain a flag internally to reconnect if the target is lost or the camera is switched
-
-
-    #endregion
+        Transform cameraTransform;  //Transform of the main camera.
+        bool isFollowing;           //Maintain a flag internally to reconnect if the target is lost or the camera is switched
 
 
-    #region Unity Callbacks
+        #endregion
 
-    // Use this for initialization
-    void Start () {
-        // Start following the target if wanted.
-        if (followOnStart)
+
+        #region Unity Callbacks
+
+        // Use this for initialization
+        void Start()
         {
-            OnStartFollowing();
-        }
-    }
-
-    //A follow camera should always be implemented in LateUpdate.
-    //because it tracks objects that might have moved inside Update.
-    void LateUpdate () {
-        //If this scripts is implemeted for multiple scenes and the transform target may not destroy on level load,
-        //we need to cover corner cases where the Main Camera is different every time we load a new scene and reconnect when that happens
-        if (cameraTransform == null && isFollowing)
-        {
-            OnStartFollowing();
+            // Start following the target if wanted.
+            if (followOnStart)
+            {
+                OnStartFollowing();
+            }
         }
 
-        // only follow is explicitly declared
-        if (isFollowing)
+        //A follow camera should always be implemented in LateUpdate.
+        //because it tracks objects that might have moved inside Update.
+        void LateUpdate()
         {
+            //If this scripts is implemeted for multiple scenes and the transform target may not destroy on level load,
+            //we need to cover corner cases where the Main Camera is different every time we load a new scene and reconnect when that happens
+            if (cameraTransform == null && isFollowing)
+            {
+                OnStartFollowing();
+            }
+
+            // only follow is explicitly declared
+            if (isFollowing)
+            {
+                Follow();
+            }
+        }
+
+        #endregion
+
+
+        #region Public Methods
+
+        public void OnStartFollowing()
+        {
+            cameraTransform = Camera.main.transform;
+            isFollowing = true;
+            // we don't smooth anything, we go straight to the right camera shot
             Follow();
         }
+
+        #endregion
+
+
+        #region Private Methods
+
+        private void Follow()
+        {
+            Vector3 targetCenter = transform.position + centerOffset;
+            // Set the position of the camera
+            cameraTransform.position = new Vector3(targetCenter.x, targetCenter.y, -cameraHeight);
+        }
+
+        #endregion
     }
-
-    #endregion
-
-
-    #region Public Methods
-
-    public void OnStartFollowing()
-    {
-        cameraTransform = Camera.main.transform;
-        isFollowing = true;
-        // we don't smooth anything, we go straight to the right camera shot
-        Follow();
-    }
-
-    #endregion
-
-
-    #region Private Methods
-
-    private void Follow()
-    {
-        Vector3 targetCenter = transform.position + centerOffset;
-        // Set the position of the camera
-        cameraTransform.position = new Vector3(targetCenter.x, targetCenter.y, -cameraHeight);
-    }
-
-    #endregion
 }

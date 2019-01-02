@@ -2,14 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ItemController : MonoBehaviour
+namespace com.MJT.FindTheTheif
 {
-    string[] attributes
-        = new string[] { "Example", "Example", "Example" };
-
-    private void OnMouseUp()
+    public class ItemController : MonoBehaviour
     {
-        UIManager.Instance.SetItemPopUp(attributes, transform.position);
+        string[] attributes
+            = new string[] { "Example", "Example", "Example" };
+
+        private void OnMouseUp()
+        {
+            UIManager.Instance.SetItemPopUp(attributes, transform.position);
+        }
     }
 }
 

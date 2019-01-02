@@ -9,69 +9,72 @@ using UnityEngine.UI;
 // 2. 그러나 UI의 종류와 상관없이 다른 영역을 터치하면 제거해야 하기 때문에 중앙 관리해줄 UI 컨트롤러가 필요해 제작
 // 3. 그 때문에 다소 난잡해진 감이 있어 주의해야함.
 
-public class UIManager: MonoBehaviour
+namespace com.MJT.FindTheTheif
 {
-    static UIManager instance;
-    public static UIManager Instance
+    public class UIManager : MonoBehaviour
     {
-        get
+        static UIManager instance;
+        public static UIManager Instance
         {
-            return instance;
-        }
-    }
-
-    //Label to show reamaing game time
-    public Text timeLabel;
-
-    void Start()
-    {
-        if (instance == null)
-            instance = this;
-
-        charPopUp.SetActive(false);
-        itemPopUp.gameObject.SetActive(false);
-    }
-
-    void Update()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            if (charPopUp.GetActive())
+            get
             {
-                charPopUp.SetActive(false);
-            }
-            if (itemPopUp.gameObject.GetActive())
-            {
-                itemPopUp.gameObject.SetActive(false);
+                return instance;
             }
         }
 
-        //TODO: 나중에 timeLeft의 형식이 바뀌면, 변경되어야함
-        if (RoomManager.Instance != null)
-            timeLabel.text = Mathf.Floor(RoomManager.Instance.timeLeft).ToString();
-    }
+        //Label to show reamaing game time
+        public Text timeLabel;
 
-    #region Character(Theif, NPC) Pop-up
-    public GameObject charPopUp;
-    
-    public void SetCharPopUp(int playerID, Vector3 objPos)
-    {
-        Vector3 screenPoint = Camera.main.WorldToScreenPoint(objPos);
-        charPopUp.transform.position = screenPoint;
-        charPopUp.SetActive(true);
-    }
-    #endregion
+        void Start()
+        {
+            if (instance == null)
+                instance = this;
 
-    #region Item Pop-up
-    public ItemPopUp itemPopUp;
+            charPopUp.SetActive(false);
+            itemPopUp.gameObject.SetActive(false);
+        }
 
-    public void SetItemPopUp(string [] attributes, Vector3 objPos)
-    {
-        Vector3 screenPoint = Camera.main.WorldToScreenPoint(objPos);
-        //itemPopUp.gameObject.
-        itemPopUp.transform.position = screenPoint;
-        itemPopUp.SetAttributes(attributes);
-        itemPopUp.gameObject.SetActive(true);
+        void Update()
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                if (charPopUp.GetActive())
+                {
+                    charPopUp.SetActive(false);
+                }
+                if (itemPopUp.gameObject.GetActive())
+                {
+                    itemPopUp.gameObject.SetActive(false);
+                }
+            }
+
+            //TODO: 나중에 timeLeft의 형식이 바뀌면, 변경되어야함
+            if (RoomManager.Instance != null)
+                timeLabel.text = Mathf.Floor(RoomManager.Instance.timeLeft).ToString();
+        }
+
+        #region Character(Theif, NPC) Pop-up
+        public GameObject charPopUp;
+
+        public void SetCharPopUp(int playerID, Vector3 objPos)
+        {
+            Vector3 screenPoint = Camera.main.WorldToScreenPoint(objPos);
+            charPopUp.transform.position = screenPoint;
+            charPopUp.SetActive(true);
+        }
+        #endregion
+
+        #region Item Pop-up
+        public ItemPopUp itemPopUp;
+
+        public void SetItemPopUp(string[] attributes, Vector3 objPos)
+        {
+            Vector3 screenPoint = Camera.main.WorldToScreenPoint(objPos);
+            //itemPopUp.gameObject.
+            itemPopUp.transform.position = screenPoint;
+            itemPopUp.SetAttributes(attributes);
+            itemPopUp.gameObject.SetActive(true);
+        }
+        #endregion
     }
-    #endregion
 }
