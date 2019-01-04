@@ -4,16 +4,19 @@ using UnityEngine;
 
 namespace com.MJT.FindTheTheif
 {
+    // NPC의 행동 제어 (경로 순환)
     public class NPCController : CharController
     {
-        Route curRoute;
-        private RouteNode[] routeNodeSet;
-        private int curNodeNum;
+        Route curRoute;                     //현재 진행중인 경로
+        private RouteNode[] routeNodeSet;   // 현재 진행중인 경로의 노드집합
+        private int curNodeNum;             // 가장 마지막으로 지난 노드의 인덱스
+        private int curFloor;               //현재 층
 
-        RoutingManager routingManager;
+        RoutingManager routingManager;      //Routing Manager 참조
 
-        public int[] routingSequence;
-        int seqIdx;
+        public int[] routingSequence;       //NPC가 따르는 이동 시퀀스
+                                            //지나는 방 번호가 순서대로 기록됨
+        int seqIdx;                         //시퀀스 내에서 현재 목표로 하는, 또는 경유중인 인덱스
 
         private new void Awake()
         {
@@ -29,12 +32,11 @@ namespace com.MJT.FindTheTheif
             curRoute = routingManager.InRoomRouteSet[routingSequence[seqIdx]];
             routeNodeSet = curRoute.NodeSet;
             curNodeNum = 0;
+            curFloor = routingManager.RoomFloor[routingSequence[seqIdx]];
             transform.position = (Vector2)routeNodeSet[curNodeNum].transform.position - spriteOffset;
 
             StartCoroutine("MoveCheck");
         }
-
-        //int moveLock = 0;
 
         bool blocked = false;
         int itemWatchingTime = 0;
@@ -98,9 +100,7 @@ namespace com.MJT.FindTheTheif
                     if (hit.collider.gameObject != gameObject && !hit.collider.isTrigger)
                     {
                         //자신의 오브젝트와 충돌체의 오브젝트가 같지 않는 상황, 즉 콜라이더를 갖는 다른 오브젝트에 부딫힌 상황
-                        //Debug.Log(hit.collider.gameObject.name);
                         ifHit = true;
-                        Debug.Log(hit.transform.gameObject.name);
                         break;
                     }
                 }
@@ -114,6 +114,7 @@ namespace com.MJT.FindTheTheif
             }
         }
 
+        int targetRoom;
         private void RouteEndCheck()
         {
             if (Vector2.Distance(transform.position + (Vector3)spriteOffset, routeNodeSet[curNodeNum + 1].transform.position) < 0.01f)
@@ -130,25 +131,77 @@ namespace com.MJT.FindTheTheif
                 }
                 else
                 {
-                    Debug.Log("Route set");
+                    Debug.Log("Route change");
 
-                    if (curRoute.routeType == Route.RouteType.In_Room)
+                    switch (curRoute.routeType)
                     {
-                        Debug.Log("Case 1");
+                        case Route.RouteType.In_Room:
+                            Debug.Log("Case: In-Room");
 
-                        seqIdx += 1;
-                        if (seqIdx == routingSequence.Length)
-                        {
-                            seqIdx = 0;
-                        }
-                        curRoute = routingManager.RoomToRoomRouteSet[curRoute.curRoom][routingSequence[seqIdx]];
-                    }
-                    else
-                    {
-                        Debug.Log("Case 2");
+                            int prevRoom = routingSequence[seqIdx];
+                            seqIdx += 1;
+                            if (seqIdx == routingSequence.Length)
+                            {
+                                seqIdx = 0;
+                            }
+                            targetRoom = routingSequence[seqIdx];
 
-                        Debug.Log(curRoute.endRoom);
-                        curRoute = routingManager.InRoomRouteSet[curRoute.endRoom];
+                            //다음 방의 층수에 따라 다음 경로의 형태가 정해진다]
+                            if (curFloor == routingManager.RoomFloor[targetRoom])      // 같은 층 내에서에 이동
+                            {
+                                curRoute = routingManager.RoomToRoomRouteSet[prevRoom][targetRoom];
+                            }
+                            else if (curFloor > routingManager.RoomFloor[targetRoom])  // 내려가는 계단으로 이동
+                            {
+                                curRoute = routingManager.RoomToStairRouteSet[prevRoom][0];
+                            }
+                            else                                                                    // 올라가는 계단으로 이동
+                            {
+                                curRoute = routingManager.RoomToStairRouteSet[prevRoom][1];
+                            }
+                            
+                            break;
+                        case Route.RouteType.Room_to_Stair:
+                        case Route.RouteType.Stair_to_Stair:
+                            Debug.Log("Case: Room-to-Stair");
+
+                            if (curRoute.stairType == Route.StairType.down) // 계단을 통해 내려옴 -> 올라가는 계단에서 해당 방으로
+                            {
+                                curFloor -= 1;
+                                
+                                if (routingManager.RoomFloor[targetRoom] == curFloor)
+                                    curRoute = routingManager.StairToRoomRouteSet[targetRoom][1];
+                                else
+                                {
+                                    if (curRoute.stairSide == Route.StairSide.left)
+                                        curRoute = routingManager.StairToStairRouteSet[curFloor][0];
+                                    else
+                                        curRoute = routingManager.StairToStairRouteSet[curFloor][2];
+                                }
+
+                            }
+                            else                                            // 계단을 통해 올라옴 -> 내려가는 계단에서 해당 방으로
+                            {
+                                curFloor += 1;
+
+                                if (routingManager.RoomFloor[targetRoom] == curFloor)
+                                    curRoute = routingManager.StairToRoomRouteSet[routingSequence[seqIdx]][0];
+                                else
+                                {
+                                    if (curRoute.stairSide == Route.StairSide.left)
+                                        curRoute = routingManager.StairToStairRouteSet[curFloor][1];
+                                    else
+                                        curRoute = routingManager.StairToStairRouteSet[curFloor][3];
+                                }
+                            }
+                            transform.position = (Vector2)curRoute.NodeSet[0].transform.position - spriteOffset;
+
+                            break;
+                        default:
+                            Debug.Log("Case: Room-to-Room or Stair_to_Room");
+
+                            curRoute = routingManager.InRoomRouteSet[curRoute.endRoom];
+                            break;
                     }
 
                     routeNodeSet = curRoute.NodeSet;

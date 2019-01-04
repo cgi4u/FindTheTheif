@@ -141,7 +141,6 @@ namespace com.MJT.FindTheTheif
                 if (!isCheckRunning)
                 {
                     StartCoroutine("MoveCheck");
-                    //StartCoroutine("MoveCheck2");
                 }
             }
         }
@@ -225,7 +224,6 @@ namespace com.MJT.FindTheTheif
                     if (hit.collider.gameObject != gameObject && !hit.collider.isTrigger)
                     {
                         //플레이어 오브젝트와 충돌체의 오브젝트가 같지 않는 상황, 즉 콜라이더를 갖는 다른 오브젝트에 부딫힌 상황
-                        //Debug.Log(hit.collider.gameObject.name);
                         ifHit = true;
                         break;
                     }

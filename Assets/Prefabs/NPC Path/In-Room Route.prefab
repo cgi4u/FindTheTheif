@@ -53,7 +53,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   routeType: 0
   startRoom: -1
-  endRoom: 0
-  curRoom: 0
-  stairType: 0
-  room: 0
+  endRoom: -1
+  curRoom: -1
+  stairType: 2
+  room: -1

@@ -6,8 +6,11 @@ namespace com.MJT.FindTheTheif
 {
     public class RoutingManager : MonoBehaviour
     {
-        public int maxRoomNum; //나중에 const변경 필요
+        //나중에 const변경 필요
+        public int maxRoomNum; 
+        public int maxFloorNum;
 
+        //Singleton Instance
         private static RoutingManager instance;
         public static RoutingManager Instance
         {
@@ -17,7 +20,7 @@ namespace com.MJT.FindTheTheif
             }
         }
 
-           
+        //각 전시실이 위치하는 층을 저장
         private List<int> roomFloor;
         public List<int> RoomFloor
         {
@@ -27,6 +30,7 @@ namespace com.MJT.FindTheTheif
             }
         }
 
+        //전시실 내부 순환경로를 저장
         private List<Route> inRoomRouteSet;
         public List<Route> InRoomRouteSet
         {
@@ -36,6 +40,7 @@ namespace com.MJT.FindTheTheif
             }
         }
 
+        //방과 방 사이 경로를 저장
         private List<List<Route>> roomToRoomRouteSet;
         public List<List<Route>> RoomToRoomRouteSet
         {
@@ -45,6 +50,8 @@ namespace com.MJT.FindTheTheif
             }
         }
 
+        //계단->방 경로를 저장
+        //index: 내려가는 계단 0, 올라가는 계단 1
         private List<List<Route>> stairToRoomRouteSet;
         public List<List<Route>> StairToRoomRouteSet
         {
@@ -54,12 +61,25 @@ namespace com.MJT.FindTheTheif
             }
         }
 
+        //방->계단 경로를 저장
+        //index: 내려가는 계단 0, 올라가는 계단 1
         private List<List<Route>> roomToStairRouteSet;
         public List<List<Route>> RoomToStairRouteSet
         {
             get
             {
                 return roomToStairRouteSet;
+            }
+        }
+
+        //계단->계단 경로를 저장
+        //index: 내려가는 계단 0, 올라가는 계단 1 
+        private List<List<Route>> stairToStairRouteSet;
+        public List<List<Route>> StairToStairRouteSet
+        {
+            get
+            {
+                return stairToStairRouteSet;
             }
         }
 
@@ -75,9 +95,12 @@ namespace com.MJT.FindTheTheif
 
 
             //In-Room 루트와 Room-to-Room 루트를 각각 리스트화한다.
+            roomFloor = new List<int>();
             inRoomRouteSet = new List<Route>();
             roomToRoomRouteSet = new List<List<Route>>();
-            roomFloor = new List<int>();
+            stairToRoomRouteSet = new List<List<Route>>();
+            roomToStairRouteSet = new List<List<Route>>();
+            stairToStairRouteSet = new List<List<Route>>();
 
             for (int i = 0; i < maxRoomNum; i++)
             {
@@ -88,6 +111,28 @@ namespace com.MJT.FindTheTheif
                 for (int j = 0; j < maxRoomNum; j++)
                     tempRouteSet.Add(null);
                 roomToRoomRouteSet.Add(tempRouteSet);
+
+                tempRouteSet = new List<Route>();
+                List<Route> tempRouteSet2 = new List<Route>();
+
+                //방->계단과 계단->방 루트 2가지에 각각 상층, 하층 루트 2가지씩 배정
+                for (int j = 0; j < 2; j++)
+                {
+                    tempRouteSet.Add(null);
+                    tempRouteSet2.Add(null);
+                }
+                stairToRoomRouteSet.Add(tempRouteSet);
+                roomToStairRouteSet.Add(tempRouteSet2);
+            }
+
+            for (int i = 0; i < maxFloorNum; i++)
+            {
+                List<Route> tempRouteSet = new List<Route>();
+                for (int j = 0; j < 4; j++)
+                {
+                    tempRouteSet.Add(null);
+                }
+                stairToStairRouteSet.Add(tempRouteSet);
             }
 
             GameObject roomsRoute
@@ -103,9 +148,7 @@ namespace com.MJT.FindTheTheif
             Route[] inRoomRoutesArray = inRoomRoutesRoot.GetComponentsInChildren<Route>();
             foreach (Route route in inRoomRoutesArray)
             {
-                Debug.Log(route.curRoom);
                 inRoomRouteSet[route.curRoom] = route;
-                Debug.Log(inRoomRouteSet[route.curRoom].curRoom);
             }
            
 
@@ -115,8 +158,44 @@ namespace com.MJT.FindTheTheif
             foreach (Route route in roomToRoomRoutesArray)
             {
                 roomToRoomRouteSet[route.startRoom][route.endRoom] = route;
-            } 
+            }
 
+            GameObject stairToRoomRoutesRoot
+                = transform.Find("Stair-to-Room Routes").gameObject;
+            Route[] stairToRoomRoutesArray = stairToRoomRoutesRoot.GetComponentsInChildren<Route>();
+            foreach (Route route in stairToRoomRoutesArray)
+            {
+                if (route.stairType == Route.StairType.down)
+                    stairToRoomRouteSet[route.endRoom][0] = route;
+                else
+                    stairToRoomRouteSet[route.endRoom][1] = route;
+            }
+
+            GameObject roomToStairRoutesRoot
+                = transform.Find("Room-to-Stair Routes").gameObject;
+            Route[] roomToStairRoutesArray = roomToStairRoutesRoot.GetComponentsInChildren<Route>();
+            foreach (Route route in roomToStairRoutesArray)
+            {
+                if (route.stairType == Route.StairType.down)
+                    roomToStairRouteSet[route.startRoom][0] = route;
+                else
+                    roomToStairRouteSet[route.startRoom][1] = route;
+            }
+
+            GameObject stairToStairRoutesRoot
+                = transform.Find("Stair-to-Stair Routes").gameObject;
+            Route[] stairToStairRouteArray = stairToStairRoutesRoot.GetComponentsInChildren<Route>();
+            foreach (Route route in stairToStairRouteArray)
+            {
+                if (route.stairSide == Route.StairSide.left && route.stairType == Route.StairType.down)
+                    stairToStairRouteSet[route.floor][0] = route;
+                else if (route.stairSide == Route.StairSide.left && route.stairType == Route.StairType.up)
+                    stairToStairRouteSet[route.floor][1] = route;
+                else if (route.stairSide == Route.StairSide.right && route.stairType == Route.StairType.down)
+                    stairToStairRouteSet[route.floor][2] = route;
+                else if (route.stairSide == Route.StairSide.right && route.stairType == Route.StairType.up)
+                    stairToStairRouteSet[route.floor][3] = route;
+            }
         }
     }
 }

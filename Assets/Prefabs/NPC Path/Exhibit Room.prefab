@@ -51,5 +51,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b18cee1c303a584290fca5423a41226, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  num: 0
-  floor: 0
+  num: -1
+  floor: -1
