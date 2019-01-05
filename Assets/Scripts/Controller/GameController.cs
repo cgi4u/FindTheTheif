@@ -81,14 +81,38 @@ namespace com.MJT.FindTheTheif
 
             }
 
+            //Route Test
+            for (int i = 0; i < 10; i++)
+            {
+                Debug.Log("Random route " + i);
+
+                Route tempRoute = RoutingManager.Instance.getRandomRoute();
+                switch (tempRoute.routeType)
+                {
+                    case Route.RouteType.In_Room:
+                        Debug.Log("In-Room Route");
+                        Debug.Log("Room num: " + tempRoute.curRoom);
+                        break;
+                    case Route.RouteType.Room_to_Room:
+                        Debug.Log("Room-to-Room Route");
+                        Debug.Log("Start Room num: " + tempRoute.startRoom);
+                        Debug.Log("End Room num: " + tempRoute.endRoom); 
+                        break;
+                    case Route.RouteType.Stair_to_Room:
+                        Debug.Log("Stair-to-Room Route");
+                        Debug.Log("Room num: " + tempRoute.endRoom);
+                        Debug.Log("Stair type: " + tempRoute.stairType);
+                        Debug.Log("Stair side: " + tempRoute.stairSide);
+                        break;
+                    case Route.RouteType.Stair_to_Stair:
+                    case Route.RouteType.Room_to_Stair:
+                        Debug.Log("to-Stair route: Error, should not be seleted.");
+                        break;
+                }
+            }
+
             //GameObject testNPC1 = PhotonNetwork.InstantiateSceneObject(testNPCPrefab.name, new Vector3(0f, 0f, 0f), Quaternion.identity, 0, null);
             //testNPC1.transform.position = new Vector3(0.0f, 0.0f);
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
         }
 
         #endregion

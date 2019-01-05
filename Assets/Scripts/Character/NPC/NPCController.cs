@@ -7,12 +7,12 @@ namespace com.MJT.FindTheTheif
     // NPC의 행동 제어 (경로 순환)
     public class NPCController : CharController
     {
-        Route curRoute;                     //현재 진행중인 경로
+        public Route curRoute;                     //현재 진행중인 경로
         private RouteNode[] routeNodeSet;   // 현재 진행중인 경로의 노드집합
         private int curNodeNum;             // 가장 마지막으로 지난 노드의 인덱스
         private int curFloor;               //현재 층
 
-        RoutingManager routingManager;      //Routing Manager 참조
+        RoutingManager routingManager;      //Routing Manager Instance에 대한 참조
 
         public int[] routingSequence;       //NPC가 따르는 이동 시퀀스
                                             //지나는 방 번호가 순서대로 기록됨
@@ -22,29 +22,32 @@ namespace com.MJT.FindTheTheif
         {
             base.Awake();   // Raycast box initiallize
 
-            routingManager = RoutingManager.Instance;
+            //routingManager = RoutingManager.Instance;
         }
 
         // Use this for initialization
         void Start()
         {
-            seqIdx = 0;
-            curRoute = routingManager.InRoomRouteSet[routingSequence[seqIdx]];
+            routingManager = RoutingManager.Instance;
+
             routeNodeSet = curRoute.NodeSet;
             curNodeNum = 0;
-            curFloor = routingManager.RoomFloor[routingSequence[seqIdx]];
+            targetRoom = curRoute.curRoom;
+            curFloor = routingManager.RoomFloor[targetRoom];
             transform.position = (Vector2)routeNodeSet[curNodeNum].transform.position - spriteOffset;
 
             StartCoroutine("MoveCheck");
         }
 
+        [SerializeField]
         bool blocked = false;
+        int blockedTime = 0;
         int itemWatchingTime = 0;
         // Update is called once per frame
         void Update()
         {
             //Debug.Log(targetPoint);
-            if (!blocked)
+            if (blockedTime == 0)
             {
                 Move();
                 RouteEndCheck();
@@ -56,6 +59,10 @@ namespace com.MJT.FindTheTheif
             base.OnCollisionEnter2D(collision);
 
             blocked = true;
+            blockedTime = 1;
+            if (collision.gameObject.tag == "NPC"
+                && (collision.gameObject.GetInstanceID() > gameObject.GetInstanceID()))
+                blockedTime += 1;
         }
 
         #region Routing
@@ -72,8 +79,18 @@ namespace com.MJT.FindTheTheif
                     continue;
                 }
 
-                if (blocked == true)
-                    blocked = false;
+                if (blocked)
+                    blocked = !blocked;
+
+                if (blockedTime > 0)
+                {
+                    blockedTime -= 1;
+                    if (blockedTime != 0)
+                    {
+                        yield return new WaitForSeconds(1.0f / moveSpeed);
+                        continue;
+                    }
+                }
 
                 /*if (Vector2.Distance(transform.position, routeNodeSet[curNodeNum + 1].position) < 0.01f
                     && curNodeNum < routeNodeSet.Length)
@@ -106,7 +123,10 @@ namespace com.MJT.FindTheTheif
                 }
 
                 if (ifHit)
+                {
+                    blockedTime += 1;
                     blocked = true;
+                }
                 else
                     targetPoint = targetPoint - spriteOffset;
 
@@ -114,7 +134,11 @@ namespace com.MJT.FindTheTheif
             }
         }
 
+        [SerializeField]
+        int prevRoom;
+        [SerializeField]
         int targetRoom;
+
         private void RouteEndCheck()
         {
             if (Vector2.Distance(transform.position + (Vector3)spriteOffset, routeNodeSet[curNodeNum + 1].transform.position) < 0.01f)
@@ -136,47 +160,56 @@ namespace com.MJT.FindTheTheif
                     switch (curRoute.routeType)
                     {
                         case Route.RouteType.In_Room:
-                            Debug.Log("Case: In-Room");
+                            
 
-                            int prevRoom = routingSequence[seqIdx];
-                            seqIdx += 1;
-                            if (seqIdx == routingSequence.Length)
+                            prevRoom = targetRoom;
+                            do
                             {
-                                seqIdx = 0;
-                            }
-                            targetRoom = routingSequence[seqIdx];
+                                targetRoom = Random.Range(0, routingManager.maxRoomNum);
+                            } while (prevRoom == targetRoom);
 
                             //다음 방의 층수에 따라 다음 경로의 형태가 정해진다]
                             if (curFloor == routingManager.RoomFloor[targetRoom])      // 같은 층 내에서에 이동
                             {
+                                Debug.Log("Case: Room-to-Room");
                                 curRoute = routingManager.RoomToRoomRouteSet[prevRoom][targetRoom];
                             }
                             else if (curFloor > routingManager.RoomFloor[targetRoom])  // 내려가는 계단으로 이동
                             {
+                                Debug.Log("Case: Room-to-down");
                                 curRoute = routingManager.RoomToStairRouteSet[prevRoom][0];
                             }
                             else                                                                    // 올라가는 계단으로 이동
                             {
+                                Debug.Log("Case: Room-to-up");
                                 curRoute = routingManager.RoomToStairRouteSet[prevRoom][1];
                             }
                             
                             break;
                         case Route.RouteType.Room_to_Stair:
                         case Route.RouteType.Stair_to_Stair:
-                            Debug.Log("Case: Room-to-Stair");
 
                             if (curRoute.stairType == Route.StairType.down) // 계단을 통해 내려옴 -> 올라가는 계단에서 해당 방으로
                             {
                                 curFloor -= 1;
-                                
+
                                 if (routingManager.RoomFloor[targetRoom] == curFloor)
+                                {
+                                    Debug.Log("Case: Stair-to-Room");
                                     curRoute = routingManager.StairToRoomRouteSet[targetRoom][1];
+                                }
                                 else
                                 {
                                     if (curRoute.stairSide == Route.StairSide.left)
+                                    {
+                                        Debug.Log("Case: Down-down left");
                                         curRoute = routingManager.StairToStairRouteSet[curFloor][0];
+                                    }
                                     else
+                                    {
+                                        Debug.Log("Case: Down-down right");
                                         curRoute = routingManager.StairToStairRouteSet[curFloor][2];
+                                    }
                                 }
 
                             }
@@ -185,21 +218,29 @@ namespace com.MJT.FindTheTheif
                                 curFloor += 1;
 
                                 if (routingManager.RoomFloor[targetRoom] == curFloor)
-                                    curRoute = routingManager.StairToRoomRouteSet[routingSequence[seqIdx]][0];
+                                {
+                                    Debug.Log("Case: Stair-to-Room");
+                                    curRoute = routingManager.StairToRoomRouteSet[targetRoom][0];
+                                }
                                 else
                                 {
                                     if (curRoute.stairSide == Route.StairSide.left)
+                                    {
+                                        Debug.Log("Case: Up-up left");
                                         curRoute = routingManager.StairToStairRouteSet[curFloor][1];
+                                    }
                                     else
+                                    {
+                                        Debug.Log("Case: Up-up left");
                                         curRoute = routingManager.StairToStairRouteSet[curFloor][3];
+                                    }
                                 }
                             }
                             transform.position = (Vector2)curRoute.NodeSet[0].transform.position - spriteOffset;
 
                             break;
-                        default:
-                            Debug.Log("Case: Room-to-Room or Stair_to_Room");
-
+                        default: 
+                            Debug.Log("Case: In-Room");
                             curRoute = routingManager.InRoomRouteSet[curRoute.endRoom];
                             break;
                     }

@@ -83,6 +83,9 @@ namespace com.MJT.FindTheTheif
             }
         }
 
+        //현존하는 모든 경로 저장(NPC의 초기위치 설정을 위해)
+        private List<Route> allRouteSet;
+
         private void Awake()
         {
             //Routing Manager Singlton 생성
@@ -101,6 +104,7 @@ namespace com.MJT.FindTheTheif
             stairToRoomRouteSet = new List<List<Route>>();
             roomToStairRouteSet = new List<List<Route>>();
             stairToStairRouteSet = new List<List<Route>>();
+            allRouteSet = new List<Route>();
 
             for (int i = 0; i < maxRoomNum; i++)
             {
@@ -135,10 +139,10 @@ namespace com.MJT.FindTheTheif
                 stairToStairRouteSet.Add(tempRouteSet);
             }
 
-            GameObject roomsRoute
+            GameObject roomsRoot
                 = transform.Find("Exhibit Rooms").gameObject;
-            ExhibitRoom[] roomsRouteArray = roomsRoute.GetComponentsInChildren<ExhibitRoom>();
-            foreach (ExhibitRoom room in roomsRouteArray)
+            ExhibitRoom[] roomsArray = roomsRoot.GetComponentsInChildren<ExhibitRoom>();
+            foreach (ExhibitRoom room in roomsArray)
             {
                 roomFloor[room.num] = room.floor;
             }
@@ -196,6 +200,35 @@ namespace com.MJT.FindTheTheif
                 else if (route.stairSide == Route.StairSide.right && route.stairType == Route.StairType.up)
                     stairToStairRouteSet[route.floor][3] = route;
             }
+            
+            Route[] allRouteArray = GetComponentsInChildren<Route>();
+            for (int i = 0; i < allRouteArray.Length; i++)
+            {
+                if (allRouteArray[i].routeType != Route.RouteType.Stair_to_Stair
+                    && allRouteArray[i].routeType != Route.RouteType.Room_to_Stair)
+                {
+                    allRouteSet.Add(allRouteArray[i]);
+                }
+            }
+            ifRouteAssigned = new bool[allRouteSet.Count];
+
+            Debug.Log("All selectable routes: " + allRouteSet.Count);
         }
+
+        #region Public Methods
+
+        private bool[] ifRouteAssigned;
+        public Route getRandomRoute()
+        {
+            int randIdx;
+            do
+            {
+                randIdx = Random.Range(0, allRouteSet.Count);
+            } while (ifRouteAssigned[randIdx]);
+
+            return allRouteSet[randIdx];
+        }
+
+        #endregion
     }
 }
