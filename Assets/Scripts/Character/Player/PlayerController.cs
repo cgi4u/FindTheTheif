@@ -193,7 +193,7 @@ namespace com.MJT.FindTheTheif
             {
                 isCheckRunning = true;
 
-                startPoint = (Vector2)transform.position + spriteOffset;   // Set starting point
+                startPoint = (Vector2)transform.position;   // Set starting point
 
                 // Set target point
                 if (btnCount == buttons[0])
@@ -231,9 +231,6 @@ namespace com.MJT.FindTheTheif
 
                 if (ifHit)
                     break;
-                targetPoint = targetPoint - spriteOffset;
-                //else
-                //    myCollider.transform.position = targetPoint;
 
                 yield return new WaitForSeconds(1.0f / moveSpeed);
             }

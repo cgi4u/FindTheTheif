@@ -9,7 +9,7 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 namespace com.MJT.FindTheTheif
 {
-    public class GameController : Photon.PunBehaviour
+    public class LocalRoomManager: Photon.PunBehaviour
     {
         #region Public Properties
 
@@ -22,7 +22,7 @@ namespace com.MJT.FindTheTheif
         public Text teamLabel;
 
         [Tooltip("The prefab of the room controller")]
-        public GameObject roomManagerPrefab;
+        public GameObject multiplayRoomManagerPrefab;
 
         #endregion
 
@@ -32,10 +32,9 @@ namespace com.MJT.FindTheTheif
 
         #endregion
 
-
         #region Unity Callbacks
 
-        //TODO: 마스터 클라이언트일 경우, 룸컨트롤러 생성
+        //TODO: 마스터 클라이언트일 경우, 멀티플레이 룸컨트롤러 생성
 
         // Use this for initialization
         void Start()
@@ -43,13 +42,13 @@ namespace com.MJT.FindTheTheif
             //Inctantiate the room controller(only when the client is the master)
             if (PhotonNetwork.player.IsMasterClient)
             {
-                if (roomManagerPrefab == null)
+                if (multiplayRoomManagerPrefab == null)
                 {
-                    Debug.LogError("Missing roomManagerPrefab Reference. Please set it up in GameObject 'Game Controller'", this);
+                    Debug.LogError("Missing multiplayRoomManagerPrefab Reference. Please set it up in GameObject 'Game Controller'", this);
                 }
                 else
                 {
-                    PhotonNetwork.InstantiateSceneObject(roomManagerPrefab.name, new Vector3(0f, 0f, 10f), Quaternion.identity, 0, null);
+                    PhotonNetwork.InstantiateSceneObject(multiplayRoomManagerPrefab.name, new Vector3(0f, 0f, 10f), Quaternion.identity, 0, null);
                 }
             }
 
@@ -76,47 +75,13 @@ namespace com.MJT.FindTheTheif
 
                 Debug.Log("We are Instantiating LocalPlayer from " + SceneManager.GetActiveScene().name);
                 // we're in a room. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate
-                GameObject localPlayer = PhotonNetwork.Instantiate(playerPrefab.name, new Vector3(.5f, .5f, 0f), Quaternion.identity, 0);
+                GameObject localPlayer = PhotonNetwork.Instantiate(playerPrefab.name, new Vector3(0.5f, -5.5f, 0f), Quaternion.identity, 0);
                 localPlayer.GetComponent<PlayerController>().SetTeam(MyTeam);
 
             }
-
-            //Route Test
-            for (int i = 0; i < 10; i++)
-            {
-                Debug.Log("Random route " + i);
-
-                Route tempRoute = RoutingManager.Instance.getRandomRoute();
-                switch (tempRoute.routeType)
-                {
-                    case Route.RouteType.In_Room:
-                        Debug.Log("In-Room Route");
-                        Debug.Log("Room num: " + tempRoute.curRoom);
-                        break;
-                    case Route.RouteType.Room_to_Room:
-                        Debug.Log("Room-to-Room Route");
-                        Debug.Log("Start Room num: " + tempRoute.startRoom);
-                        Debug.Log("End Room num: " + tempRoute.endRoom); 
-                        break;
-                    case Route.RouteType.Stair_to_Room:
-                        Debug.Log("Stair-to-Room Route");
-                        Debug.Log("Room num: " + tempRoute.endRoom);
-                        Debug.Log("Stair type: " + tempRoute.stairType);
-                        Debug.Log("Stair side: " + tempRoute.stairSide);
-                        break;
-                    case Route.RouteType.Stair_to_Stair:
-                    case Route.RouteType.Room_to_Stair:
-                        Debug.Log("to-Stair route: Error, should not be seleted.");
-                        break;
-                }
-            }
-
-            //GameObject testNPC1 = PhotonNetwork.InstantiateSceneObject(testNPCPrefab.name, new Vector3(0f, 0f, 0f), Quaternion.identity, 0, null);
-            //testNPC1.transform.position = new Vector3(0.0f, 0.0f);
         }
 
         #endregion
-
 
         #region Public Methods
 

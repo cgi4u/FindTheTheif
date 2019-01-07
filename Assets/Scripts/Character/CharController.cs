@@ -10,13 +10,15 @@ namespace com.MJT.FindTheTheif
         #region Shared Method(by Players and NPCs)
 
         protected Vector2 raycastBox; // Collider of a characters
-        protected static readonly Vector2 spriteOffset = new Vector2(0f, -0.15f); // Offset for character sprites
+        //protected static readonly Vector2 spriteOffset = new Vector2(0f, -0.15f); // Offset for character sprites
         protected void Awake()
         {
             raycastBox = GetComponent<BoxCollider2D>().size;   // To ignore collisions on edges
         }
 
+        [SerializeField]
         protected Vector2 startPoint;
+        [SerializeField]
         protected Vector2 targetPoint;
         public float moveSpeed;
 
@@ -39,7 +41,7 @@ namespace com.MJT.FindTheTheif
         {
             Debug.Log(collision.gameObject.name);
 
-            transform.position = startPoint - spriteOffset;
+            transform.position = startPoint;
         }
 
         #endregion

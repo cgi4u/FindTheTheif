@@ -48,9 +48,8 @@ namespace com.MJT.FindTheTheif
                 }
             }
 
-            //TODO: 나중에 timeLeft의 형식이 바뀌면, 변경되어야함
-            if (RoomManager.Instance != null)
-                timeLabel.text = Mathf.Floor(RoomManager.Instance.timeLeft).ToString();
+            if (MultiplayRoomManager.Instance != null)
+                timeLabel.text = Mathf.Floor(MultiplayRoomManager.Instance.timeLeft).ToString();
         }
 
         #region Character(Theif, NPC) Pop-up

@@ -86,7 +86,46 @@ namespace com.MJT.FindTheTheif
         #endregion
 
 
+        
         #region Private Methods
+
+        void InitializeAndLoadScene()
+        {
+            //Choose theif players randomly
+            PhotonPlayer[] users = PhotonNetwork.playerList;
+            int theifCount = theifPerRoom;
+            bool[] isPlayerTheif = new bool[playersPerRoom];
+            while (theifCount != 0)
+            {
+                int rp = Random.Range(0, playersPerRoom - 1);
+
+                if (isPlayerTheif[rp] == false)
+                {
+                    isPlayerTheif[rp] = true;
+                    theifCount--;
+                }
+            }
+
+            //Save players' team in their custom property
+            foreach (PhotonPlayer player in PhotonNetwork.playerList)
+            {
+                Hashtable playerCp = new Hashtable();
+
+                if (isPlayerTheif[player.ID - 1] == true)
+                {
+                    playerCp["Team"] = Team.theif;
+                }
+                else
+                {
+                    playerCp["Team"] = Team.detective;
+                }
+                player.SetCustomProperties(playerCp);
+            }
+
+            Debug.Log("We load the 'Demo Room' ");
+            //Load the game level. Use LoadLevel to synchronize(automaticallySyncScene is true)
+            PhotonNetwork.LoadLevel("Demo Room");
+        }
 
         #endregion
 
@@ -108,6 +147,19 @@ namespace com.MJT.FindTheTheif
             Debug.Log("PlayerName: " + PhotonNetwork.playerName);
             Debug.Log("Maximum Player:" + PhotonNetwork.room.MaxPlayers);
 
+            if (PhotonNetwork.room.PlayerCount == 1)    //When local player made this room
+            {
+                //Set room properties
+                //1. The Number of players in the room, 2. The number of thiefs in the room
+                // ISSUE:  플레이어 수를 건네줘야 할 필요가 있는가? PhotonNetWork에서 참조 가능하고 이게 더 정확할 수 있음
+                Hashtable roomCp = new Hashtable();
+                roomCp["Player Number"] = playersPerRoom;
+                roomCp["Theif Number"] = theifPerRoom;
+                PhotonNetwork.room.SetCustomProperties(roomCp);
+
+                InitializeAndLoadScene();
+            }
+
             curPlayerNum.text = PhotonNetwork.room.PlayerCount.ToString();
 
             //Codes for Test
@@ -125,48 +177,7 @@ namespace com.MJT.FindTheTheif
             if (PhotonNetwork.room.PlayerCount == playersPerRoom
                 && PhotonNetwork.player.ID == PhotonNetwork.masterClient.ID)
             {
-                //Choose theif players randomly
-                PhotonPlayer[] users = PhotonNetwork.playerList;
-                int theifCount = theifPerRoom;
-                bool[] isPlayerTheif = new bool[playersPerRoom];
-                while (theifCount != 0)
-                {
-                    int rp = Random.Range(0, playersPerRoom - 1);
-
-                    if (isPlayerTheif[rp] == false)
-                    {
-                        isPlayerTheif[rp] = true;
-                        theifCount--;
-                    }
-                }
-
-                //Save players' team in their custom property
-                foreach (PhotonPlayer player in PhotonNetwork.playerList)
-                {
-                    Hashtable playerCp = new Hashtable();
-
-                    if (isPlayerTheif[player.ID - 1] == true)
-                    {
-                        playerCp["Team"] = Team.theif;
-                    }
-                    else
-                    {
-                        playerCp["Team"] = Team.detective;
-                    }
-                    player.SetCustomProperties(playerCp);
-                }
-
-                //Set room properties
-                //1. The Number of players in the room, 2. The number of thiefs in the room
-                // ISSUE:  플레이어 수를 건네줘야 할 필요가 있는가? PhotonNetWork에서 참조 가능하고 이게 더 정확할 수 있음
-                Hashtable roomCp = new Hashtable();
-                roomCp["Player Number"] = playersPerRoom;
-                roomCp["Theif Number"] = theifPerRoom;
-                PhotonNetwork.room.SetCustomProperties(roomCp);
-
-                Debug.Log("We load the 'Demo Room' ");
-                //Load the game level. Use LoadLevel to synchronize(automaticallySyncScene is true)
-                PhotonNetwork.LoadLevel("Demo Room");
+                InitializeAndLoadScene();
             }
         }
 

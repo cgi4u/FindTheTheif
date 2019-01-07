@@ -9,6 +9,7 @@ namespace com.MJT.FindTheTheif
     {
         public Route curRoute;                     //현재 진행중인 경로
         private RouteNode[] routeNodeSet;   // 현재 진행중인 경로의 노드집합
+        [SerializeField]
         private int curNodeNum;             // 가장 마지막으로 지난 노드의 인덱스
         private int curFloor;               //현재 층
 
@@ -28,15 +29,98 @@ namespace com.MJT.FindTheTheif
         // Use this for initialization
         void Start()
         {
-            routingManager = RoutingManager.Instance;
+            blockedTime = 1;
 
+            /*
             routeNodeSet = curRoute.NodeSet;
             curNodeNum = 0;
             targetRoom = curRoute.curRoom;
             curFloor = routingManager.RoomFloor[targetRoom];
-            transform.position = (Vector2)routeNodeSet[curNodeNum].transform.position - spriteOffset;
+            transform.position = (Vector2)routeNodeSet[curNodeNum].transform.position;
+
+            StartCoroutine("MoveCheck");*/
+        }
+
+        public void ManualStart(Route startRoute)
+        {
+            routingManager = RoutingManager.Instance;
+
+            curRoute = startRoute;
+            routeNodeSet = curRoute.NodeSet;
+            
+            switch (curRoute.routeType)
+            {
+                case Route.RouteType.In_Room:
+                    targetRoom = curRoute.curRoom;
+                    break;
+                case Route.RouteType.Room_to_Room:
+                case Route.RouteType.Stair_to_Room:
+                    targetRoom = curRoute.endRoom;
+                    break;
+                default:
+                    Debug.LogError("Route type error.");
+                    break;
+            }
+
+            curFloor = routingManager.RoomFloor[targetRoom];
+
+            
+            bool ifOccupied;
+            bool[] nodeOccupied = new bool[routeNodeSet.Length - 1];
+            bool allOcuppiedFlag = true;
+
+            int randNodeIdx = Random.Range(1, routeNodeSet.Length - 1); ;
+            /*RaycastHit2D[] hits = Physics2D.BoxCastAll(routeNodeSet[randNodeIdx].transform.position, raycastBox, 0, new Vector2(0, 0), 0.0f);
+            ifOccupied = false;
+            foreach (RaycastHit2D hit in hits)
+            {
+                if (!hit.collider.isTrigger)
+                {
+                    ifOccupied = true;
+                    nodeOccupied[randNodeIdx] = true;
+                }
+            }
+
+            while (ifOccupied)
+            {
+                for (int i = 0; i < nodeOccupied.Length; i++)
+                {
+                    if (nodeOccupied[i] == false)
+                    {
+                        allOcuppiedFlag = false;
+                        break;
+                    }
+                }
+
+                if (allOcuppiedFlag == true)
+                    break;
+
+                randNodeIdx = Random.Range(1, routeNodeSet.Length - 1);
+                hits = Physics2D.BoxCastAll(routeNodeSet[randNodeIdx].transform.position, raycastBox, 0, new Vector2(0, 0), 0.0f);
+                ifOccupied = false;
+                foreach (RaycastHit2D hit in hits)
+                {
+                    if (!hit.collider.isTrigger)
+                    {
+                        ifOccupied = true;
+                        nodeOccupied[randNodeIdx] = true;
+                    }
+                }
+            }
+
+            if (allOcuppiedFlag == true)
+            {
+                Debug.LogError("All Route Node is occupied: Error");
+                Debug.LogError("Route: " + curRoute.gameObject.name);
+                gameObject.SetActive(false);
+                return;
+            }*/
+
+            curNodeNum = randNodeIdx;
+            transform.position = (Vector2)routeNodeSet[curNodeNum].transform.position;
 
             StartCoroutine("MoveCheck");
+            blockedTime = 0;
         }
 
         [SerializeField]
@@ -61,8 +145,11 @@ namespace com.MJT.FindTheTheif
             blocked = true;
             blockedTime = 1;
             if (collision.gameObject.tag == "NPC"
-                && (collision.gameObject.GetInstanceID() > gameObject.GetInstanceID()))
-                blockedTime += 1;
+                && collision.gameObject.GetInstanceID() > gameObject.GetInstanceID())
+            {
+                    blockedTime += 1;
+            }
+                
         }
 
         #region Routing
@@ -99,7 +186,7 @@ namespace com.MJT.FindTheTheif
                     curNodeNum++;
                 }*/
 
-                startPoint = (Vector2)transform.position + spriteOffset;   // Set starting point
+                startPoint = (Vector2)transform.position;   // Set starting point
                 if (curNodeNum < routeNodeSet.Length)
                     direction = ((Vector2)routeNodeSet[curNodeNum + 1].transform.position - startPoint).normalized;
                 else
@@ -127,23 +214,19 @@ namespace com.MJT.FindTheTheif
                     blockedTime += 1;
                     blocked = true;
                 }
-                else
-                    targetPoint = targetPoint - spriteOffset;
 
                 yield return new WaitForSeconds(1.0f / moveSpeed);
             }
         }
 
-        [SerializeField]
         int prevRoom;
-        [SerializeField]
         int targetRoom;
 
         private void RouteEndCheck()
         {
-            if (Vector2.Distance(transform.position + (Vector3)spriteOffset, routeNodeSet[curNodeNum + 1].transform.position) < 0.01f)
+            if (Vector2.Distance(transform.position, routeNodeSet[curNodeNum + 1].transform.position) < 0.01f)
             {
-                transform.position = routeNodeSet[curNodeNum + 1].transform.position - (Vector3)spriteOffset;
+                transform.position = routeNodeSet[curNodeNum + 1].transform.position;
 
                 if (curNodeNum < routeNodeSet.Length - 2)
                 {
@@ -236,7 +319,7 @@ namespace com.MJT.FindTheTheif
                                     }
                                 }
                             }
-                            transform.position = (Vector2)curRoute.NodeSet[0].transform.position - spriteOffset;
+                            transform.position = (Vector2)curRoute.NodeSet[0].transform.position;
 
                             break;
                         default: 

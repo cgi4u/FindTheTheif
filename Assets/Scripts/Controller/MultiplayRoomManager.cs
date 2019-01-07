@@ -6,13 +6,20 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 namespace com.MJT.FindTheTheif
 {
-    public class RoomManager : Photon.PunBehaviour, IPunObservable
+    public class MultiplayRoomManager : Photon.PunBehaviour, IPunObservable
     {
         //TODO: 룸 하나에서 전체가 공유해야 하는 데이터와 동작들을 관리
         //조건1. 권한을 주고 받을 수 있어야 함. OnRequest 구현
 
         //Singleton
-        public static RoomManager Instance { get; private set; }
+        private static MultiplayRoomManager instance;
+        public static MultiplayRoomManager Instance
+        {
+            get
+            {
+                return instance;
+            }
+        }
 
         //데이터
         // 1. 방 내 현재 남은 도둑의 수
@@ -29,31 +36,36 @@ namespace com.MJT.FindTheTheif
 
         void Awake()
         {
+            if (!PhotonNetwork.connected)
+            {
+                Debug.LogError("Multiplay manager must be used in online environment.");
+                return;
+            }
+
             //Set singleton
             //이 오류 체크는 사실 큰 필요가 없음.
-            if (Instance == null)
+            if (instance == null)
             {
                 //Debug.Log("Room Manager Instantiation");
-                Instance = this;
+                instance = this;
             }
             else
             {
                 Debug.LogError("Multiple instantiation of the room controller");
             }
 
-            if (PhotonNetwork.connected)
-            {
-                //Get values sent by Lobby
-                Hashtable roomCp = PhotonNetwork.room.CustomProperties;
-                remainingThief = (int)roomCp["Theif Number"];
+            //Get values sent by Lobby
+            Hashtable roomCp = PhotonNetwork.room.CustomProperties;
+            int.TryParse(roomCp["Theif Number"].ToString(), out remainingThief);
 
-                //Set all players' ready-check flag to false
-                int playerNum = PhotonNetwork.playerList.Length;
-                for (int i = 0; i < playerNum; i++)
-                    isPlayersReady.Add(false);
-            }
+            //Set all players' ready-check flag to false
+            int playerNum = PhotonNetwork.playerList.Length;
+            isPlayersReady = new List<bool>();
+            for (int i = 0; i < playerNum; i++)
+                isPlayersReady.Add(false);
 
-            //TODO: Generate NPCs
+            //Generate NPCs
+            NPCGeneration(10);
 
             //TODO: Generate Items
         }
@@ -80,6 +92,19 @@ namespace com.MJT.FindTheTheif
             {
                 remainingThief = (int)stream.ReceiveNext();
                 timeLeft = (float)stream.ReceiveNext();
+            }
+        }
+
+        public GameObject NPCPrefab;
+        void NPCGeneration(int NPCNum)
+        {
+            for (int i = 0; i < NPCNum; i++)
+            {
+                Route randomRoute = RoutingManager.Instance.getRandomRoute();
+                Debug.Log("Random route " + i + ": " + randomRoute.gameObject.name);
+
+                GameObject newNPC = PhotonNetwork.InstantiateSceneObject(NPCPrefab.name, new Vector3(0, 0, 0), Quaternion.identity, 0, null);
+                newNPC.GetComponent<NPCController>().ManualStart(randomRoute);
             }
         }
     }

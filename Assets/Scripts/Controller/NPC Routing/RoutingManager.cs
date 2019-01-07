@@ -9,6 +9,7 @@ namespace com.MJT.FindTheTheif
         //나중에 const변경 필요
         public int maxRoomNum; 
         public int maxFloorNum;
+        public int maxNodePerRoute;
 
         //Singleton Instance
         private static RoutingManager instance;
@@ -226,6 +227,7 @@ namespace com.MJT.FindTheTheif
                 randIdx = Random.Range(0, allRouteSet.Count);
             } while (ifRouteAssigned[randIdx]);
 
+            ifRouteAssigned[randIdx] = true;
             return allRouteSet[randIdx];
         }
 
