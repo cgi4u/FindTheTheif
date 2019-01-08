@@ -4019,7 +4019,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &778642079
 Transform:
   m_ObjectHideFlags: 0
@@ -4109,6 +4109,10 @@ PrefabInstance:
     - target: {fileID: 1012472278439320, guid: f65ec36051d3d1042bf6111d8b2d53ec, type: 3}
       propertyPath: m_Name
       value: Test Room Manager
+      objectReference: {fileID: 0}
+    - target: {fileID: 1012472278439320, guid: f65ec36051d3d1042bf6111d8b2d53ec, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4834313836575612, guid: f65ec36051d3d1042bf6111d8b2d53ec, type: 3}
       propertyPath: m_LocalPosition.x
@@ -5954,6 +5958,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
+--- !u!114 &1116760673 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 114884570925487040, guid: 0086ecd0831b9d94480f679663646f56,
+    type: 3}
+  m_PrefabInstance: {fileID: 1302280581}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1bfaf9e56a204394da5e68df65d0a672, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1120052946
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11402,18 +11418,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1303619413}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1944470766 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 114932834713246030, guid: 2d9bf014119d46a4e8a50c7cc385a490,
-    type: 3}
-  m_PrefabInstance: {fileID: 1303619413}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1bfaf9e56a204394da5e68df65d0a672, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &1956139066
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -19350,7 +19354,12 @@ PrefabInstance:
         type: 3}
       propertyPath: curRoute
       value: 
-      objectReference: {fileID: 1944470766}
+      objectReference: {fileID: 1116760673}
+    - target: {fileID: 1900755372417909914, guid: 135b5b3a8b693284ab93667c9b37cdc8,
+        type: 3}
+      propertyPath: moveSpeed
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 6461677395318321203, guid: 135b5b3a8b693284ab93667c9b37cdc8,
         type: 3}
       propertyPath: viewIdField
@@ -19360,6 +19369,11 @@ PrefabInstance:
         type: 3}
       propertyPath: instantiationId
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4624130643943377836, guid: 135b5b3a8b693284ab93667c9b37cdc8,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 1774969216, guid: 135b5b3a8b693284ab93667c9b37cdc8, type: 3}

@@ -21,6 +21,8 @@ namespace com.MJT.FindTheTheif
             }
         }
 
+        #region Routing Object Properties
+
         //각 전시실이 위치하는 층을 저장
         private List<int> roomFloor;
         public List<int> RoomFloor
@@ -86,6 +88,8 @@ namespace com.MJT.FindTheTheif
 
         //현존하는 모든 경로 저장(NPC의 초기위치 설정을 위해)
         private List<Route> allRouteSet;
+
+        #endregion
 
         private void Awake()
         {
@@ -219,8 +223,12 @@ namespace com.MJT.FindTheTheif
         #region Public Methods
 
         private bool[] ifRouteAssigned;
+        int assignedRouteNum = 0;
         public Route getRandomRoute()
         {
+            if (assignedRouteNum >= allRouteSet.Count)  //All available routes are assinged
+                return null;                
+
             int randIdx;
             do
             {
@@ -228,6 +236,8 @@ namespace com.MJT.FindTheTheif
             } while (ifRouteAssigned[randIdx]);
 
             ifRouteAssigned[randIdx] = true;
+            assignedRouteNum += 1;
+
             return allRouteSet[randIdx];
         }
 

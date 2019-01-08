@@ -63,7 +63,11 @@ namespace com.MJT.FindTheTheif
             isPlayersReady = new List<bool>();
             for (int i = 0; i < playerNum; i++)
                 isPlayersReady.Add(false);
+            
+        }
 
+        void Start()
+        {
             //Generate NPCs
             NPCGeneration(10);
 
@@ -101,6 +105,11 @@ namespace com.MJT.FindTheTheif
             for (int i = 0; i < NPCNum; i++)
             {
                 Route randomRoute = RoutingManager.Instance.getRandomRoute();
+                if (randomRoute == null)
+                {
+                    Debug.LogError("Error: Attempt to generate more number of NPC than available");
+                    return;
+                }
                 Debug.Log("Random route " + i + ": " + randomRoute.gameObject.name);
 
                 GameObject newNPC = PhotonNetwork.InstantiateSceneObject(NPCPrefab.name, new Vector3(0, 0, 0), Quaternion.identity, 0, null);

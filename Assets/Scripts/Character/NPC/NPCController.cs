@@ -29,6 +29,9 @@ namespace com.MJT.FindTheTheif
         // Use this for initialization
         void Start()
         {
+            if (!PhotonNetwork.connected)
+                ManualStart(curRoute);
+
             blockedTime = 1;
 
             /*
@@ -68,6 +71,16 @@ namespace com.MJT.FindTheTheif
             bool ifOccupied;
             bool[] nodeOccupied = new bool[routeNodeSet.Length - 1];
             bool allOcuppiedFlag = true;
+
+            /*if (!PhotonNetwork.connected)   //For offline manual test
+            {
+                curNodeNum = 0;
+                transform.position = (Vector2)routeNodeSet[curNodeNum].transform.position;
+                StartCoroutine("MoveCheck");
+                blockedTime = 0;
+
+                return;
+            }*/
 
             int randNodeIdx = Random.Range(1, routeNodeSet.Length - 1); ;
             /*RaycastHit2D[] hits = Physics2D.BoxCastAll(routeNodeSet[randNodeIdx].transform.position, raycastBox, 0, new Vector2(0, 0), 0.0f);
@@ -131,7 +144,7 @@ namespace com.MJT.FindTheTheif
         void Update()
         {
             //Debug.Log(targetPoint);
-            if (blockedTime == 0)
+            if (blockedTime == 0 && curNodeNum < routeNodeSet.Length - 1)
             {
                 Move();
                 RouteEndCheck();
@@ -187,7 +200,7 @@ namespace com.MJT.FindTheTheif
                 }*/
 
                 startPoint = (Vector2)transform.position;   // Set starting point
-                if (curNodeNum < routeNodeSet.Length)
+                if (curNodeNum < routeNodeSet.Length - 1)
                     direction = ((Vector2)routeNodeSet[curNodeNum + 1].transform.position - startPoint).normalized;
                 else
                     direction = new Vector2(0, 0);
@@ -224,16 +237,16 @@ namespace com.MJT.FindTheTheif
 
         private void RouteEndCheck()
         {
-            if (Vector2.Distance(transform.position, routeNodeSet[curNodeNum + 1].transform.position) < 0.01f)
+            if (Vector2.Distance(transform.position, routeNodeSet[curNodeNum + 1].transform.position) < 0.05f)
             {
                 transform.position = routeNodeSet[curNodeNum + 1].transform.position;
 
-                if (curNodeNum < routeNodeSet.Length - 2)
+                curNodeNum += 1;
+                if (curNodeNum < routeNodeSet.Length - 1)
                 {
-                    curNodeNum += 1;
                     if (routeNodeSet[curNodeNum].ifItemPoint)
                     {
-                        itemWatchingTime = Random.Range(3, 12);
+                        itemWatchingTime = (int)Random.Range(moveSpeed, moveSpeed * 4 - 1);
                     }
                 }
                 else
@@ -248,7 +261,7 @@ namespace com.MJT.FindTheTheif
                             prevRoom = targetRoom;
                             do
                             {
-                                targetRoom = Random.Range(0, routingManager.maxRoomNum);
+                                targetRoom = Random.Range(0, 5);
                             } while (prevRoom == targetRoom);
 
                             //다음 방의 층수에 따라 다음 경로의 형태가 정해진다]
@@ -271,7 +284,8 @@ namespace com.MJT.FindTheTheif
                             break;
                         case Route.RouteType.Room_to_Stair:
                         case Route.RouteType.Stair_to_Stair:
-
+                            Route nextCurRoute;
+                            StopCoroutine("MoveCheck");
                             if (curRoute.stairType == Route.StairType.down) // 계단을 통해 내려옴 -> 올라가는 계단에서 해당 방으로
                             {
                                 curFloor -= 1;
@@ -279,19 +293,19 @@ namespace com.MJT.FindTheTheif
                                 if (routingManager.RoomFloor[targetRoom] == curFloor)
                                 {
                                     Debug.Log("Case: Stair-to-Room");
-                                    curRoute = routingManager.StairToRoomRouteSet[targetRoom][1];
+                                    nextCurRoute = routingManager.StairToRoomRouteSet[targetRoom][1];
                                 }
                                 else
                                 {
                                     if (curRoute.stairSide == Route.StairSide.left)
                                     {
                                         Debug.Log("Case: Down-down left");
-                                        curRoute = routingManager.StairToStairRouteSet[curFloor][0];
+                                        nextCurRoute = routingManager.StairToStairRouteSet[curFloor][0];
                                     }
                                     else
                                     {
                                         Debug.Log("Case: Down-down right");
-                                        curRoute = routingManager.StairToStairRouteSet[curFloor][2];
+                                        nextCurRoute = routingManager.StairToStairRouteSet[curFloor][2];
                                     }
                                 }
 
@@ -303,24 +317,26 @@ namespace com.MJT.FindTheTheif
                                 if (routingManager.RoomFloor[targetRoom] == curFloor)
                                 {
                                     Debug.Log("Case: Stair-to-Room");
-                                    curRoute = routingManager.StairToRoomRouteSet[targetRoom][0];
+                                    nextCurRoute = routingManager.StairToRoomRouteSet[targetRoom][0];
                                 }
                                 else
                                 {
                                     if (curRoute.stairSide == Route.StairSide.left)
                                     {
                                         Debug.Log("Case: Up-up left");
-                                        curRoute = routingManager.StairToStairRouteSet[curFloor][1];
+                                        nextCurRoute = routingManager.StairToStairRouteSet[curFloor][1];
                                     }
                                     else
                                     {
                                         Debug.Log("Case: Up-up left");
-                                        curRoute = routingManager.StairToStairRouteSet[curFloor][3];
+                                        nextCurRoute = routingManager.StairToStairRouteSet[curFloor][3];
                                     }
                                 }
                             }
-                            transform.position = (Vector2)curRoute.NodeSet[0].transform.position;
+                            transform.position = (Vector2)nextCurRoute.NodeSet[0].transform.position;
+                            StartCoroutine("MoveCheck");
 
+                            curRoute = nextCurRoute;
                             break;
                         default: 
                             Debug.Log("Case: In-Room");
