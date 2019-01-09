@@ -83,53 +83,55 @@ namespace com.MJT.FindTheTheif
             }*/
 
             int randNodeIdx = Random.Range(1, routeNodeSet.Length - 1); ;
-            /*RaycastHit2D[] hits = Physics2D.BoxCastAll(routeNodeSet[randNodeIdx].transform.position, raycastBox, 0, new Vector2(0, 0), 0.0f);
-            ifOccupied = false;
-            foreach (RaycastHit2D hit in hits)
-            {
-                if (!hit.collider.isTrigger)
-                {
-                    ifOccupied = true;
-                    nodeOccupied[randNodeIdx] = true;
-                }
-            }
+            
 
-            while (ifOccupied)
-            {
-                for (int i = 0; i < nodeOccupied.Length; i++)
-                {
-                    if (nodeOccupied[i] == false)
-                    {
-                        allOcuppiedFlag = false;
-                        break;
-                    }
-                }
+            curNodeNum = randNodeIdx;
+            transform.position = (Vector2)routeNodeSet[curNodeNum].transform.position;
 
-                if (allOcuppiedFlag == true)
+            StartCoroutine("MoveCheck");
+            blockedTime = 0;
+        }
+
+        public void ManualStart2(RouteNode startPoint)
+        {
+            routingManager = RoutingManager.Instance;
+
+            curRoute = startPoint.gameObject.GetComponentInParent<Route>();
+            routeNodeSet = curRoute.NodeSet;
+
+            switch (curRoute.routeType)
+            {
+                case Route.RouteType.In_Room:
+                    targetRoom = curRoute.curRoom;
                     break;
-
-                randNodeIdx = Random.Range(1, routeNodeSet.Length - 1);
-                hits = Physics2D.BoxCastAll(routeNodeSet[randNodeIdx].transform.position, raycastBox, 0, new Vector2(0, 0), 0.0f);
-                ifOccupied = false;
-                foreach (RaycastHit2D hit in hits)
-                {
-                    if (!hit.collider.isTrigger)
-                    {
-                        ifOccupied = true;
-                        nodeOccupied[randNodeIdx] = true;
-                    }
-                }
+                case Route.RouteType.Room_to_Room:
+                case Route.RouteType.Stair_to_Room:
+                    targetRoom = curRoute.endRoom;
+                    break;
+                default:
+                    Debug.LogError("Route type error.");
+                    break;
             }
 
-            if (allOcuppiedFlag == true)
+            /*if (!PhotonNetwork.connected)   //For offline manual test
             {
-                Debug.LogError("All Route Node is occupied: Error");
-                Debug.LogError("Route: " + curRoute.gameObject.name);
-                gameObject.SetActive(false);
+                curNodeNum = 0;
+                transform.position = (Vector2)routeNodeSet[curNodeNum].transform.position;
+                StartCoroutine("MoveCheck");
+                blockedTime = 0;
+
                 return;
             }*/
 
-            curNodeNum = randNodeIdx;
+            curFloor = routingManager.RoomFloor[targetRoom];
+            for (int i = 0; i < curRoute.NodeSet.Length; i++)
+            {
+                if (startPoint == curRoute.NodeSet[i])
+                {
+                    curNodeNum = i;
+                    break;
+                } 
+            }
             transform.position = (Vector2)routeNodeSet[curNodeNum].transform.position;
 
             StartCoroutine("MoveCheck");
@@ -268,17 +270,17 @@ namespace com.MJT.FindTheTheif
                             if (curFloor == routingManager.RoomFloor[targetRoom])      // 같은 층 내에서에 이동
                             {
                                 Debug.Log("Case: Room-to-Room");
-                                curRoute = routingManager.RoomToRoomRouteSet[prevRoom][targetRoom];
+                                curRoute = routingManager.RoomToRoomRoutes[prevRoom][targetRoom];
                             }
                             else if (curFloor > routingManager.RoomFloor[targetRoom])  // 내려가는 계단으로 이동
                             {
                                 Debug.Log("Case: Room-to-down");
-                                curRoute = routingManager.RoomToStairRouteSet[prevRoom][0];
+                                curRoute = routingManager.RoomToStairRoutes[prevRoom][0];
                             }
                             else                                                                    // 올라가는 계단으로 이동
                             {
                                 Debug.Log("Case: Room-to-up");
-                                curRoute = routingManager.RoomToStairRouteSet[prevRoom][1];
+                                curRoute = routingManager.RoomToStairRoutes[prevRoom][1];
                             }
                             
                             break;
@@ -293,19 +295,19 @@ namespace com.MJT.FindTheTheif
                                 if (routingManager.RoomFloor[targetRoom] == curFloor)
                                 {
                                     Debug.Log("Case: Stair-to-Room");
-                                    nextCurRoute = routingManager.StairToRoomRouteSet[targetRoom][1];
+                                    nextCurRoute = routingManager.StairToRoomRoutes[targetRoom][1];
                                 }
                                 else
                                 {
                                     if (curRoute.stairSide == Route.StairSide.left)
                                     {
                                         Debug.Log("Case: Down-down left");
-                                        nextCurRoute = routingManager.StairToStairRouteSet[curFloor][0];
+                                        nextCurRoute = routingManager.StairToStairRoutes[curFloor][0];
                                     }
                                     else
                                     {
                                         Debug.Log("Case: Down-down right");
-                                        nextCurRoute = routingManager.StairToStairRouteSet[curFloor][2];
+                                        nextCurRoute = routingManager.StairToStairRoutes[curFloor][2];
                                     }
                                 }
 
@@ -317,19 +319,19 @@ namespace com.MJT.FindTheTheif
                                 if (routingManager.RoomFloor[targetRoom] == curFloor)
                                 {
                                     Debug.Log("Case: Stair-to-Room");
-                                    nextCurRoute = routingManager.StairToRoomRouteSet[targetRoom][0];
+                                    nextCurRoute = routingManager.StairToRoomRoutes[targetRoom][0];
                                 }
                                 else
                                 {
                                     if (curRoute.stairSide == Route.StairSide.left)
                                     {
                                         Debug.Log("Case: Up-up left");
-                                        nextCurRoute = routingManager.StairToStairRouteSet[curFloor][1];
+                                        nextCurRoute = routingManager.StairToStairRoutes[curFloor][1];
                                     }
                                     else
                                     {
                                         Debug.Log("Case: Up-up left");
-                                        nextCurRoute = routingManager.StairToStairRouteSet[curFloor][3];
+                                        nextCurRoute = routingManager.StairToStairRoutes[curFloor][3];
                                     }
                                 }
                             }
@@ -340,7 +342,7 @@ namespace com.MJT.FindTheTheif
                             break;
                         default: 
                             Debug.Log("Case: In-Room");
-                            curRoute = routingManager.InRoomRouteSet[curRoute.endRoom];
+                            curRoute = routingManager.InRoomRoutes[curRoute.endRoom];
                             break;
                     }
 
@@ -354,3 +356,62 @@ namespace com.MJT.FindTheTheif
 
     }
 }
+
+
+
+
+
+
+
+
+#region Legacy Codes
+
+            /* manualStart의 레거시코드, 루트에서 중복되지 않는 노드를 찾기 위한 코드
+             * 노드 자체를 랜덤배정하도록 변경
+            RaycastHit2D[] hits = Physics2D.BoxCastAll(routeNodeSet[randNodeIdx].transform.position, raycastBox, 0, new Vector2(0, 0), 0.0f);
+            ifOccupied = false;
+            foreach (RaycastHit2D hit in hits)
+            {
+                if (!hit.collider.isTrigger)
+                {
+                    ifOccupied = true;
+                    nodeOccupied[randNodeIdx] = true;
+                }
+            }
+
+            while (ifOccupied)
+            {
+                for (int i = 0; i < nodeOccupied.Length; i++)
+                {
+                    if (nodeOccupied[i] == false)
+                    {
+                        allOcuppiedFlag = false;
+                        break;
+                    }
+                }
+
+                if (allOcuppiedFlag == true)
+                    break;
+
+                randNodeIdx = Random.Range(1, routeNodeSet.Length - 1);
+                hits = Physics2D.BoxCastAll(routeNodeSet[randNodeIdx].transform.position, raycastBox, 0, new Vector2(0, 0), 0.0f);
+                ifOccupied = false;
+                foreach (RaycastHit2D hit in hits)
+                {
+                    if (!hit.collider.isTrigger)
+                    {
+                        ifOccupied = true;
+                        nodeOccupied[randNodeIdx] = true;
+                    }
+                }
+            }
+
+            if (allOcuppiedFlag == true)
+            {
+                Debug.LogError("All Route Node is occupied: Error");
+                Debug.LogError("Route: " + curRoute.gameObject.name);
+                gameObject.SetActive(false);
+                return;
+            }*/
+
+#endregion

@@ -24,6 +24,13 @@ namespace com.MJT.FindTheTheif
         //데이터
         // 1. 방 내 현재 남은 도둑의 수
         private int remainingThief;
+        public int RemainingTheif
+        {
+            get
+            {
+                return remainingThief;
+            }
+        }
 
         // 2. 게임 진행 시간
         // ISSUE: 시간은 각 플레이어가 갱신하는게 아니라, 소유자 한명만 갱신하고 그걸 뿌려줘야함
@@ -104,16 +111,15 @@ namespace com.MJT.FindTheTheif
         {
             for (int i = 0; i < NPCNum; i++)
             {
-                Route randomRoute = RoutingManager.Instance.getRandomRoute();
-                if (randomRoute == null)
+                RouteNode randomPoint = RoutingManager.Instance.GetRandomGenerationPoint();
+                if (randomPoint == null)
                 {
                     Debug.LogError("Error: Attempt to generate more number of NPC than available");
                     return;
                 }
-                Debug.Log("Random route " + i + ": " + randomRoute.gameObject.name);
 
                 GameObject newNPC = PhotonNetwork.InstantiateSceneObject(NPCPrefab.name, new Vector3(0, 0, 0), Quaternion.identity, 0, null);
-                newNPC.GetComponent<NPCController>().ManualStart(randomRoute);
+                newNPC.GetComponent<NPCController>().ManualStart2(randomPoint);
             }
         }
     }

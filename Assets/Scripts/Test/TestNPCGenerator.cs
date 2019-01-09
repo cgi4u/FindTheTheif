@@ -13,9 +13,10 @@ namespace com.MJT.FindTheTheif
             //Route Test
             for (int i = 0; i < 10; i++)
             {
-                Debug.Log("Random route " + i);
+                Debug.Log("Random Node" + i);
 
-                Route randomRoute = RoutingManager.Instance.getRandomRoute();
+                RouteNode randomPoint = RoutingManager.Instance.GetRandomGenerationPoint();
+                Route randomRoute = randomPoint.gameObject.GetComponentInParent<Route>();
                 switch (randomRoute.routeType)
                 {
                     case Route.RouteType.In_Room:
@@ -40,7 +41,7 @@ namespace com.MJT.FindTheTheif
                 }
 
                 GameObject newNPC = Instantiate(NPCPrefab);
-                newNPC.GetComponent<NPCController>().ManualStart(randomRoute);
+                newNPC.GetComponent<NPCController>().ManualStart2(randomPoint);
             }
         }
     }

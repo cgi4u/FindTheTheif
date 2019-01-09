@@ -34,60 +34,61 @@ namespace com.MJT.FindTheTheif
         }
 
         //전시실 내부 순환경로를 저장
-        private List<Route> inRoomRouteSet;
-        public List<Route> InRoomRouteSet
+        private List<Route> inRoomRoutes;
+        public List<Route> InRoomRoutes
         {
             get
             {
-                return inRoomRouteSet;
+                return inRoomRoutes;
             }
         }
 
         //방과 방 사이 경로를 저장
-        private List<List<Route>> roomToRoomRouteSet;
-        public List<List<Route>> RoomToRoomRouteSet
+        private List<List<Route>> roomToRoomRoutes;
+        public List<List<Route>> RoomToRoomRoutes
         {
             get
             {
-                return roomToRoomRouteSet;
+                return roomToRoomRoutes;
             }
         }
 
         //계단->방 경로를 저장
         //index: 내려가는 계단 0, 올라가는 계단 1
-        private List<List<Route>> stairToRoomRouteSet;
-        public List<List<Route>> StairToRoomRouteSet
+        private List<List<Route>> stairToRoomRoutes;
+        public List<List<Route>> StairToRoomRoutes
         {
             get
             {
-                return stairToRoomRouteSet;
+                return stairToRoomRoutes;
             }
         }
 
         //방->계단 경로를 저장
         //index: 내려가는 계단 0, 올라가는 계단 1
-        private List<List<Route>> roomToStairRouteSet;
-        public List<List<Route>> RoomToStairRouteSet
+        private List<List<Route>> roomToStairRoutes;
+        public List<List<Route>> RoomToStairRoutes
         {
             get
             {
-                return roomToStairRouteSet;
+                return roomToStairRoutes;
             }
         }
 
         //계단->계단 경로를 저장
         //index: 내려가는 계단 0, 올라가는 계단 1 
-        private List<List<Route>> stairToStairRouteSet;
-        public List<List<Route>> StairToStairRouteSet
+        private List<List<Route>> stairToStairRoutes;
+        public List<List<Route>> StairToStairRoutes
         {
             get
             {
-                return stairToStairRouteSet;
+                return stairToStairRoutes;
             }
         }
 
         //현존하는 모든 경로 저장(NPC의 초기위치 설정을 위해)
-        private List<Route> allRouteSet;
+        private List<Route> allGenrationRoutes;
+        private List<RouteNode> allGenerationPoints;
 
         #endregion
 
@@ -104,22 +105,23 @@ namespace com.MJT.FindTheTheif
 
             //In-Room 루트와 Room-to-Room 루트를 각각 리스트화한다.
             roomFloor = new List<int>();
-            inRoomRouteSet = new List<Route>();
-            roomToRoomRouteSet = new List<List<Route>>();
-            stairToRoomRouteSet = new List<List<Route>>();
-            roomToStairRouteSet = new List<List<Route>>();
-            stairToStairRouteSet = new List<List<Route>>();
-            allRouteSet = new List<Route>();
+            inRoomRoutes = new List<Route>();
+            roomToRoomRoutes = new List<List<Route>>();
+            stairToRoomRoutes = new List<List<Route>>();
+            roomToStairRoutes = new List<List<Route>>();
+            stairToStairRoutes = new List<List<Route>>();
+            allGenrationRoutes = new List<Route>();
+            allGenerationPoints = new List<RouteNode>();
 
             for (int i = 0; i < maxRoomNum; i++)
             {
                 roomFloor.Add(-1);
-                inRoomRouteSet.Add(null);
+                inRoomRoutes.Add(null);
 
                 List<Route> tempRouteSet = new List<Route>();
                 for (int j = 0; j < maxRoomNum; j++)
                     tempRouteSet.Add(null);
-                roomToRoomRouteSet.Add(tempRouteSet);
+                roomToRoomRoutes.Add(tempRouteSet);
 
                 tempRouteSet = new List<Route>();
                 List<Route> tempRouteSet2 = new List<Route>();
@@ -130,8 +132,8 @@ namespace com.MJT.FindTheTheif
                     tempRouteSet.Add(null);
                     tempRouteSet2.Add(null);
                 }
-                stairToRoomRouteSet.Add(tempRouteSet);
-                roomToStairRouteSet.Add(tempRouteSet2);
+                stairToRoomRoutes.Add(tempRouteSet);
+                roomToStairRoutes.Add(tempRouteSet2);
             }
 
             for (int i = 0; i < maxFloorNum; i++)
@@ -141,7 +143,7 @@ namespace com.MJT.FindTheTheif
                 {
                     tempRouteSet.Add(null);
                 }
-                stairToStairRouteSet.Add(tempRouteSet);
+                stairToStairRoutes.Add(tempRouteSet);
             }
 
             GameObject roomsRoot
@@ -157,7 +159,7 @@ namespace com.MJT.FindTheTheif
             Route[] inRoomRoutesArray = inRoomRoutesRoot.GetComponentsInChildren<Route>();
             foreach (Route route in inRoomRoutesArray)
             {
-                inRoomRouteSet[route.curRoom] = route;
+                inRoomRoutes[route.curRoom] = route;
             }
            
 
@@ -166,7 +168,7 @@ namespace com.MJT.FindTheTheif
             Route[] roomToRoomRoutesArray = roomToRoomRoutesRoot.GetComponentsInChildren<Route>();
             foreach (Route route in roomToRoomRoutesArray)
             {
-                roomToRoomRouteSet[route.startRoom][route.endRoom] = route;
+                roomToRoomRoutes[route.startRoom][route.endRoom] = route;
             }
 
             GameObject stairToRoomRoutesRoot
@@ -175,9 +177,9 @@ namespace com.MJT.FindTheTheif
             foreach (Route route in stairToRoomRoutesArray)
             {
                 if (route.stairType == Route.StairType.down)
-                    stairToRoomRouteSet[route.endRoom][0] = route;
+                    stairToRoomRoutes[route.endRoom][0] = route;
                 else
-                    stairToRoomRouteSet[route.endRoom][1] = route;
+                    stairToRoomRoutes[route.endRoom][1] = route;
             }
 
             GameObject roomToStairRoutesRoot
@@ -186,9 +188,9 @@ namespace com.MJT.FindTheTheif
             foreach (Route route in roomToStairRoutesArray)
             {
                 if (route.stairType == Route.StairType.down)
-                    roomToStairRouteSet[route.startRoom][0] = route;
+                    roomToStairRoutes[route.startRoom][0] = route;
                 else
-                    roomToStairRouteSet[route.startRoom][1] = route;
+                    roomToStairRoutes[route.startRoom][1] = route;
             }
 
             GameObject stairToStairRoutesRoot
@@ -197,13 +199,13 @@ namespace com.MJT.FindTheTheif
             foreach (Route route in stairToStairRouteArray)
             {
                 if (route.stairSide == Route.StairSide.left && route.stairType == Route.StairType.down)
-                    stairToStairRouteSet[route.floor][0] = route;
+                    stairToStairRoutes[route.floor][0] = route;
                 else if (route.stairSide == Route.StairSide.left && route.stairType == Route.StairType.up)
-                    stairToStairRouteSet[route.floor][1] = route;
+                    stairToStairRoutes[route.floor][1] = route;
                 else if (route.stairSide == Route.StairSide.right && route.stairType == Route.StairType.down)
-                    stairToStairRouteSet[route.floor][2] = route;
+                    stairToStairRoutes[route.floor][2] = route;
                 else if (route.stairSide == Route.StairSide.right && route.stairType == Route.StairType.up)
-                    stairToStairRouteSet[route.floor][3] = route;
+                    stairToStairRoutes[route.floor][3] = route;
             }
             
             Route[] allRouteArray = GetComponentsInChildren<Route>();
@@ -212,33 +214,63 @@ namespace com.MJT.FindTheTheif
                 if (allRouteArray[i].routeType != Route.RouteType.Stair_to_Stair
                     && allRouteArray[i].routeType != Route.RouteType.Room_to_Stair)
                 {
-                    allRouteSet.Add(allRouteArray[i]);
+                    allGenrationRoutes.Add(allRouteArray[i]);
+                    for (int j = 1; j < allRouteArray[i].NodeSet.Length - 1; j++)
+                    {
+                        allGenerationPoints.Add(allRouteArray[i].NodeSet[j]);
+                    }
                 }
             }
-            ifRouteAssigned = new bool[allRouteSet.Count];
+            ifRouteAssigned = new bool[allGenrationRoutes.Count];
+            ifPointAssigned = new bool[allGenerationPoints.Count];
 
-            Debug.Log("All selectable routes: " + allRouteSet.Count);
+            Debug.Log("All selectable routes: " + allGenrationRoutes.Count);
         }
 
         #region Public Methods
 
-        private bool[] ifRouteAssigned;
+        bool[] ifRouteAssigned;
         int assignedRouteNum = 0;
+
         public Route getRandomRoute()
         {
-            if (assignedRouteNum >= allRouteSet.Count)  //All available routes are assinged
+            if (assignedRouteNum >= allGenrationRoutes.Count)  //All available routes are assinged
                 return null;                
 
-            int randIdx;
+            int r;
             do
             {
-                randIdx = Random.Range(0, allRouteSet.Count);
-            } while (ifRouteAssigned[randIdx]);
+                r = Random.Range(0, allGenrationRoutes.Count);
+            } while (ifRouteAssigned[r]);
 
-            ifRouteAssigned[randIdx] = true;
+            ifRouteAssigned[r] = true;
             assignedRouteNum += 1;
 
-            return allRouteSet[randIdx];
+            return allGenrationRoutes[r];
+        }
+
+        bool[] ifPointAssigned;
+        int assignedPointNum = 0;
+        List<Vector3> assinedLocations = new List<Vector3>();
+        public RouteNode GetRandomGenerationPoint()
+        {
+            if (assignedPointNum >= allGenerationPoints.Count)  //All available points are assinged
+                return null;
+
+            int r;
+            do
+            {
+                r = Random.Range(0, allGenerationPoints.Count);
+                Vector3 newLoc = allGenerationPoints[r].transform.position;
+                if (assinedLocations.FindAll(loc => loc.Equals(newLoc)).Count != 0)
+                    ifPointAssigned[r] = true;
+                else
+                    assinedLocations.Add(newLoc);
+            } while (ifPointAssigned[r]);
+
+            ifPointAssigned[r] = true;
+            assignedPointNum += 1;
+            return allGenerationPoints[r];
         }
 
         #endregion

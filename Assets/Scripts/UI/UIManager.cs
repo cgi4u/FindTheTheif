@@ -24,6 +24,8 @@ namespace com.MJT.FindTheTheif
 
         //Label to show reamaing game time
         public Text timeLabel;
+        //Label to show remaining theif number
+        public Text remainingTheifLabel;
 
         void Start()
         {
@@ -49,7 +51,10 @@ namespace com.MJT.FindTheTheif
             }
 
             if (MultiplayRoomManager.Instance != null)
+            {
                 timeLabel.text = Mathf.Floor(MultiplayRoomManager.Instance.timeLeft).ToString();
+                remainingTheifLabel.text = "남은 도둑: " + MultiplayRoomManager.Instance.RemainingTheif;
+            }
         }
 
         #region Character(Theif, NPC) Pop-up

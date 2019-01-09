@@ -97,6 +97,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45f702e9d336f3141a01c07d83c84344, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  startPoint: {x: 0, y: 0}
+  targetPoint: {x: 0, y: 0}
   moveSpeed: 5
 --- !u!61 &61481312994395904
 BoxCollider2D:
@@ -163,8 +165,8 @@ MonoBehaviour:
   - {fileID: 114720633930178312}
   - {fileID: 114045429315781568}
   ObservedComponentsFoldoutOpen: 1
-  viewIdField: 1
-  instantiationId: 1
+  viewIdField: 0
+  instantiationId: -1
   currentMasterID: -1
   isRuntimeInstantiated: 0
 --- !u!114 &114720633930178312
