@@ -16,9 +16,7 @@ namespace com.MJT.FindTheTheif
             raycastBox = GetComponent<BoxCollider2D>().size;   // To ignore collisions on edges
         }
 
-        [SerializeField]
         protected Vector2 startPoint;
-        [SerializeField]
         protected Vector2 targetPoint;
         public float moveSpeed;
 

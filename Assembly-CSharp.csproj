@@ -145,7 +145,6 @@
     <Compile Include="Assets\Scripts\Character\CharController.cs" />
     <Compile Include="Assets\Scripts\Character\CharTouchEvent.cs" />
     <Compile Include="Assets\Scripts\Character\Item\ItemController.cs" />
-    <Compile Include="Assets\Scripts\Character\Item\ItemPopUp.cs" />
     <Compile Include="Assets\Scripts\Character\MapData.cs" />
     <Compile Include="Assets\Scripts\Character\NPC\NPCController.cs" />
     <Compile Include="Assets\Scripts\Character\Player\CameraWork.cs" />
@@ -165,6 +164,7 @@
     <Compile Include="Assets\Scripts\Managers\NPC Routing\RoutingManager.cs" />
     <Compile Include="Assets\Scripts\Test\MoveTestManager.cs" />
     <Compile Include="Assets\Scripts\Test\TestNPCGenerator.cs" />
+    <Compile Include="Assets\Scripts\UI\ItemPopUp.cs" />
     <Compile Include="Assets\Scripts\UI\MoveButton.cs" />
     <Compile Include="Assets\Scripts\UI\UIManager.cs" />
     <None Include="Assets\Photon Unity Networking\link.xml" />

@@ -11,37 +11,19 @@ namespace com.MJT.FindTheTheif
         void Start()
         {
             //Route Test
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 5; i++)
             {
                 Debug.Log("Random Node" + i);
 
                 RouteNode randomPoint = RoutingManager.Instance.GetRandomGenerationPoint();
-                Route randomRoute = randomPoint.gameObject.GetComponentInParent<Route>();
-                switch (randomRoute.routeType)
+                if (randomPoint == null)
                 {
-                    case Route.RouteType.In_Room:
-                        Debug.Log("In-Room Route");
-                        Debug.Log("Room num: " + randomRoute.curRoom);
-                        break;
-                    case Route.RouteType.Room_to_Room:
-                        Debug.Log("Room-to-Room Route");
-                        Debug.Log("Start Room num: " + randomRoute.startRoom);
-                        Debug.Log("End Room num: " + randomRoute.endRoom);
-                        break;
-                    case Route.RouteType.Stair_to_Room:
-                        Debug.Log("Stair-to-Room Route");
-                        Debug.Log("Room num: " + randomRoute.endRoom);
-                        Debug.Log("Stair type: " + randomRoute.stairType);
-                        Debug.Log("Stair side: " + randomRoute.stairSide);
-                        break;
-                    case Route.RouteType.Stair_to_Stair:
-                    case Route.RouteType.Room_to_Stair:
-                        Debug.Log("to-Stair route: Error, should not be seleted.");
-                        break;
+                    Debug.LogError("Error: Attempt to generate more number of NPC than available");
+                    return;
                 }
 
                 GameObject newNPC = Instantiate(NPCPrefab);
-                newNPC.GetComponent<NPCController>().ManualStart2(randomPoint);
+                newNPC.GetComponent<NPCController>().ManualStart(randomPoint);
             }
         }
     }

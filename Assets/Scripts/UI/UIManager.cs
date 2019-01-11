@@ -27,6 +27,8 @@ namespace com.MJT.FindTheTheif
         //Label to show remaining theif number
         public Text remainingTheifLabel;
 
+        public RectTransform moveButtonPanel;
+
         void Start()
         {
             if (instance == null)
@@ -38,7 +40,9 @@ namespace com.MJT.FindTheTheif
 
         void Update()
         {
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0)
+                && (Input.mousePosition.x < moveButtonPanel.rect.xMin || Input.mousePosition.x > moveButtonPanel.rect.xMax)
+                && (Input.mousePosition.y < moveButtonPanel.rect.yMin || Input.mousePosition.y > moveButtonPanel.rect.yMax))
             {
                 if (charPopUp.GetActive())
                 {
@@ -71,14 +75,32 @@ namespace com.MJT.FindTheTheif
         #region Item Pop-up
         public ItemPopUp itemPopUp;
 
-        public void SetItemPopUp(string[] attributes, Vector3 objPos)
+        public void SetItemPopUp(ItemColor itemColor, ItemAge itemAge, ItemUsage itemUsage, Vector3 objPos)
         {
             Vector3 screenPoint = Camera.main.WorldToScreenPoint(objPos);
             //itemPopUp.gameObject.
             itemPopUp.transform.position = screenPoint;
-            itemPopUp.SetAttributes(attributes);
+            itemPopUp.SetAttributes(itemColor, itemAge, itemUsage);
             itemPopUp.gameObject.SetActive(true);
         }
+
+        public void MovePopUpsOnCameraMoving(Vector3 move)
+        {
+            Vector3 oldWorldPoint;
+            if (charPopUp.GetActive())
+            {
+                oldWorldPoint = Camera.main.ScreenToWorldPoint(charPopUp.transform.position);
+                oldWorldPoint -= move;
+                charPopUp.transform.position = Camera.main.WorldToScreenPoint(oldWorldPoint);
+            }
+            if (itemPopUp.gameObject.GetActive())
+            {
+                oldWorldPoint = Camera.main.ScreenToWorldPoint(itemPopUp.transform.position);
+                oldWorldPoint -= move;
+                itemPopUp.transform.position = Camera.main.WorldToScreenPoint(oldWorldPoint);
+            }
+        }
+
         #endregion
     }
 }

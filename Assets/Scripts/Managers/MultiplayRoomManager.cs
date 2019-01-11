@@ -119,7 +119,7 @@ namespace com.MJT.FindTheTheif
                 }
 
                 GameObject newNPC = PhotonNetwork.InstantiateSceneObject(NPCPrefab.name, new Vector3(0, 0, 0), Quaternion.identity, 0, null);
-                newNPC.GetComponent<NPCController>().ManualStart2(randomPoint);
+                newNPC.GetComponent<NPCController>().ManualStart(randomPoint);
             }
         }
     }

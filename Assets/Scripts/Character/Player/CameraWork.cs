@@ -74,9 +74,11 @@ namespace com.MJT.FindTheTheif
 
         private void Follow()
         {
+            Vector3 oldCameraPos = cameraTransform.position;
             Vector3 targetCenter = transform.position + centerOffset;
             // Set the position of the camera
             cameraTransform.position = new Vector3(targetCenter.x, targetCenter.y, -cameraHeight);
+            UIManager.Instance.MovePopUpsOnCameraMoving(cameraTransform.position - oldCameraPos);
         }
 
         #endregion

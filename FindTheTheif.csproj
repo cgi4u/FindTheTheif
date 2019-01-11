@@ -278,12 +278,6 @@
     <Reference Include="Unity.Analytics.Tracker">
       <HintPath>C:/Users/MJT/Desktop/GameDev/FindTheTheif/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Tracker.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEditor.iOS.Extensions.Xcode">
-      <HintPath>C:/Program Files/Unity/Editor/Data/PlaybackEngines/iOSSupport\UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor.iOS.Extensions.Common">
-      <HintPath>C:/Program Files/Unity/Editor/Data/PlaybackEngines/iOSSupport\UnityEditor.iOS.Extensions.Common.dll</HintPath>
-    </Reference>
     <Reference Include="mscorlib">
       <HintPath>C:\Program Files\Unity\Editor\Data\MonoBleedingEdge\lib\mono\unity\mscorlib.dll</HintPath>
     </Reference>
@@ -432,15 +426,15 @@
     <Compile Include="Assets\Scripts\CharTouchButton.cs" />
     <Compile Include="Assets\Scripts\Chat\ChatController.cs" />
     <Compile Include="Assets\Scripts\Chat\ChatSyncPort.cs" />
-    <Compile Include="Assets\Scripts\Controller\Launcher.cs" />
-    <Compile Include="Assets\Scripts\Controller\Lobby.cs" />
-    <Compile Include="Assets\Scripts\Controller\LocalRoomManager.cs" />
-    <Compile Include="Assets\Scripts\Controller\MultiplayRoomManager.cs" />
-    <Compile Include="Assets\Scripts\Controller\NPC Routing\ExhibitRoom.cs" />
-    <Compile Include="Assets\Scripts\Controller\NPC Routing\Route.cs" />
-    <Compile Include="Assets\Scripts\Controller\NPC Routing\RouteNode.cs" />
-    <Compile Include="Assets\Scripts\Controller\NPC Routing\RoutingManager.cs" />
     <Compile Include="Assets\Scripts\Global.cs" />
+    <Compile Include="Assets\Scripts\Managers\Launcher.cs" />
+    <Compile Include="Assets\Scripts\Managers\Lobby.cs" />
+    <Compile Include="Assets\Scripts\Managers\LocalRoomManager.cs" />
+    <Compile Include="Assets\Scripts\Managers\MultiplayRoomManager.cs" />
+    <Compile Include="Assets\Scripts\Managers\NPC Routing\ExhibitRoom.cs" />
+    <Compile Include="Assets\Scripts\Managers\NPC Routing\Route.cs" />
+    <Compile Include="Assets\Scripts\Managers\NPC Routing\RouteNode.cs" />
+    <Compile Include="Assets\Scripts\Managers\NPC Routing\RoutingManager.cs" />
     <Compile Include="Assets\Scripts\Test\MoveTestManager.cs" />
     <Compile Include="Assets\Scripts\Test\TestNPCGenerator.cs" />
     <Compile Include="Assets\Scripts\UI\MoveButton.cs" />
