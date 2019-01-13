@@ -29,16 +29,19 @@ namespace com.MJT.FindTheTheif
 
         public RectTransform moveButtonPanel;
 
-        void Start()
+        private void Awake()
         {
             if (instance == null)
                 instance = this;
+        }
 
+        private void Start()
+        {
             charPopUp.SetActive(false);
             itemPopUp.gameObject.SetActive(false);
         }
 
-        void Update()
+        private void Update()
         {
             if (Input.GetMouseButtonDown(0)
                 && (Input.mousePosition.x < moveButtonPanel.rect.xMin || Input.mousePosition.x > moveButtonPanel.rect.xMax)
@@ -84,6 +87,7 @@ namespace com.MJT.FindTheTheif
             itemPopUp.gameObject.SetActive(true);
         }
 
+        Rect screentRect = new Rect(0, 0, Screen.width, Screen.height);
         public void MovePopUpsOnCameraMoving(Vector3 move)
         {
             Vector3 oldWorldPoint;
@@ -92,6 +96,12 @@ namespace com.MJT.FindTheTheif
                 oldWorldPoint = Camera.main.ScreenToWorldPoint(charPopUp.transform.position);
                 oldWorldPoint -= move;
                 charPopUp.transform.position = Camera.main.WorldToScreenPoint(oldWorldPoint);
+
+                
+                if (!screentRect.Contains(charPopUp.transform.position))
+                {
+                    charPopUp.SetActive(false);
+                }
             }
             if (itemPopUp.gameObject.GetActive())
             {
@@ -102,5 +112,70 @@ namespace com.MJT.FindTheTheif
         }
 
         #endregion
+
+
+        #region Item Information Panel
+
+        public Text checkedItemListText;
+        List<ItemController> checkedItemList = new List<ItemController>();
+        public void AddCheckedItem(ItemController newItem)
+        {
+            if (!checkedItemList.Contains(newItem))
+                checkedItemList.Add(newItem);
+
+            string newCheckItemListText = "확인한 아이템: ";
+            foreach (ItemController item in checkedItemList)
+            {
+                newCheckItemListText += "\n";
+                //Modify color text in pop-up.
+                switch (item.myColor)
+                {
+                    case ItemColor.Red:
+                        newCheckItemListText += "빨 ";
+                        break;
+                    case ItemColor.Blue:
+                        newCheckItemListText += "파 ";
+                        break;
+                    case ItemColor.Yellow:
+                        newCheckItemListText += "노";
+                        break;
+                }
+
+                //Modify age text in pop-up.
+                switch (item.myAge)
+                {
+                    case ItemAge.Ancient:
+                        newCheckItemListText += "고 ";
+                        break;
+                    case ItemAge.Middle: 
+                        newCheckItemListText += "중 ";
+                        break;
+                    case ItemAge.Modern:
+                        newCheckItemListText += "현 ";
+                        break;
+                }
+
+                //Modify age text in pop-up.
+                switch (item.myUsage)
+                {
+                    case ItemUsage.Art:
+                        newCheckItemListText += "예 ";
+                        break;
+                    case ItemUsage.Daily:
+                        newCheckItemListText += "생 ";
+                        break;
+                    case ItemUsage.War:
+                        newCheckItemListText += "전 ";
+                        break;
+                }
+
+                newCheckItemListText += item.floorNum + "층 " + item.roomNum + "번 방";
+            }
+
+            checkedItemListText.text = newCheckItemListText;
+        }
+
+        #endregion
+
     }
 }

@@ -10,12 +10,14 @@ namespace com.MJT.FindTheTheif
 
         void Start()
         {
+            while (MapDataManager.Instance == null) ; 
+
             //Route Test
             for (int i = 0; i < 5; i++)
             {
-                Debug.Log("Random Node" + i);
+                //Debug.Log("Random Node" + i);
 
-                RouteNode randomPoint = RoutingManager.Instance.GetRandomGenerationPoint();
+                RouteNode randomPoint = MapDataManager.Instance.GetRandomGenerationPoint();
                 if (randomPoint == null)
                 {
                     Debug.LogError("Error: Attempt to generate more number of NPC than available");

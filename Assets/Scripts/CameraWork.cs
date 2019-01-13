@@ -24,6 +24,7 @@ namespace com.MJT.FindTheTheif
         #endregion
 
 
+
         #region Unity Callbacks
 
         // Use this for initialization
@@ -78,6 +79,7 @@ namespace com.MJT.FindTheTheif
             Vector3 targetCenter = transform.position + centerOffset;
             // Set the position of the camera
             cameraTransform.position = new Vector3(targetCenter.x, targetCenter.y, -cameraHeight);
+
             UIManager.Instance.MovePopUpsOnCameraMoving(cameraTransform.position - oldCameraPos);
         }
 

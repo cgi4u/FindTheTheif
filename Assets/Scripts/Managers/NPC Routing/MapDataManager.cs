@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace com.MJT.FindTheTheif
 {
-    public class RoutingManager : MonoBehaviour
+    public class MapDataManager : MonoBehaviour
     {
         //나중에 const변경 필요
         public int maxRoomNum; 
@@ -12,8 +12,8 @@ namespace com.MJT.FindTheTheif
         public int maxNodePerRoute;
 
         //Singleton Instance
-        private static RoutingManager instance;
-        public static RoutingManager Instance
+        private static MapDataManager instance;
+        public static MapDataManager Instance
         {
             get
             {
@@ -21,7 +21,7 @@ namespace com.MJT.FindTheTheif
             }
         }
 
-        #region Routing Object Properties
+        #region Map Object Properties
 
         //각 전시실이 위치하는 층을 저장
         private List<int> roomFloor;
@@ -30,6 +30,16 @@ namespace com.MJT.FindTheTheif
             get
             {
                 return roomFloor;
+            }
+        }
+
+        //아이템 소환 포인트를 저장
+        private List<Transform> itemGenerationPoints;
+        public List<Transform> ItemGenerationPoints
+        {
+            get
+            {
+                return itemGenerationPoints;
             }
         }
 
@@ -92,19 +102,11 @@ namespace com.MJT.FindTheTheif
 
         #endregion
 
-        private void Awake()
+        private void Start()
         {
-            //Routing Manager Singlton 생성
-            if (instance == null)
-            {
-                instance = this;
-            }
-            else
-                Debug.Log("Error: Multiple instantiation of the routing manager.");
-
-
             //In-Room 루트와 Room-to-Room 루트를 각각 리스트화한다.
             roomFloor = new List<int>();
+            itemGenerationPoints = new List<Transform>();
             inRoomRoutes = new List<Route>();
             roomToRoomRoutes = new List<List<Route>>();
             stairToRoomRoutes = new List<List<Route>>();
@@ -152,6 +154,10 @@ namespace com.MJT.FindTheTheif
             foreach (ExhibitRoom room in roomsArray)
             {
                 roomFloor[room.num] = room.floor;
+
+                Transform[] tempItemGenPointArray = room.gameObject.GetComponentsInChildren<Transform>();
+                for (int i = 1; i < tempItemGenPointArray.Length; i++)
+                    itemGenerationPoints.Add(tempItemGenPointArray[i]);
             }
 
             GameObject inRoomRoutesRoot
@@ -224,7 +230,13 @@ namespace com.MJT.FindTheTheif
             ifRouteAssigned = new bool[allGenrationRoutes.Count];
             ifPointAssigned = new bool[allGenerationPoints.Count];
 
-            Debug.Log("All selectable routes: " + allGenrationRoutes.Count);
+            //Routing Manager Singlton 생성
+            if (instance == null)
+            {
+                instance = this;
+            }
+            else
+                Debug.Log("Error: Multiple instantiation of the routing manager.");
         }
 
         #region Public Methods

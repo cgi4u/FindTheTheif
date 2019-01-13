@@ -37,7 +37,7 @@ namespace com.MJT.FindTheTheif
         //충돌처리를 위한 부분, 미완성
         protected void OnCollisionEnter2D(Collision2D collision)
         {
-            Debug.Log(collision.gameObject.name);
+            //Debug.Log(collision.gameObject.name);
 
             transform.position = startPoint;
         }

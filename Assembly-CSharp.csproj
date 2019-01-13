@@ -142,12 +142,12 @@
     <Compile Include="Assets\PhotonChatApi\ChatState.cs" />
     <Compile Include="Assets\PhotonChatApi\ChatUserStatus.cs" />
     <Compile Include="Assets\PhotonChatApi\IChatClientListener.cs" />
+    <Compile Include="Assets\Scripts\CameraWork.cs" />
     <Compile Include="Assets\Scripts\Character\CharController.cs" />
     <Compile Include="Assets\Scripts\Character\CharTouchEvent.cs" />
     <Compile Include="Assets\Scripts\Character\Item\ItemController.cs" />
     <Compile Include="Assets\Scripts\Character\MapData.cs" />
     <Compile Include="Assets\Scripts\Character\NPC\NPCController.cs" />
-    <Compile Include="Assets\Scripts\Character\Player\CameraWork.cs" />
     <Compile Include="Assets\Scripts\Character\Player\PlayerController.cs" />
     <Compile Include="Assets\Scripts\Character\TouchEvent.cs" />
     <Compile Include="Assets\Scripts\CharTouchButton.cs" />
@@ -159,10 +159,11 @@
     <Compile Include="Assets\Scripts\Managers\LocalRoomManager.cs" />
     <Compile Include="Assets\Scripts\Managers\MultiplayRoomManager.cs" />
     <Compile Include="Assets\Scripts\Managers\NPC Routing\ExhibitRoom.cs" />
+    <Compile Include="Assets\Scripts\Managers\NPC Routing\MapDataManager.cs" />
     <Compile Include="Assets\Scripts\Managers\NPC Routing\Route.cs" />
     <Compile Include="Assets\Scripts\Managers\NPC Routing\RouteNode.cs" />
-    <Compile Include="Assets\Scripts\Managers\NPC Routing\RoutingManager.cs" />
     <Compile Include="Assets\Scripts\Test\MoveTestManager.cs" />
+    <Compile Include="Assets\Scripts\Test\TestItemGenerator.cs" />
     <Compile Include="Assets\Scripts\Test\TestNPCGenerator.cs" />
     <Compile Include="Assets\Scripts\UI\ItemPopUp.cs" />
     <Compile Include="Assets\Scripts\UI\MoveButton.cs" />

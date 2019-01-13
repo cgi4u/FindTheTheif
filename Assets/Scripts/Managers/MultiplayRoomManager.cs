@@ -78,7 +78,8 @@ namespace com.MJT.FindTheTheif
             //Generate NPCs
             NPCGeneration(10);
 
-            //TODO: Generate Items
+            //Generate Items
+            ItemGeneration();
         }
 
         void Update()
@@ -111,7 +112,7 @@ namespace com.MJT.FindTheTheif
         {
             for (int i = 0; i < NPCNum; i++)
             {
-                RouteNode randomPoint = RoutingManager.Instance.GetRandomGenerationPoint();
+                RouteNode randomPoint = MapDataManager.Instance.GetRandomGenerationPoint();
                 if (randomPoint == null)
                 {
                     Debug.LogError("Error: Attempt to generate more number of NPC than available");
@@ -120,6 +121,36 @@ namespace com.MJT.FindTheTheif
 
                 GameObject newNPC = PhotonNetwork.InstantiateSceneObject(NPCPrefab.name, new Vector3(0, 0, 0), Quaternion.identity, 0, null);
                 newNPC.GetComponent<NPCController>().ManualStart(randomPoint);
+            }
+        }
+
+        public int itemNum;
+        public GameObject[] itemPrefabs;
+        void ItemGeneration()
+        {
+            for (int i = 0; i < itemNum; i++)
+            {
+                int r1 = Random.Range(0, itemNum);
+                int r2 = Random.Range(0, itemNum);
+
+                GameObject temp = itemPrefabs[r1];
+                itemPrefabs[r1] = itemPrefabs[r2];
+                itemPrefabs[r2] = temp;
+            }
+
+            MapDataManager mapDataManager = MapDataManager.Instance;
+            if (mapDataManager.ItemGenerationPoints.Count > itemNum)
+            {
+                Debug.LogError("There are fewer items than generation points.");
+                return;
+            }
+
+            for (int i = 0; i < mapDataManager.ItemGenerationPoints.Count; i++)
+            {
+                GameObject newItem = PhotonNetwork.Instantiate("Items\\" + itemPrefabs[i].name, mapDataManager.ItemGenerationPoints[i].position, Quaternion.identity, 0);
+
+                ExhibitRoom roomOfItem = mapDataManager.ItemGenerationPoints[i].GetComponentInParent<ExhibitRoom>();
+                newItem.GetComponent<ItemController>().Init(roomOfItem.floor, roomOfItem.num);
             }
         }
     }
