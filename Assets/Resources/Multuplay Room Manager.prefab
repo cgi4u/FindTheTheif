@@ -26,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1012472278439320}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -6.86, y: 3.93, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -59,6 +59,7 @@ MonoBehaviour:
   - {fileID: 712536485502872174, guid: 3f7696f12ddef7740a3a597fdfed6fde, type: 3}
   - {fileID: 1192389104986055057, guid: 107ca69f092fa554f81e1a8e289a7b06, type: 3}
   - {fileID: 5420556545269972260, guid: 232e1af998a7314449ff6f03eddeecbe, type: 3}
+  stealItemNum: 3
 --- !u!114 &114986182949599362
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -82,7 +83,7 @@ MonoBehaviour:
   ObservedComponents:
   - {fileID: 114000243598936320}
   ObservedComponentsFoldoutOpen: 1
-  viewIdField: 9
-  instantiationId: 9
+  viewIdField: 1
+  instantiationId: 1
   currentMasterID: -1
   isRuntimeInstantiated: 0

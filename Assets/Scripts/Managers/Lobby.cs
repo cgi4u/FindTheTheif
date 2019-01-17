@@ -157,7 +157,7 @@ namespace com.MJT.FindTheTheif
                 roomCp["Theif Number"] = theifPerRoom;
                 PhotonNetwork.room.SetCustomProperties(roomCp);
 
-                InitializeAndLoadScene();
+                //InitializeAndLoadScene();
             }
 
             curPlayerNum.text = PhotonNetwork.room.PlayerCount.ToString();

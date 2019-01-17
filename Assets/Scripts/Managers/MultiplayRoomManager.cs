@@ -75,11 +75,14 @@ namespace com.MJT.FindTheTheif
 
         void Start()
         {
-            //Generate NPCs
-            NPCGeneration(10);
+            if (PhotonNetwork.isMasterClient)
+            {
+                //Generate NPCs
+                NPCGeneration(10);
 
-            //Generate Items
-            ItemGeneration();
+                //Generate Items
+                ItemGeneration();
+            }
         }
 
         void Update()
@@ -94,16 +97,13 @@ namespace com.MJT.FindTheTheif
 
         public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
         {
-            //조건2. 싱크가 되어야 함.
             if (stream.isWriting)
             {
                 stream.SendNext(remainingThief);
-                stream.SendNext(timeLeft);
             }
             else
             {
                 remainingThief = (int)stream.ReceiveNext();
-                timeLeft = (float)stream.ReceiveNext();
             }
         }
 
@@ -126,8 +126,16 @@ namespace com.MJT.FindTheTheif
 
         public int itemNum;
         public GameObject[] itemPrefabs;
+        public int stealItemNum;
+        List<ItemController> stealItemList;
+        bool[] isItemStolen;
         void ItemGeneration()
         {
+            if (itemNum < stealItemNum)
+            {
+                Debug.LogError("The number of items to steal can't exceed the number of all items.");
+            }
+
             for (int i = 0; i < itemNum; i++)
             {
                 int r1 = Random.Range(0, itemNum);
@@ -145,13 +153,29 @@ namespace com.MJT.FindTheTheif
                 return;
             }
 
+            bool[] isItemToSteal = new bool[itemNum];
+            int count = 0;
+            while (count < stealItemNum)
+            {
+                int r = Random.Range(0, itemNum);
+                if (isItemToSteal[r] == false)
+                {
+                    isItemToSteal[r] = true;
+                    count++;
+                }
+            }
+
             for (int i = 0; i < mapDataManager.ItemGenerationPoints.Count; i++)
             {
                 GameObject newItem = PhotonNetwork.Instantiate("Items\\" + itemPrefabs[i].name, mapDataManager.ItemGenerationPoints[i].position, Quaternion.identity, 0);
+                if (isItemToSteal[i] == true)
+                    stealItemList.Add(newItem.GetComponent<ItemController>());
 
                 ExhibitRoom roomOfItem = mapDataManager.ItemGenerationPoints[i].GetComponentInParent<ExhibitRoom>();
                 newItem.GetComponent<ItemController>().Init(roomOfItem.floor, roomOfItem.num);
             }
+            isItemStolen = new bool[stealItemNum];
+            UIManager.Instance.RenewStealItemList(stealItemList, stealItemNum, isItemStolen);
         }
     }
 }

@@ -100,7 +100,6 @@ MonoBehaviour:
   moveSpeed: 6
   curRoute: {fileID: 0}
   curNodeNum: 0
-  routingSequence: 0000000003000000020000000400000001000000
   blocked: 0
   prevRoom: 0
   targetRoom: 0
@@ -184,11 +183,10 @@ MonoBehaviour:
   onSerializeRigidBodyOption: 2
   ownershipTransfer: 0
   ObservedComponents:
-  - {fileID: 1900755372417909914}
   - {fileID: 4624130643943377836}
   ObservedComponentsFoldoutOpen: 1
-  viewIdField: 0
-  instantiationId: -1
+  viewIdField: 1
+  instantiationId: 1
   currentMasterID: -1
   isRuntimeInstantiated: 0
 --- !u!114 &4624130643943377836
@@ -198,7 +196,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1900755372417909919}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
   m_Name: 

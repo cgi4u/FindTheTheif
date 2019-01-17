@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace com.MJT.FindTheTheif
 {
-    public abstract class CharController : Photon.PunBehaviour
+    public abstract class CharController : Photon.PunBehaviour, IPunObservable
     {
 
         #region Shared Method(by Players and NPCs)
@@ -40,6 +40,20 @@ namespace com.MJT.FindTheTheif
             //Debug.Log(collision.gameObject.name);
 
             transform.position = startPoint;
+        }
+
+        public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+        {
+            if (stream.isWriting)
+            {
+                stream.SendNext(startPoint);
+                stream.SendNext(targetPoint);
+            }
+            else
+            {
+                startPoint = (Vector2)stream.ReceiveNext();
+                targetPoint = (Vector2)stream.ReceiveNext();
+            }
         }
 
         #endregion

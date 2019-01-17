@@ -123,59 +123,77 @@ namespace com.MJT.FindTheTheif
             if (!checkedItemList.Contains(newItem))
                 checkedItemList.Add(newItem);
 
-            string newCheckItemListText = "확인한 아이템: ";
+            checkedItemListText.text =  "확인한 아이템: ";
             foreach (ItemController item in checkedItemList)
             {
-                newCheckItemListText += "\n";
-                //Modify color text in pop-up.
-                switch (item.myColor)
-                {
-                    case ItemColor.Red:
-                        newCheckItemListText += "빨 ";
-                        break;
-                    case ItemColor.Blue:
-                        newCheckItemListText += "파 ";
-                        break;
-                    case ItemColor.Yellow:
-                        newCheckItemListText += "노";
-                        break;
-                }
-
-                //Modify age text in pop-up.
-                switch (item.myAge)
-                {
-                    case ItemAge.Ancient:
-                        newCheckItemListText += "고 ";
-                        break;
-                    case ItemAge.Middle: 
-                        newCheckItemListText += "중 ";
-                        break;
-                    case ItemAge.Modern:
-                        newCheckItemListText += "현 ";
-                        break;
-                }
-
-                //Modify age text in pop-up.
-                switch (item.myUsage)
-                {
-                    case ItemUsage.Art:
-                        newCheckItemListText += "예 ";
-                        break;
-                    case ItemUsage.Daily:
-                        newCheckItemListText += "생 ";
-                        break;
-                    case ItemUsage.War:
-                        newCheckItemListText += "전 ";
-                        break;
-                }
-
-                newCheckItemListText += item.floorNum + "층 " + item.roomNum + "번 방";
+                checkedItemListText.text += "\n" + ConvertItemInfoToString(item);
             }
+        }
 
-            checkedItemListText.text = newCheckItemListText;
+        //Information to items to steal(visible by theives only)
+        public Text stealItemListText;
+        [PunRPC]
+        public void RenewStealItemList(List<ItemController> stealItemList, int stealItemNum, bool[] isItemStolen)
+        {
+            stealItemListText.text = "훔칠 아이템: ";
+            foreach (ItemController item in stealItemList)
+            {
+                stealItemListText.text += "\n" + ConvertItemInfoToString(item);
+            }
         }
 
         #endregion
+
+        private string ConvertItemInfoToString(ItemController item)
+        {
+            string itemInfo = "";
+
+            //Modify color text in pop-up.
+            switch (item.myColor)
+            {
+                case ItemColor.Red:
+                    itemInfo += "빨 ";
+                    break;
+                case ItemColor.Blue:
+                    itemInfo += "파 ";
+                    break;
+                case ItemColor.Yellow:
+                    itemInfo += "노";
+                    break;
+            }
+
+            //Modify age text in pop-up.
+            switch (item.myAge)
+            {
+                case ItemAge.Ancient:
+                    itemInfo += "고 ";
+                    break;
+                case ItemAge.Middle:
+                    itemInfo += "중 ";
+                    break;
+                case ItemAge.Modern:
+                    itemInfo += "현 ";
+                    break;
+            }
+
+            //Modify age text in pop-up.
+            switch (item.myUsage)
+            {
+                case ItemUsage.Art:
+                    itemInfo += "예 ";
+                    break;
+                case ItemUsage.Daily:
+                    itemInfo += "생 ";
+                    break;
+                case ItemUsage.War:
+                    itemInfo += "전 ";
+                    break;
+            }
+
+            itemInfo += item.floorNum + "층 " + item.roomNum + "번 방";
+
+            return itemInfo;
+        }
 
     }
 }

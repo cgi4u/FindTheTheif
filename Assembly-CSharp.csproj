@@ -145,10 +145,10 @@
     <Compile Include="Assets\Scripts\CameraWork.cs" />
     <Compile Include="Assets\Scripts\Character\CharController.cs" />
     <Compile Include="Assets\Scripts\Character\CharTouchEvent.cs" />
-    <Compile Include="Assets\Scripts\Character\Item\ItemController.cs" />
+    <Compile Include="Assets\Scripts\Character\ItemController.cs" />
     <Compile Include="Assets\Scripts\Character\MapData.cs" />
-    <Compile Include="Assets\Scripts\Character\NPC\NPCController.cs" />
-    <Compile Include="Assets\Scripts\Character\Player\PlayerController.cs" />
+    <Compile Include="Assets\Scripts\Character\NPCController.cs" />
+    <Compile Include="Assets\Scripts\Character\PlayerController.cs" />
     <Compile Include="Assets\Scripts\Character\TouchEvent.cs" />
     <Compile Include="Assets\Scripts\CharTouchButton.cs" />
     <Compile Include="Assets\Scripts\Chat\ChatController.cs" />
