@@ -97,10 +97,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e28822018340d3f4e8bdd434e8c79c60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 6
   curRoute: {fileID: 0}
-  curNodeNum: 0
-  blocked: 0
+  moveSpeed: 20
+  isMoving: 0
+  blockedTime: 0
   prevRoom: 0
   targetRoom: 0
 --- !u!114 &1900755372417909915
@@ -185,8 +185,8 @@ MonoBehaviour:
   ObservedComponents:
   - {fileID: 4624130643943377836}
   ObservedComponentsFoldoutOpen: 1
-  viewIdField: 1
-  instantiationId: 1
+  viewIdField: 0
+  instantiationId: -1
   currentMasterID: -1
   isRuntimeInstantiated: 0
 --- !u!114 &4624130643943377836
@@ -205,9 +205,9 @@ MonoBehaviour:
     SynchronizeEnabled: 1
     TeleportEnabled: 1
     TeleportIfDistanceGreaterThan: 3
-    InterpolateOption: 0
-    InterpolateMoveTowardsSpeed: 1
-    InterpolateLerpSpeed: 10
+    InterpolateOption: 1
+    InterpolateMoveTowardsSpeed: 6
+    InterpolateLerpSpeed: 100
     InterpolateMoveTowardsAcceleration: 2
     InterpolateMoveTowardsDeceleration: 2
     InterpolateSpeedCurve:

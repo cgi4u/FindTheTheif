@@ -1,6 +1,6 @@
 Android
 PlayerPath?
-C:/Users/MJT/Desktop/FindTheTheif.apk
+C:/Users/CGI/Desktop/FindTheTheif.apk
 SceneListBegin?
 Assets/Scenes/Launcher.unity
 Assets/Scenes/Lobby.unity
@@ -23,7 +23,7 @@ e1bbf0ab858085e38fae6b12ebbdcd35 UnityEngine.Timeline.dll:UnityEngine.Timeline.G
 e1bbf0ab858085e38fae6b12ebbdcd35 UnityEngine.Timeline.dll:UnityEngine.Timeline.PlayableTrack
 201e3fde670b00545944bb3db215c80a UnityEngine.Timeline.dll:UnityEngine.Timeline.TimelineAsset
 3ba023cd67d72cace33969ab863e0fd4 Assembly-CSharp.dll:.PhotonStatsGui
-51e0d933c38fd3a2fd76a4049b1bc56a Assembly-CSharp.dll:com.MJT.FindTheTheif.NPCController
+82fc78073f04d1b42526318cc1922502 Assembly-CSharp.dll:com.MJT.FindTheTheif.NPCController
 e7a73f5f78ba6445195ec23b74a1ce2d Unity.TextMeshPro.dll:TMPro.TMP_ScrollbarEventHandler
 2b1d1de79e4d31f1861f586502176c81 Assembly-CSharp.dll:.PhotonAnimatorView
 428849b6ca87815ef6cdbc8093b8c981 Assembly-CSharp.dll:com.MJT.FindTheTheif.ItemPopUp
@@ -106,7 +106,7 @@ dede1a02cf50a838fbb6cc53fa072c7d Assembly-CSharp.dll:com.MJT.FindTheTheif.Camera
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:com.MJT.FindTheTheif.Launcher
 d80c92c22c562d4b2f68d93dd545d2fa Assembly-CSharp.dll:com.MJT.FindTheTheif.ChatController
 dfd7a2ae89b53ee12027e54728efd088 Assembly-CSharp.dll:.PhotonHandler
-63cacdc268f314519fc44e2e6fc3b9c7 Assembly-CSharp.dll:com.MJT.FindTheTheif.MoveButton
+9617c9ff8d2ca7af8db5e25d05ca9a8c Assembly-CSharp.dll:com.MJT.FindTheTheif.MoveButton
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:com.MJT.FindTheTheif.CharTouchEvent
 71bb6a6b6c8f052f948db64c7dd3ca4f UnityEngine.Timeline.dll:UnityEngine.Timeline.ActivationPlayableAsset
 06f0fef534ca4c1d6064fd77a26bf722 UnityEngine.Timeline.dll:UnityEngine.Timeline.ActivationTrack

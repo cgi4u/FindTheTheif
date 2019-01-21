@@ -5,7 +5,7 @@ using UnityEngine;
 namespace com.MJT.FindTheTheif
 {
     // NPC의 행동 제어 (경로 순환)
-    public class NPCController : CharController
+    public class NPCController : Photon.PunBehaviour, IPunObservable
     {
         public Route curRoute;              // 현재 진행중인 경로
         private RouteNode[] routeNodeSet;   // 현재 진행중인 경로의 노드집합
@@ -14,21 +14,25 @@ namespace com.MJT.FindTheTheif
 
         MapDataManager mapDataManager;      //Routing Manager Instance에 대한 참조
 
-        private new void Awake()
+        private Vector2 raycastBox; // Collider of a characters
+
+        private void Awake()
         {
-            base.Awake();   // Raycast box initiallize
+            raycastBox = GetComponent<BoxCollider2D>().size;   // To ignore collisions on edges
         }
 
         // Use this for initialization
         void Start()
         {
-            mapDataManager = MapDataManager.Instance;
-
-            blockedTime = 1;
+            //오프라인 테스트시 수동으로 생성하는 인스턴스에 대한 초기화
+            if (mapDataManager == null)
+                mapDataManager = MapDataManager.Instance;
         }
 
         public void ManualStart(RouteNode startPoint)
         {
+            mapDataManager = MapDataManager.Instance;
+
             curRoute = startPoint.gameObject.GetComponentInParent<Route>();
             routeNodeSet = curRoute.NodeSet;
 
@@ -57,43 +61,104 @@ namespace com.MJT.FindTheTheif
             }
             transform.position = (Vector2)routeNodeSet[curNodeNum].transform.position;
 
-            StartCoroutine("MoveCheck");
+            SetNewTargetPoint();
             blockedTime = 0;
         }
 
-        [SerializeField]
-        bool blocked = false;
-        int blockedTime = 0;
-        int itemWatchingTime = 0;
-        // Update is called once per frame
         void Update()
         {
-            //Debug.Log(targetPoint);
-            if (blockedTime == 0 && curNodeNum < routeNodeSet.Length - 1)
+            if (PhotonNetwork.connected && !photonView.isMine)
+                return;
+
+            if (blockedTime > 0f)
             {
+                blockedTime -= Time.deltaTime;
+                if (blockedTime <= 0f)
+                {
+                    blockedTime = 0f;
+                }
+                else return;
+            }
+
+            if (isMoving)
                 Move();
-                RouteEndCheck();
-            }
+            else
+                SetNewTargetPoint();
         }
 
-        protected new void OnCollisionEnter2D(Collision2D collision)
+        private void OnCollisionEnter2D(Collision2D collision)
         {
-            base.OnCollisionEnter2D(collision);
-
-            blocked = true;
-            blockedTime = 1;
-            if (collision.gameObject.tag == "NPC"
-                && collision.gameObject.GetInstanceID() > gameObject.GetInstanceID())
+            if (collision.gameObject.tag != "NPC"
+                || collision.gameObject.GetInstanceID() > gameObject.GetInstanceID())
             {
-                    blockedTime += 1;
+                transform.position = startPoint;
+                isMoving = false;
             }
-                
         }
 
-        #region Routing
+        #region NPC Routing
+
+        protected Vector2 startPoint;
+        protected Vector2 targetPoint;
+        public float moveSpeed;
+
+        [SerializeField]
+        bool isMoving = false;
+        [SerializeField]
+        float blockedTime = 0;
+
+        private void Move()
+        {
+            //설정 속도에 따라 움직일 위치를 계산(MoveTowards) 이후 이동
+            Vector2 nextPos = Vector2.MoveTowards(transform.position, targetPoint, moveSpeed * Time.deltaTime);
+            transform.position = (Vector3)nextPos;
+
+            if (transform.position.Equals(targetPoint))
+            {
+                RouteCheck();
+                SetNewTargetPoint();
+            }
+
+            //이동 위치에 따라 스프라이트 우선순위를 결정(y축 위치가 더 큰 캐릭터가 뒤로 가도록)
+            GetComponent<SpriteRenderer>().sortingOrder = -(int)(transform.position.y * 100f);
+
+            return;
+        }
 
         Vector2 direction = new Vector2(0, 0);
-        protected override IEnumerator MoveCheck()
+        private void SetNewTargetPoint()
+        {
+            startPoint = (Vector2)transform.position;   // 현재 위치를 새로운 startPoint로 설정
+            if (curNodeNum < routeNodeSet.Length - 1)
+                direction = ((Vector2)routeNodeSet[curNodeNum + 1].transform.position - startPoint).normalized;
+            else
+                direction = new Vector2(0, 0);
+            targetPoint = startPoint + direction;
+
+            //움직이는 과정에서 플레이어와 충돌하는 물체가 있을지를 판단.
+            //자기자신의 콜라이더와 무조건 충돌하므로 다른 콜라이더가 있는지 판단하기 위해 BoxCast가 아닌 BoxCastAll을 쓴다.
+            RaycastHit2D[] hits = Physics2D.BoxCastAll(targetPoint, raycastBox, 0, new Vector2(0, 0), 0.0f);
+
+            //자기 자신 이외에 충돌 물체가 있다면 이동하지 않는다.
+            bool ifHit = false;
+            foreach (RaycastHit2D hit in hits)
+            {
+                if (hit.collider.gameObject != gameObject && !hit.collider.isTrigger)
+                {
+                    //자신의 오브젝트와 충돌체의 오브젝트가 같지 않는 상황, 즉 콜라이더를 갖는 다른 오브젝트에 부딫힌 상황
+                    ifHit = true;
+                    break;
+                }
+            }
+
+            if (ifHit)
+                isMoving = false;
+            else
+                isMoving = true;
+        }
+
+        /*
+        protected IEnumerator MoveCheck()
         {
             while (true)
             {
@@ -116,13 +181,6 @@ namespace com.MJT.FindTheTheif
                         continue;
                     }
                 }
-
-                /*if (Vector2.Distance(transform.position, routeNodeSet[curNodeNum + 1].position) < 0.01f
-                    && curNodeNum < routeNodeSet.Length)
-                {
-                    transform.position = routeNodeSet[curNodeNum + 1].position;
-                    curNodeNum++;
-                }*/
 
                 startPoint = (Vector2)transform.position;   // Set starting point
                 if (curNodeNum < routeNodeSet.Length - 1)
@@ -156,30 +214,30 @@ namespace com.MJT.FindTheTheif
                 yield return new WaitForSeconds(1.0f / moveSpeed);
             }
         }
+        */
 
         [SerializeField]
         int prevRoom;
         [SerializeField]
         int targetRoom;
 
-        private void RouteEndCheck()
+        private void RouteCheck()
         {
-            if (Vector2.Distance(transform.position, routeNodeSet[curNodeNum + 1].transform.position) < 0.05f)
+            if (transform.position.Equals(routeNodeSet[curNodeNum + 1].transform.position))
             {
-                transform.position = routeNodeSet[curNodeNum + 1].transform.position;
+                //transform.position = routeNodeSet[curNodeNum + 1].transform.position;
 
                 curNodeNum += 1;
                 if (curNodeNum < routeNodeSet.Length - 1)
                 {
                     if (routeNodeSet[curNodeNum].ifItemPoint)
                     {
-                        itemWatchingTime = (int)Random.Range(moveSpeed, moveSpeed * 4 - 1);
+                        blockedTime = Random.Range(1, 3);
+                        isMoving = false;
                     }
                 }
                 else
                 {
-                    //Debug.Log("Route change");
-
                     switch (curRoute.routeType)
                     {
                         case Route.RouteType.In_Room:
@@ -209,7 +267,7 @@ namespace com.MJT.FindTheTheif
                             break;
                         case Route.RouteType.Room_to_Stair:
                         case Route.RouteType.Stair_to_Stair:
-                            StopCoroutine("MoveCheck");
+                            //StopCoroutine("MoveCheck");
                             if (curRoute.stairType == Route.StairType.down) // 계단을 통해 내려옴 -> 올라가는 계단에서 해당 방으로
                             {
                                 curFloor -= 1;
@@ -258,7 +316,7 @@ namespace com.MJT.FindTheTheif
                                 }
                             }
                             transform.position = (Vector2)curRoute.NodeSet[0].transform.position;
-                            StartCoroutine("MoveCheck");
+                            //StartCoroutine("MoveCheck");
                             break;
                         default: 
                             //Debug.Log("Case: In-Room");
@@ -274,6 +332,19 @@ namespace com.MJT.FindTheTheif
 
         #endregion
 
+        public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+        {
+            if (stream.isWriting)
+            {
+                stream.SendNext(startPoint);
+                stream.SendNext(targetPoint);
+            }
+            else
+            {
+                startPoint = (Vector2)stream.ReceiveNext();
+                targetPoint = (Vector2)stream.ReceiveNext();
+            }
+        }
     }
 }
 

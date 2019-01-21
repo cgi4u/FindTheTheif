@@ -104,13 +104,7 @@ namespace com.MJT.FindTheTheif
 
         private void Awake()
         {
-            //Routing Manager Singlton 생성
-            if (instance == null)
-            {
-                instance = this;
-            }
-            else
-                Debug.Log("Error: Multiple instantiation of the routing manager.");
+            
         }
 
         private void Start()
@@ -240,6 +234,14 @@ namespace com.MJT.FindTheTheif
             }
             ifRouteAssigned = new bool[allGenrationRoutes.Count];
             ifPointAssigned = new bool[allGenerationPoints.Count];
+
+            //Routing Manager Singlton 생성
+            if (instance == null)
+            {
+                instance = this;
+            }
+            else
+                Debug.Log("Error: Multiple instantiation of the routing manager.");
         }
 
         #region Public Methods

@@ -28,6 +28,7 @@ namespace com.MJT.FindTheTheif
         #endregion
 
 
+
         #region Unity Callbacks
 
         void Start()
@@ -59,6 +60,7 @@ namespace com.MJT.FindTheTheif
         }
 
         #endregion
+
 
 
         #region Public Mehods
@@ -128,6 +130,7 @@ namespace com.MJT.FindTheTheif
         }
 
         #endregion
+
 
 
         #region Photon Callbacks
