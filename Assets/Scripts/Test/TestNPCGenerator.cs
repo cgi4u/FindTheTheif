@@ -7,16 +7,15 @@ namespace com.MJT.FindTheTheif
     public class TestNPCGenerator : MonoBehaviour
     {
         public GameObject NPCPrefab;
+        public int NPCNumber;
 
         void Start()
         {
             while (MapDataManager.Instance == null) ; 
 
             //Route Test
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < NPCNumber; i++)
             {
-                //Debug.Log("Random Node" + i);
-
                 RouteNode randomPoint = MapDataManager.Instance.GetRandomGenerationPoint();
                 if (randomPoint == null)
                 {

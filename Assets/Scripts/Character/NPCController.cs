@@ -11,6 +11,8 @@ namespace com.MJT.FindTheTheif
         private RouteNode[] routeNodeSet;   // 현재 진행중인 경로의 노드집합
         private int curNodeNum;             // 가장 마지막으로 지난 노드의 인덱스
         private int curFloor;               //현재 층
+        [SerializeField]
+        private bool ifStarted = false;     //ManualStart를 통해 초기화되었는지에 대한 변수
 
         MapDataManager mapDataManager;      //Routing Manager Instance에 대한 참조
 
@@ -60,14 +62,12 @@ namespace com.MJT.FindTheTheif
                 } 
             }
             transform.position = (Vector2)routeNodeSet[curNodeNum].transform.position;
-
-            SetNewTargetPoint();
-            blockedTime = 0;
+            ifStarted = true;
         }
 
         void Update()
         {
-            if (PhotonNetwork.connected && !photonView.isMine)
+            if (!ifStarted || (PhotonNetwork.connected && !photonView.isMine))
                 return;
 
             if (blockedTime > 0f)
@@ -137,7 +137,7 @@ namespace com.MJT.FindTheTheif
 
             //움직이는 과정에서 플레이어와 충돌하는 물체가 있을지를 판단.
             //자기자신의 콜라이더와 무조건 충돌하므로 다른 콜라이더가 있는지 판단하기 위해 BoxCast가 아닌 BoxCastAll을 쓴다.
-            RaycastHit2D[] hits = Physics2D.BoxCastAll(targetPoint, raycastBox, 0, new Vector2(0, 0), 0.0f);
+            RaycastHit2D[] hits = Physics2D.BoxCastAll(startPoint, raycastBox, 0, targetPoint - startPoint, Vector2.Distance(startPoint, targetPoint));
 
             //자기 자신 이외에 충돌 물체가 있다면 이동하지 않는다.
             bool ifHit = false;
@@ -156,65 +156,6 @@ namespace com.MJT.FindTheTheif
             else
                 isMoving = true;
         }
-
-        /*
-        protected IEnumerator MoveCheck()
-        {
-            while (true)
-            {
-                if (itemWatchingTime > 0)
-                {
-                    itemWatchingTime -= 1;
-                    yield return new WaitForSeconds(1.0f / moveSpeed);
-                    continue;
-                }
-
-                if (blocked)
-                    blocked = !blocked;
-
-                if (blockedTime > 0)
-                {
-                    blockedTime -= 1;
-                    if (blockedTime != 0)
-                    {
-                        yield return new WaitForSeconds(1.0f / moveSpeed);
-                        continue;
-                    }
-                }
-
-                startPoint = (Vector2)transform.position;   // Set starting point
-                if (curNodeNum < routeNodeSet.Length - 1)
-                    direction = ((Vector2)routeNodeSet[curNodeNum + 1].transform.position - startPoint).normalized;
-                else
-                    direction = new Vector2(0, 0);
-                targetPoint = startPoint + direction;
-
-                //움직이는 과정에서 플레이어와 충돌하는 물체가 있을지를 판단.
-                //자기자신의 콜라이더와 무조건 충돌하므로 다른 콜라이더가 있는지 판단하기 위해 BoxCast가 아닌 BoxCastAll을 쓴다.
-                RaycastHit2D[] hits = Physics2D.BoxCastAll(targetPoint, raycastBox, 0, new Vector2(0, 0), 0.0f);
-
-                //자기 자신 이외에 충돌 물체가 있다면 이동하지 않는다.
-                bool ifHit = false;
-                foreach (RaycastHit2D hit in hits)
-                {
-                    if (hit.collider.gameObject != gameObject && !hit.collider.isTrigger)
-                    {
-                        //자신의 오브젝트와 충돌체의 오브젝트가 같지 않는 상황, 즉 콜라이더를 갖는 다른 오브젝트에 부딫힌 상황
-                        ifHit = true;
-                        break;
-                    }
-                }
-
-                if (ifHit)
-                {
-                    blockedTime += 1;
-                    blocked = true;
-                }
-
-                yield return new WaitForSeconds(1.0f / moveSpeed);
-            }
-        }
-        */
 
         [SerializeField]
         int prevRoom;

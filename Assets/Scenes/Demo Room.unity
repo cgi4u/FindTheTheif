@@ -8766,7 +8766,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1718482835}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.14807734
+  m_Size: 0.14807735
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -10542,6 +10542,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   NPCPrefab: {fileID: 1900755372417909919, guid: 135b5b3a8b693284ab93667c9b37cdc8,
     type: 3}
+  NPCNumber: 30
 --- !u!1001 &1671122431
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10676,6 +10677,11 @@ PrefabInstance:
     - target: {fileID: 114674363756855698, guid: 4a2bb6044e24a974eb687461314d3ef0,
         type: 3}
       propertyPath: followOnStart
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114045429315781568, guid: 4a2bb6044e24a974eb687461314d3ef0,
+        type: 3}
+      propertyPath: moveSpeed
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []

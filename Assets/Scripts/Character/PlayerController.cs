@@ -23,11 +23,7 @@ namespace com.MJT.FindTheTheif
                                                     // Up = 0, Down = 1, Left = 2, Right = 3
         private int btnCount = 0;                   // The number of buttons pushed now.
 
-        private bool ifCheckMove = false;                   // Flag for MoveCheck. Used to stop coroutine.
-        private bool isCheckRunning = false;                // Flag to prevent to make a new coroutine.
-
-        private bool isMoving = false;
-
+        
         public Team TeamOfPlayer { get; set; }
 
         private Vector2 raycastBox; // Collider of a characters
@@ -103,6 +99,7 @@ namespace com.MJT.FindTheTheif
         protected Vector2 startPoint;
         protected Vector2 targetPoint;
         public float moveSpeed;
+        private bool isMoving = false;
 
         public void OnMoveButtonPushed(MoveDirection dir)
         {
@@ -204,7 +201,7 @@ namespace com.MJT.FindTheTheif
 
             //움직이는 과정에서 플레이어와 충돌하는 물체가 있을지를 판단.
             //플레이어(자기자신)의 콜라이더와 무조건 충돌하므로 다른 콜라이더가 있는지 판단하기 위해 BoxCast가 아닌 BoxCastAll을 쓴다.
-            RaycastHit2D[] hits = Physics2D.BoxCastAll(targetPoint, raycastBox, 0, new Vector2(0, 0), 0.0f);
+            RaycastHit2D[] hits = Physics2D.BoxCastAll(startPoint, raycastBox, 0, targetPoint - startPoint, Vector2.Distance(startPoint, targetPoint));
 
             //플레이어 자기 자신 이외에 충돌 물체가 있다면 이동하지 않는다.
             bool ifHit = false;
@@ -222,59 +219,6 @@ namespace com.MJT.FindTheTheif
                 isMoving = false;
             else
                 isMoving = true;
-        }
-
-        protected IEnumerator MoveCheck()
-        {
-            //isCheckRunning = true;
-
-            while (ifCheckMove)
-            {
-                isCheckRunning = true;
-
-                startPoint = (Vector2)transform.position;   // Set starting point
-
-                // Set target point
-                if (btnCount == buttons[0])
-                {
-                    targetPoint = startPoint + Vector2.up;
-                }
-                else if (btnCount == buttons[1])
-                {
-                    targetPoint = startPoint + Vector2.down;
-                }
-                else if (btnCount == buttons[2])
-                {
-                    targetPoint = startPoint + Vector2.left;
-                }
-                else if (btnCount == buttons[3])
-                {
-                    targetPoint = startPoint + Vector2.right;
-                }
-
-                //움직이는 과정에서 플레이어와 충돌하는 물체가 있을지를 판단.
-                //플레이어(자기자신)의 콜라이더와 무조건 충돌하므로 다른 콜라이더가 있는지 판단하기 위해 BoxCast가 아닌 BoxCastAll을 쓴다.
-                RaycastHit2D[] hits = Physics2D.BoxCastAll(targetPoint, raycastBox, 0, new Vector2(0, 0), 0.0f);
-
-                //플레이어 자기 자신 이외에 충돌 물체가 있다면 이동하지 않는다.
-                bool ifHit = false;
-                foreach (RaycastHit2D hit in hits)
-                {
-                    if (hit.collider.gameObject != gameObject && !hit.collider.isTrigger)
-                    {
-                        //플레이어 오브젝트와 충돌체의 오브젝트가 같지 않는 상황, 즉 콜라이더를 갖는 다른 오브젝트에 부딫힌 상황
-                        ifHit = true;
-                        break;
-                    }
-                }
-
-                if (ifHit)
-                    break;
-
-                yield return new WaitForSeconds(1.0f / moveSpeed);
-            }
-
-            isCheckRunning = false;
         }
 
         #endregion

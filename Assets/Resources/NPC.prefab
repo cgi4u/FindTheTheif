@@ -98,7 +98,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   curRoute: {fileID: 0}
-  moveSpeed: 20
+  ifStarted: 0
+  moveSpeed: 5
   isMoving: 0
   blockedTime: 0
   prevRoom: 0
