@@ -278,6 +278,12 @@
     <Reference Include="Unity.Analytics.Tracker">
       <HintPath>C:/Users/MJT/Desktop/GameDev/FindTheTheif/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Tracker.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEditor.iOS.Extensions.Xcode">
+      <HintPath>C:/Program Files/Unity/Editor/Data/PlaybackEngines/iOSSupport\UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor.iOS.Extensions.Common">
+      <HintPath>C:/Program Files/Unity/Editor/Data/PlaybackEngines/iOSSupport\UnityEditor.iOS.Extensions.Common.dll</HintPath>
+    </Reference>
     <Reference Include="mscorlib">
       <HintPath>C:\Program Files\Unity\Editor\Data\MonoBleedingEdge\lib\mono\unity\mscorlib.dll</HintPath>
     </Reference>
@@ -414,14 +420,13 @@
     <Compile Include="Assets\PhotonChatApi\ChatState.cs" />
     <Compile Include="Assets\PhotonChatApi\ChatUserStatus.cs" />
     <Compile Include="Assets\PhotonChatApi\IChatClientListener.cs" />
+    <Compile Include="Assets\Scripts\CameraWork.cs" />
     <Compile Include="Assets\Scripts\Character\CharController.cs" />
     <Compile Include="Assets\Scripts\Character\CharTouchEvent.cs" />
-    <Compile Include="Assets\Scripts\Character\Item\ItemController.cs" />
-    <Compile Include="Assets\Scripts\Character\Item\ItemPopUp.cs" />
+    <Compile Include="Assets\Scripts\Character\ItemController.cs" />
     <Compile Include="Assets\Scripts\Character\MapData.cs" />
-    <Compile Include="Assets\Scripts\Character\NPC\NPCController.cs" />
-    <Compile Include="Assets\Scripts\Character\Player\CameraWork.cs" />
-    <Compile Include="Assets\Scripts\Character\Player\PlayerController.cs" />
+    <Compile Include="Assets\Scripts\Character\NPCController.cs" />
+    <Compile Include="Assets\Scripts\Character\PlayerController.cs" />
     <Compile Include="Assets\Scripts\Character\TouchEvent.cs" />
     <Compile Include="Assets\Scripts\CharTouchButton.cs" />
     <Compile Include="Assets\Scripts\Chat\ChatController.cs" />
@@ -432,11 +437,13 @@
     <Compile Include="Assets\Scripts\Managers\LocalRoomManager.cs" />
     <Compile Include="Assets\Scripts\Managers\MultiplayRoomManager.cs" />
     <Compile Include="Assets\Scripts\Managers\NPC Routing\ExhibitRoom.cs" />
+    <Compile Include="Assets\Scripts\Managers\NPC Routing\MapDataManager.cs" />
     <Compile Include="Assets\Scripts\Managers\NPC Routing\Route.cs" />
     <Compile Include="Assets\Scripts\Managers\NPC Routing\RouteNode.cs" />
-    <Compile Include="Assets\Scripts\Managers\NPC Routing\RoutingManager.cs" />
     <Compile Include="Assets\Scripts\Test\MoveTestManager.cs" />
+    <Compile Include="Assets\Scripts\Test\TestItemGenerator.cs" />
     <Compile Include="Assets\Scripts\Test\TestNPCGenerator.cs" />
+    <Compile Include="Assets\Scripts\UI\ItemPopUp.cs" />
     <Compile Include="Assets\Scripts\UI\MoveButton.cs" />
     <Compile Include="Assets\Scripts\UI\UIManager.cs" />
   </ItemGroup>

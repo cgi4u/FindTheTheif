@@ -3,7 +3,7 @@
 namespace com.MJT.FindTheTheif
 {
     public enum Team { undefined, detective, theif }
-    public enum MoveDirection { up, down, right, left, stop }
+    public enum Direction { none, up, down, right, left }
 
     //Item properties
     public enum ItemColor { Red, Blue, Yellow }

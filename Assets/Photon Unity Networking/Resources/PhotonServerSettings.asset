@@ -45,4 +45,5 @@ MonoBehaviour:
   - TaggedPlayer
   - TestRPC
   - RenewStealItemList
+  - ManualStart
   DisableAutoOpenWizard: 1

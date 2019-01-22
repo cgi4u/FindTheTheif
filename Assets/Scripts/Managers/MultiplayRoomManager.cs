@@ -120,15 +120,16 @@ namespace com.MJT.FindTheTheif
                 }
 
                 GameObject newNPC = PhotonNetwork.InstantiateSceneObject(NPCPrefab.name, new Vector3(0, 0, 0), Quaternion.identity, 0, null);
+                //PhotonView.Get(newNPC).RPC("ManualStart", PhotonTargets.All, randomPoint);
                 newNPC.GetComponent<NPCController>().ManualStart(randomPoint);
             }
         }
 
-        public int itemNum;
         public GameObject[] itemPrefabs;
-        public int stealItemNum;
-        List<ItemController> stealItemList;
-        bool[] isItemStolen;
+        public int itemNum;                     // 맵 상 아이템의 총 개수
+        public int stealItemNum;                // 훔쳐야 할 아이템의 개수
+        List<ItemController> stealItemList;     // 훔쳐야 할 아이템의 리스트
+        bool[] isItemStolen;                    // 아이템이 훔쳐졌는가 여부
         void ItemGeneration()
         {
             if (itemNum < stealItemNum)

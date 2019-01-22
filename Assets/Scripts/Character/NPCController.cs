@@ -7,13 +7,17 @@ namespace com.MJT.FindTheTheif
     // NPC의 행동 제어 (경로 순환)
     public class NPCController : Photon.PunBehaviour, IPunObservable
     {
+        [SerializeField]
         public Route curRoute;              // 현재 진행중인 경로
+        [SerializeField]
         private RouteNode[] routeNodeSet;   // 현재 진행중인 경로의 노드집합
+        [SerializeField]
         private int curNodeNum;             // 가장 마지막으로 지난 노드의 인덱스
+        [SerializeField]
         private int curFloor;               //현재 층
         [SerializeField]
         private bool ifStarted = false;     //ManualStart를 통해 초기화되었는지에 대한 변수
-
+        [SerializeField]
         MapDataManager mapDataManager;      //Routing Manager Instance에 대한 참조
 
         private Vector2 raycastBox; // Collider of a characters
@@ -31,6 +35,7 @@ namespace com.MJT.FindTheTheif
                 mapDataManager = MapDataManager.Instance;
         }
 
+        [PunRPC]
         public void ManualStart(RouteNode startPoint)
         {
             mapDataManager = MapDataManager.Instance;
@@ -41,18 +46,18 @@ namespace com.MJT.FindTheTheif
             switch (curRoute.routeType)
             {
                 case Route.RouteType.In_Room:
-                    targetRoom = curRoute.curRoom;
+                    nextRoom = curRoute.curRoom;
                     break;
                 case Route.RouteType.Room_to_Room:
                 case Route.RouteType.Stair_to_Room:
-                    targetRoom = curRoute.endRoom;
+                    nextRoom = curRoute.endRoom;
                     break;
                 default:
                     Debug.LogError("Route type error.");
                     break;
             }
 
-            curFloor = mapDataManager.RoomFloor[targetRoom];
+            curFloor = mapDataManager.RoomFloor[nextRoom];
             for (int i = 0; i < curRoute.NodeSet.Length; i++)
             {
                 if (startPoint == curRoute.NodeSet[i])
@@ -88,6 +93,9 @@ namespace com.MJT.FindTheTheif
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
+            if (PhotonNetwork.connected && !photonView.isMine)
+                return;
+
             if (collision.gameObject.tag != "NPC"
                 || collision.gameObject.GetInstanceID() > gameObject.GetInstanceID())
             {
@@ -98,8 +106,10 @@ namespace com.MJT.FindTheTheif
 
         #region NPC Routing
 
-        protected Vector2 startPoint;
-        protected Vector2 targetPoint;
+        [SerializeField]
+        private Vector2 startPoint;
+        [SerializeField]
+        private Vector2 targetPoint;
         public float moveSpeed;
 
         [SerializeField]
@@ -160,7 +170,7 @@ namespace com.MJT.FindTheTheif
         [SerializeField]
         int prevRoom;
         [SerializeField]
-        int targetRoom;
+        int nextRoom;
 
         private void RouteCheck()
         {
@@ -182,19 +192,19 @@ namespace com.MJT.FindTheTheif
                     switch (curRoute.routeType)
                     {
                         case Route.RouteType.In_Room:
-                            prevRoom = targetRoom;
+                            prevRoom = nextRoom;
                             do
                             {
-                                targetRoom = Random.Range(0, 5);
-                            } while (prevRoom == targetRoom);
+                                nextRoom = Random.Range(0, 5);
+                            } while (prevRoom == nextRoom);
 
                             //다음 방의 층수에 따라 다음 경로의 형태가 정해진다]
-                            if (curFloor == mapDataManager.RoomFloor[targetRoom])      // 같은 층 내에서에 이동
+                            if (curFloor == mapDataManager.RoomFloor[nextRoom])      // 같은 층 내에서에 이동
                             {
                                 //Debug.Log("Case: Room-to-Room");
-                                curRoute = mapDataManager.RoomToRoomRoutes[prevRoom][targetRoom];
+                                curRoute = mapDataManager.RoomToRoomRoutes[prevRoom][nextRoom];
                             }
-                            else if (curFloor > mapDataManager.RoomFloor[targetRoom])  // 내려가는 계단으로 이동
+                            else if (curFloor > mapDataManager.RoomFloor[nextRoom])  // 내려가는 계단으로 이동
                             {
                                 //Debug.Log("Case: Room-to-down");
                                 curRoute = mapDataManager.RoomToStairRoutes[prevRoom][0];
@@ -213,10 +223,10 @@ namespace com.MJT.FindTheTheif
                             {
                                 curFloor -= 1;
 
-                                if (mapDataManager.RoomFloor[targetRoom] == curFloor)
+                                if (mapDataManager.RoomFloor[nextRoom] == curFloor)
                                 {
                                     //Debug.Log("Case: Stair-to-Room");
-                                    curRoute = mapDataManager.StairToRoomRoutes[targetRoom][1];
+                                    curRoute = mapDataManager.StairToRoomRoutes[nextRoom][1];
                                 }
                                 else
                                 {
@@ -237,10 +247,10 @@ namespace com.MJT.FindTheTheif
                             {
                                 curFloor += 1;
 
-                                if (mapDataManager.RoomFloor[targetRoom] == curFloor)
+                                if (mapDataManager.RoomFloor[nextRoom] == curFloor)
                                 {
                                     //Debug.Log("Case: Stair-to-Room");
-                                    curRoute = mapDataManager.StairToRoomRoutes[targetRoom][0];
+                                    curRoute = mapDataManager.StairToRoomRoutes[nextRoom][0];
                                 }
                                 else
                                 {
@@ -279,69 +289,24 @@ namespace com.MJT.FindTheTheif
             {
                 stream.SendNext(startPoint);
                 stream.SendNext(targetPoint);
+                stream.SendNext(isMoving);
+                stream.SendNext(blockedTime);
+                stream.SendNext(prevRoom);
+                stream.SendNext(nextRoom);
+
+                //stream.SendNext(curRoute);
             }
             else
             {
                 startPoint = (Vector2)stream.ReceiveNext();
                 targetPoint = (Vector2)stream.ReceiveNext();
+                isMoving = (bool)stream.ReceiveNext();
+                blockedTime = (float)stream.ReceiveNext();
+                prevRoom = (int)stream.ReceiveNext();
+                nextRoom = (int)stream.ReceiveNext();
+
+                //curRoute = (Route)stream.ReceiveNext();
             }
         }
     }
 }
-
-
-
-
-
-
-
-
-#region Legacy Codes
-
-/* ManualStart의 루트 기준 버전 레가시 코드
- * 
-public void ManualStart(Route startRoute)
-{
-    routingManager = RoutingManager.Instance;
-
-    curRoute = startRoute;
-    routeNodeSet = curRoute.NodeSet;
-
-    switch (curRoute.routeType)
-    {
-        case Route.RouteType.In_Room:
-            targetRoom = curRoute.curRoom;
-            break;
-        case Route.RouteType.Room_to_Room:
-        case Route.RouteType.Stair_to_Room:
-            targetRoom = curRoute.endRoom;
-            break;
-        default:
-            Debug.LogError("Route type error.");
-            break;
-    }
-
-    curFloor = routingManager.RoomFloor[targetRoom];
-
-    if (!PhotonNetwork.connected)   //For offline manual test
-    {
-        curNodeNum = 0;
-        transform.position = (Vector2)routeNodeSet[curNodeNum].transform.position;
-        StartCoroutine("MoveCheck");
-        blockedTime = 0;
-
-        return;
-    }
-
-    int randNodeIdx = Random.Range(1, routeNodeSet.Length - 1); ;
-
-
-    curNodeNum = randNodeIdx;
-    transform.position = (Vector2)routeNodeSet[curNodeNum].transform.position;
-
-    StartCoroutine("MoveCheck");
-    blockedTime = 0;
-}
-*/
-
-#endregion

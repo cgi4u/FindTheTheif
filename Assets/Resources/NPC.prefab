@@ -98,12 +98,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   curRoute: {fileID: 0}
+  routeNodeSet: []
+  curNodeNum: 0
+  curFloor: 0
   ifStarted: 0
+  mapDataManager: {fileID: 0}
   moveSpeed: 5
   isMoving: 0
   blockedTime: 0
   prevRoom: 0
-  targetRoom: 0
+  nextRoom: 0
 --- !u!114 &1900755372417909915
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -185,6 +189,7 @@ MonoBehaviour:
   ownershipTransfer: 0
   ObservedComponents:
   - {fileID: 4624130643943377836}
+  - {fileID: 1900755372417909914}
   ObservedComponentsFoldoutOpen: 1
   viewIdField: 0
   instantiationId: -1

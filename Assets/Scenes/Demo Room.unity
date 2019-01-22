@@ -2480,7 +2480,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6769913bb6e55d4fa14fe4b2497e2c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  direction: 2
+  direction: 3
 --- !u!1001 &471778747
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4503,7 +4503,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &778642079
 Transform:
   m_ObjectHideFlags: 0
@@ -7707,7 +7707,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6769913bb6e55d4fa14fe4b2497e2c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  direction: 1
+  direction: 2
 --- !u!1001 &1294887704
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8766,7 +8766,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1718482835}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.14807735
+  m_Size: 0.14807709
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -10244,7 +10244,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6769913bb6e55d4fa14fe4b2497e2c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  direction: 3
+  direction: 4
 --- !u!1001 &1640958194
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11544,7 +11544,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6769913bb6e55d4fa14fe4b2497e2c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  direction: 0
+  direction: 1
 --- !u!1 &1753123501
 GameObject:
   m_ObjectHideFlags: 0

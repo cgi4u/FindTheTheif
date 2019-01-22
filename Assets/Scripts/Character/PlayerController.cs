@@ -101,7 +101,7 @@ namespace com.MJT.FindTheTheif
         public float moveSpeed;
         private bool isMoving = false;
 
-        public void OnMoveButtonPushed(MoveDirection dir)
+        public void OnMoveButtonPushed(Direction dir)
         {
             //현재 눌린 버튼의 갯수를 저장
             btnCount += 1;
@@ -110,16 +110,16 @@ namespace com.MJT.FindTheTheif
             //어떤 버튼이 마지막으로 눌렸는지를 판단하여 이동한다.
             switch (dir)
             {
-                case MoveDirection.up:
+                case Direction.up:
                     buttons[0] = btnCount;
                     break;
-                case MoveDirection.down:
+                case Direction.down:
                     buttons[1] = btnCount;
                     break;
-                case MoveDirection.left:
+                case Direction.left:
                     buttons[2] = btnCount;
                     break;
-                case MoveDirection.right:
+                case Direction.right:
                     buttons[3] = btnCount;
                     break;
                 default:
@@ -128,20 +128,20 @@ namespace com.MJT.FindTheTheif
             }
         }
 
-        public void OnMoveButtonReleased(MoveDirection dir)
+        public void OnMoveButtonReleased(Direction dir)
         {
             switch (dir)
             {
-                case MoveDirection.up:
+                case Direction.up:
                     buttons[0] = 0;
                     break;
-                case MoveDirection.down:
+                case Direction.down:
                     buttons[1] = 0;
                     break;
-                case MoveDirection.left:
+                case Direction.left:
                     buttons[2] = 0;
                     break;
-                case MoveDirection.right:
+                case Direction.right:
                     buttons[3] = 0;
                     break;
                 default:

@@ -1,6 +1,6 @@
 Android
 PlayerPath?
-C:/Users/CGI/Desktop/FindTheTheif.apk
+C:/Users/MJT/Desktop/FindTheTheif.apk
 SceneListBegin?
 Assets/Scenes/Launcher.unity
 Assets/Scenes/Lobby.unity
@@ -23,7 +23,7 @@ e1bbf0ab858085e38fae6b12ebbdcd35 UnityEngine.Timeline.dll:UnityEngine.Timeline.G
 e1bbf0ab858085e38fae6b12ebbdcd35 UnityEngine.Timeline.dll:UnityEngine.Timeline.PlayableTrack
 201e3fde670b00545944bb3db215c80a UnityEngine.Timeline.dll:UnityEngine.Timeline.TimelineAsset
 3ba023cd67d72cace33969ab863e0fd4 Assembly-CSharp.dll:.PhotonStatsGui
-82fc78073f04d1b42526318cc1922502 Assembly-CSharp.dll:com.MJT.FindTheTheif.NPCController
+e28c017fb7b2388c7c1d887ef72e56ff Assembly-CSharp.dll:com.MJT.FindTheTheif.NPCController
 e7a73f5f78ba6445195ec23b74a1ce2d Unity.TextMeshPro.dll:TMPro.TMP_ScrollbarEventHandler
 2b1d1de79e4d31f1861f586502176c81 Assembly-CSharp.dll:.PhotonAnimatorView
 428849b6ca87815ef6cdbc8093b8c981 Assembly-CSharp.dll:com.MJT.FindTheTheif.ItemPopUp
@@ -135,7 +135,7 @@ e0ee4b3d4e27318934cc940a969d3d96 UnityEngine.Networking.dll:UnityEngine.Networki
 ad9173d3a69d99153f38ed4b62226129 UnityEngine.Networking.dll:UnityEngine.Networking.NetworkTransform
 9b895dcabbc1faf095c000c32d471fd0 UnityEngine.Networking.dll:UnityEngine.Networking.NetworkTransformChild
 5887ef1bc706b22b773d253fd443ceef UnityEngine.Networking.dll:UnityEngine.Networking.NetworkTransformVisualizer
-eba764d01fcf25c5afc918ebdd087a5e Assembly-CSharp.dll:com.MJT.FindTheTheif.TestNPCGenerator
+cd7285c7ff6154a38d5816d15b73aa86 Assembly-CSharp.dll:com.MJT.FindTheTheif.TestNPCGenerator
 d251bf88db6c95a6b1aa0b69298da9ef UnityEngine.SpatialTracking.dll:UnityEngine.SpatialTracking.TrackedPoseDriver
 de60b2018cd81dd5b8759752daacf5b3 Assembly-CSharp.dll:.PickupItemSyncer
 9393ca2ec06e4d500f46b5a90840eb44 Assembly-CSharp.dll:.PhotonRigidbody2DView
@@ -246,4 +246,4 @@ e1b8eaae6a90f88343f8be6d517488f6 Assembly-CSharp.dll:.PhotonView
 a01528258fe67fa484658e5b5d14c189 Facebook.Unity.Settings.dll:Facebook.Unity.Settings.FacebookSettings
 8649814970b42d345b89944b862453cc Unity.TextMeshPro.dll:TMPro.TMP_SubMesh
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:Facebook.Unity.Example.AppRequests
-2d1db09794512288af2f3387b4999030 Assembly-CSharp.dll:com.MJT.FindTheTheif.MultiplayRoomManager
+2064186c5fca96cdfb1f1244dbc4570a Assembly-CSharp.dll:com.MJT.FindTheTheif.MultiplayRoomManager

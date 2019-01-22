@@ -99,6 +99,7 @@ namespace com.MJT.FindTheTheif
         //현존하는 모든 경로 저장(NPC의 초기위치 설정을 위해)
         private List<Route> allGenrationRoutes;
         private List<RouteNode> allGenerationPoints;
+        //public List<RouteNode> AllGenerationPoints
 
         #endregion
 
