@@ -14,6 +14,7 @@ namespace com.MJT.FindTheTheif
 
         // 경로에 포함되어 있는 노드 집합
         // NPC가 참조해서 경로를 따라가는 데 사용
+        [SerializeField]
         private RouteNode[] nodeSet;
         public RouteNode[] NodeSet
         {
@@ -43,7 +44,7 @@ namespace com.MJT.FindTheTheif
         private void Awake()
         {
             // 노드 집합 초기화
-            nodeSet = GetComponentsInChildren<RouteNode>();
+            //nodeSet = GetComponentsInChildren<RouteNode>();
         }
     }
 }

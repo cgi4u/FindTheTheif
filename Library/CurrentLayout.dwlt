@@ -99,7 +99,7 @@ MonoBehaviour:
   m_MinSize: {x: 204, y: 348}
   m_MaxSize: {x: 4004, y: 8048}
   vertical: 1
-  controlID: 77
+  controlID: 11
 --- !u!114 &5
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -168,10 +168,10 @@ MonoBehaviour:
     y: 30
     width: 1536
     height: 731
-  m_MinSize: {x: 583, y: 348}
-  m_MaxSize: {x: 12008, y: 8048}
+  m_MinSize: {x: 581, y: 348}
+  m_MaxSize: {x: 12006, y: 8048}
   vertical: 0
-  controlID: 76
+  controlID: 63
 --- !u!114 &8
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -239,8 +239,8 @@ MonoBehaviour:
     y: 0
     width: 466
     height: 731
-  m_MinSize: {x: 102, y: 124}
-  m_MaxSize: {x: 4002, y: 4024}
+  m_MinSize: {x: 100, y: 100}
+  m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 15}
   m_Panes:
   - {fileID: 15}
@@ -285,19 +285,19 @@ MonoBehaviour:
     m_ShowAllHits: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Scenes
+    - Assets/Scripts/Managers
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets/Scenes
+  - Assets/Scripts/Managers
   m_LastFoldersGridSize: -1
   m_LastProjectPath: C:\Users\MJT\Desktop\GameDev\FindTheTheif
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 89}
-    m_SelectedIDs: 122c0000
-    m_LastClickedID: 11282
+    m_SelectedIDs: 40290000
+    m_LastClickedID: 10560
     m_ExpandedIDs: 0000000058280000d22b000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
@@ -326,7 +326,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 
+    m_ExpandedIDs: 0000000058280000d22b0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -351,8 +351,8 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_ListAreaState:
-    m_SelectedInstanceIDs: 
-    m_LastClickedInstanceID: 0
+    m_SelectedInstanceIDs: 32320000
+    m_LastClickedInstanceID: 12850
     m_HadKeyboardFocusLastEvent: 1
     m_ExpandedInstanceIDs: 
     m_RenameOverlay:
@@ -378,7 +378,7 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
     m_NewAssetIndexInList: -1
-    m_ScrollPosition: {x: 0, y: 0}
+    m_ScrollPosition: {x: 0, y: 2.5}
     m_GridSize: 64
   m_DirectoriesAreaWidth: 161
 --- !u!114 &12
@@ -453,7 +453,7 @@ MonoBehaviour:
       width: 1536
       height: 2297.3792
     m_MinimalGUI: 1
-  m_defaultScale: 1
+  m_defaultScale: 0.30208334
   m_TargetTexture: {fileID: 0}
   m_CurrentColorSpace: 0
   m_LastWindowPixelSize: {x: 580, y: 888.75}
@@ -631,23 +631,23 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: d47bffff
-      m_LastClickedID: -33836
-      m_ExpandedIDs: f87fffffda86ffff3092ffff8492ffff9892ffff049bffff5a9bffff669bffff46a4ffff90a4ffffe4a4fffff8a4ffff9ca6ffffd8a6fffff4a6ffff80acffff32b1fffffeb1ffff54b2ffff6ab2ffff26b8ffff6cb8ffff88c3ffff28cdfffff0cdffff44ceffff98ceffffacceffff18d7ffff6ed7ffff7ad7ffffa8defffff0dfffffe4e0ffffbae1fffffee1ffff48e2ffff9ce2ffffb0e2fffffce6ffff48e7ffff6ce7ffff1ee9ffff72e9ffff86e9ffff2aebffff66ebffff82ebffffd4fbffff406d0000bc6d0000b8760000b8820000628a0000748a00006eb90000
+      m_SelectedIDs: 32320000
+      m_LastClickedID: 12850
+      m_ExpandedIDs: c0faffffd4fbffff
       m_RenameOverlay:
         m_UserAcceptedRename: 0
-        m_Name: NPC(Clone)
-        m_OriginalName: NPC(Clone)
+        m_Name: 
+        m_OriginalName: 
         m_EditFieldRect:
           serializedVersion: 2
           x: 0
           y: 0
           width: 0
           height: 0
-        m_UserData: -33854
+        m_UserData: 0
         m_IsWaitingForDelay: 0
         m_IsRenaming: 0
-        m_OriginalEventType: 0
+        m_OriginalEventType: 11
         m_IsRenamingFilename: 0
         m_ClientGUIView: {fileID: 3}
       m_SearchString: 

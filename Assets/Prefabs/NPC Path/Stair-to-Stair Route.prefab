@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6825052996057311378}
   - component: {fileID: 3667858494052441276}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Stair-to-Stair Route
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -44,8 +44,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   routeType: 4
+  nodeSet: []
   startRoom: -1
   endRoom: -1
   curRoom: -1
   stairType: 0
+  stairSide: 0
   floor: -1

@@ -202,17 +202,17 @@ namespace com.MJT.FindTheTheif
                             if (curFloor == mapDataManager.RoomFloor[nextRoom])      // 같은 층 내에서에 이동
                             {
                                 //Debug.Log("Case: Room-to-Room");
-                                curRoute = mapDataManager.RoomToRoomRoutes[prevRoom][nextRoom];
+                                curRoute = mapDataManager.RoomToRoomRoutes[prevRoom * mapDataManager.maxRoomNum + nextRoom];
                             }
                             else if (curFloor > mapDataManager.RoomFloor[nextRoom])  // 내려가는 계단으로 이동
                             {
                                 //Debug.Log("Case: Room-to-down");
-                                curRoute = mapDataManager.RoomToStairRoutes[prevRoom][0];
+                                curRoute = mapDataManager.RoomToStairRoutes[prevRoom * 2];
                             }
                             else                                                                    // 올라가는 계단으로 이동
                             {
                                 //Debug.Log("Case: Room-to-up");
-                                curRoute = mapDataManager.RoomToStairRoutes[prevRoom][1];
+                                curRoute = mapDataManager.RoomToStairRoutes[prevRoom * 2 + 1];
                             }
                             
                             break;
@@ -226,19 +226,19 @@ namespace com.MJT.FindTheTheif
                                 if (mapDataManager.RoomFloor[nextRoom] == curFloor)
                                 {
                                     //Debug.Log("Case: Stair-to-Room");
-                                    curRoute = mapDataManager.StairToRoomRoutes[nextRoom][1];
+                                    curRoute = mapDataManager.StairToRoomRoutes[nextRoom * 2 + 1];
                                 }
                                 else
                                 {
                                     if (curRoute.stairSide == Route.StairSide.left)
                                     {
                                         //Debug.Log("Case: Down-down left");
-                                        curRoute = mapDataManager.StairToStairRoutes[curFloor][0];
+                                        curRoute = mapDataManager.StairToStairRoutes[(curFloor - 1) * mapDataManager.maxFloorNum];
                                     }
                                     else
                                     {
                                         //Debug.Log("Case: Down-down right");
-                                        curRoute = mapDataManager.StairToStairRoutes[curFloor][2];
+                                        curRoute = mapDataManager.StairToStairRoutes[(curFloor - 1) * mapDataManager.maxFloorNum + 2];
                                     }
                                 }
 
@@ -250,19 +250,19 @@ namespace com.MJT.FindTheTheif
                                 if (mapDataManager.RoomFloor[nextRoom] == curFloor)
                                 {
                                     //Debug.Log("Case: Stair-to-Room");
-                                    curRoute = mapDataManager.StairToRoomRoutes[nextRoom][0];
+                                    curRoute = mapDataManager.StairToRoomRoutes[nextRoom * 2];
                                 }
                                 else
                                 {
                                     if (curRoute.stairSide == Route.StairSide.left)
                                     {
                                         //Debug.Log("Case: Up-up left");
-                                        curRoute = mapDataManager.StairToStairRoutes[curFloor][1];
+                                        curRoute = mapDataManager.StairToStairRoutes[(curFloor - 1) * mapDataManager.maxFloorNum + 1];
                                     }
                                     else
                                     {
                                         //Debug.Log("Case: Up-up left");
-                                        curRoute = mapDataManager.StairToStairRoutes[curFloor][3];
+                                        curRoute = mapDataManager.StairToStairRoutes[(curFloor - 1) * mapDataManager.maxFloorNum + 3];
                                     }
                                 }
                             }
