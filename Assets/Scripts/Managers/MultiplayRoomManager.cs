@@ -110,9 +110,9 @@ namespace com.MJT.FindTheTheif
         public GameObject NPCPrefab;
         void NPCGeneration(int NPCNum)
         {
-            for (int i = 0; i < NPCNum; i++)
+            /*for (int i = 0; i < NPCNum; i++)
             {
-                RouteNode randomPoint = MapDataManager.Instance.GetRandomGenerationPoint();
+                RouteNode randomPoint = MapDataManager.Instance.GetRandomNPCGenPointIdx();
                 if (randomPoint == null)
                 {
                     Debug.LogError("Error: Attempt to generate more number of NPC than available");
@@ -122,7 +122,7 @@ namespace com.MJT.FindTheTheif
                 GameObject newNPC = PhotonNetwork.InstantiateSceneObject(NPCPrefab.name, new Vector3(0, 0, 0), Quaternion.identity, 0, null);
                 //PhotonView.Get(newNPC).RPC("ManualStart", PhotonTargets.All, randomPoint);
                 newNPC.GetComponent<NPCController>().ManualStart(randomPoint);
-            }
+            }*/
         }
 
         public GameObject[] itemPrefabs;
@@ -148,7 +148,7 @@ namespace com.MJT.FindTheTheif
             }
 
             MapDataManager mapDataManager = MapDataManager.Instance;
-            if (mapDataManager.ItemGenerationPoints.Count > itemNum)
+            if (mapDataManager.ItemGenPoints.Count > itemNum)
             {
                 Debug.LogError("There are fewer items than generation points.");
                 return;
@@ -166,14 +166,14 @@ namespace com.MJT.FindTheTheif
                 }
             }
 
-            for (int i = 0; i < mapDataManager.ItemGenerationPoints.Count; i++)
+            for (int i = 0; i < mapDataManager.ItemGenPoints.Count; i++)
             {
-                GameObject newItem = PhotonNetwork.Instantiate("Items\\" + itemPrefabs[i].name, mapDataManager.ItemGenerationPoints[i].position, Quaternion.identity, 0);
+                GameObject newItem = PhotonNetwork.Instantiate("Items\\" + itemPrefabs[i].name, mapDataManager.ItemGenPoints[i].position, Quaternion.identity, 0);
                 if (isItemToSteal[i] == true)
                     stealItemList.Add(newItem.GetComponent<ItemController>());
 
-                ExhibitRoom roomOfItem = mapDataManager.ItemGenerationPoints[i].GetComponentInParent<ExhibitRoom>();
-                newItem.GetComponent<ItemController>().Init(roomOfItem.floor, roomOfItem.num);
+                ExhibitRoom roomOfItem = mapDataManager.ItemGenPoints[i].GetComponentInParent<ExhibitRoom>();
+                //newItem.GetComponent<ItemController>().Init(roomOfItem.Floor, roomOfItem.num);
             }
             isItemStolen = new bool[stealItemNum];
             UIManager.Instance.RenewStealItemList(stealItemList, stealItemNum, isItemStolen);

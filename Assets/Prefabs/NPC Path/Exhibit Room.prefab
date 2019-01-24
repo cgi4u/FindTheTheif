@@ -43,5 +43,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b18cee1c303a584290fca5423a41226, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  num: -1
   floor: -1
+  adjStairSide: 0
+  itemGenPoints:
+  - {fileID: 0}
+  - {fileID: 0}
+  inRoomRoute: {fileID: 0}
+  toRoomRoutes: []
+  toStairRoutes:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  fromStairRoutes:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}

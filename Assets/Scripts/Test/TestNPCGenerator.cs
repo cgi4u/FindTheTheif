@@ -16,15 +16,15 @@ namespace com.MJT.FindTheTheif
             //Route Test
             for (int i = 0; i < NPCNumber; i++)
             {
-                RouteNode randomPoint = MapDataManager.Instance.GetRandomGenerationPoint();
-                if (randomPoint == null)
+                int randomPointIdx = MapDataManager.Instance.GetRandomNPCGenPointIdx();
+                if (randomPointIdx == -1)
                 {
                     Debug.LogError("Error: Attempt to generate more number of NPC than available");
                     return;
                 }
 
                 GameObject newNPC = Instantiate(NPCPrefab);
-                newNPC.GetComponent<NPCController>().ManualStart(randomPoint);
+                newNPC.GetComponent<NPCController>().ManualStart(randomPointIdx);
             }
         }
     }

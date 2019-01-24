@@ -4,13 +4,16 @@ using UnityEngine;
 
 namespace com.MJT.FindTheTheif
 {
+    public class FloorSTSRouteContainer
+    {
+        public Route leftDownDownRoute;
+        public Route leftUpUpRoute;
+        public Route rightDownDownRoute;
+        public Route rightUpUpRoute;
+    }
+
     public class MapDataManager : MonoBehaviour
     {
-        //나중에 const변경 필요
-        public int maxRoomNum; 
-        public int maxFloorNum;
-        public int maxNodePerRoute;
-
         //Singleton Instance
         private static MapDataManager instance;
         public static MapDataManager Instance
@@ -23,80 +26,46 @@ namespace com.MJT.FindTheTheif
 
         #region Map Object Properties
 
-
-        //각 전시실이 위치하는 층을 저장
         [SerializeField]
-        private List<int> roomFloor;
-        public List<int> RoomFloor
+        private ExhibitRoom[] rooms;
+        /// <summary>
+        /// Room datas(should be serialized)
+        /// </summary>
+        public ExhibitRoom[] Rooms
         {
             get
             {
-                return roomFloor;
+                return rooms;
             }
         }
 
-        //아이템 소환 포인트를 저장
-        [SerializeField]
-        private List<Transform> itemGenerationPoints;
-        public List<Transform> ItemGenerationPoints
+        private List<Transform> itemGenPoints = new List<Transform>();
+        /// <summary>
+        /// Points where items can be generated
+        /// </summary>
+        public List<Transform> ItemGenPoints
         {
             get
             {
-                return itemGenerationPoints;
+                return itemGenPoints;
             }
         }
 
-        //전시실 내부 순환경로를 저장
-        [SerializeField]
-        private List<Route> inRoomRoutes;
-        public List<Route> InRoomRoutes
+        private List<RouteNode> nPCGenPoints = new List<RouteNode>();
+        /// <summary>
+        /// RouteNodes where NPC can be generated.
+        /// </summary>
+        public List<RouteNode> NPCGenPoints
         {
             get
             {
-                return inRoomRoutes;
+                return nPCGenPoints;
             }
         }
 
-        //방과 방 사이 경로를 저장
         [SerializeField]
-        private List<Route> roomToRoomRoutes;
-        public List<Route> RoomToRoomRoutes
-        {
-            get
-            {
-                return roomToRoomRoutes;
-            }
-        }
-
-        //계단->방 경로를 저장
-        //index: 내려가는 계단 0, 올라가는 계단 1
-        [SerializeField]
-        private List<Route> stairToRoomRoutes;
-        public List<Route> StairToRoomRoutes
-        {
-            get
-            {
-                return stairToRoomRoutes;
-            }
-        }
-
-        //방->계단 경로를 저장
-        //index: 내려가는 계단 0, 올라가는 계단 1
-        [SerializeField]
-        private List<Route> roomToStairRoutes;
-        public List<Route> RoomToStairRoutes
-        {
-            get
-            {
-                return roomToStairRoutes;
-            }
-        }
-
-        //계단->계단 경로를 저장
-        //index: 내려가는 계단 0, 올라가는 계단 1 
-        [SerializeField]
-        private List<Route> stairToStairRoutes;
-        public List<Route> StairToStairRoutes
+        private FloorSTSRouteContainer[] stairToStairRoutes;
+        public FloorSTSRouteContainer[] StairToStairRoutes
         {
             get
             {
@@ -104,28 +73,42 @@ namespace com.MJT.FindTheTheif
             }
         }
 
-        //현존하는 모든 경로 중 계단으로 향하지 않는 경로 저장(NPC의 초기위치 설정을 위해)
-        private List<Route> allGenerationRoutes;
-        private List<RouteNode> allGenerationPoints;
-
         #endregion
 
         private void Awake()
         {
-            allGenerationRoutes = new List<Route>();
-            allGenerationPoints = new List<RouteNode>();
+            List<Route> NPCGenRoutes = new List<Route>();
+            nPCGenPoints = new List<RouteNode>();
 
-            allGenerationRoutes.AddRange(roomToRoomRoutes);
-            allGenerationRoutes.AddRange(stairToRoomRoutes);
-            allGenerationRoutes.AddRange(inRoomRoutes);
-
-            foreach (Route route in allGenerationRoutes)
+            foreach (ExhibitRoom room in rooms)
             {
-                allGenerationPoints.AddRange(route.NodeSet);
+                NPCGenRoutes.Add(room.InRoomRoute);
+                NPCGenRoutes.AddRange(room.ToRoomRoutes);
+                foreach (Route fromStairRoute in room.FromStairRoutes)
+                {
+                    if (fromStairRoute != null)
+                        NPCGenRoutes.Add(fromStairRoute);
+                }
+
+                itemGenPoints.AddRange(room.ItemGenPoints);
             }
 
-            ifRouteAssigned = new bool[allGenerationRoutes.Count];
-            ifPointAssigned = new bool[allGenerationPoints.Count];
+            List<Vector3> assignedLoc = new List<Vector3>();
+            foreach (Route route in NPCGenRoutes)
+            {
+                for (int i = 1; i < route.NodeSet.Length - 1; i++)
+                {
+                    Vector3 nodeLoc = route.NodeSet[i].transform.position;
+                    if (assignedLoc.FindAll(loc => loc.Equals(nodeLoc)).Count == 0)
+                    {
+                        nPCGenPoints.Add(route.NodeSet[i]);
+                        assignedLoc.Add(nodeLoc);
+                    }
+                }
+            }
+
+            //ifRouteAssigned = new bool[allGenerationRoutes.Count];
+            ifPointAssigned = new bool[nPCGenPoints.Count];
 
             //Routing Manager Singlton 생성
             if (instance == null)
@@ -138,39 +121,12 @@ namespace com.MJT.FindTheTheif
 
         private void Start()
         {
-            /*allGenerationRoutes = new List<Route>();
-            allGenerationPoints = new List<RouteNode>();
             
-            Route[] allRouteArray = GetComponentsInChildren<Route>();
-            for (int i = 0; i < allRouteArray.Length; i++)
-            {
-                if (allRouteArray[i].routeType != Route.RouteType.Stair_to_Stair
-                    && allRouteArray[i].routeType != Route.RouteType.Room_to_Stair)
-                {
-                    allGenerationRoutes.Add(allRouteArray[i]);
-                    for (int j = 1; j < allRouteArray[i].NodeSet.Length - 1; j++)
-                    {
-                        allGenerationPoints.Add(allRouteArray[i].NodeSet[j]);
-                    }
-                }
-            }
-            ifRouteAssigned = new bool[allGenerationRoutes.Count];
-            ifPointAssigned = new bool[allGenerationPoints.Count];
-
-            //Routing Manager Singlton 생성
-            if (instance == null)
-            {
-                instance = this;
-            }
-            else
-                Debug.Log("Error: Multiple instantiation of the routing manager.");*/
         }
 
-        #region Public Methods
-
+        /*
         bool[] ifRouteAssigned;
         int assignedRouteNum = 0;
-
         public Route getRandomRoute()
         {
             if (assignedRouteNum >= allGenerationRoutes.Count)  //All available routes are assinged
@@ -187,31 +143,33 @@ namespace com.MJT.FindTheTheif
 
             return allGenerationRoutes[r];
         }
+        */
 
+
+        /// <summary>
+        /// Check assigned NPC generation points. If assigned, true, if not false.
+        /// </summary>
         bool[] ifPointAssigned;
         int assignedPointNum = 0;
-        List<Vector3> assinedLocations = new List<Vector3>();
-        public RouteNode GetRandomGenerationPoint()
+        /// <summary>
+        /// Return random NPC Generation Point(RouteNode).
+        /// </summary>
+        /// <returns>A random RouteNode that can be selected as NPC Generation Point. If all points are assigned, -1.</returns>
+        public int GetRandomNPCGenPointIdx()
         {
-            if (assignedPointNum >= allGenerationPoints.Count)  //All available points are assinged
-                return null;
+            if (assignedPointNum >= nPCGenPoints.Count)  //All available points are assinged
+                return -1;
 
             int r;
             do
             {
-                r = Random.Range(0, allGenerationPoints.Count);
-                Vector3 newLoc = allGenerationPoints[r].transform.position;
-                if (assinedLocations.FindAll(loc => loc.Equals(newLoc)).Count != 0)
-                    ifPointAssigned[r] = true;
-                else
-                    assinedLocations.Add(newLoc);
+                r = Random.Range(0, nPCGenPoints.Count);
             } while (ifPointAssigned[r]);
 
             ifPointAssigned[r] = true;
             assignedPointNum += 1;
-            return allGenerationPoints[r];
-        }
 
-        #endregion
+            return r;
+        }
     }
 }

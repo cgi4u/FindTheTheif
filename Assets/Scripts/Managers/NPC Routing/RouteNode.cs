@@ -8,7 +8,9 @@ namespace com.MJT.FindTheTheif
     public class RouteNode : MonoBehaviour
     {
         // 아이템 관람 지점인지, 맞다면 아이템의 방향은 어느쪽인지 판단
-        public bool ifItemPoint;
-        public Direction itemDir;
+        [SerializeField]
+        private bool ifItemPoint;
+        [SerializeField]
+        private Direction itemDir;
     }
 }

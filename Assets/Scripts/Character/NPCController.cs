@@ -36,31 +36,32 @@ namespace com.MJT.FindTheTheif
         }
 
         [PunRPC]
-        public void ManualStart(RouteNode startPoint)
+        public void ManualStart(int genPointIdx)
         {
             mapDataManager = MapDataManager.Instance;
 
-            curRoute = startPoint.gameObject.GetComponentInParent<Route>();
+            RouteNode genPoint = mapDataManager.NPCGenPoints[genPointIdx];
+            curRoute = genPoint.gameObject.GetComponentInParent<Route>();
             routeNodeSet = curRoute.NodeSet;
 
-            switch (curRoute.routeType)
+            switch (curRoute.RouteType)
             {
-                case Route.RouteType.In_Room:
-                    nextRoom = curRoute.curRoom;
+                case RouteType.In_Room:
+                    nextRoom = curRoute.CurRoom;
                     break;
-                case Route.RouteType.Room_to_Room:
-                case Route.RouteType.Stair_to_Room:
-                    nextRoom = curRoute.endRoom;
+                case RouteType.Room_to_Room:
+                case RouteType.Stair_to_Room:
+                    nextRoom = curRoute.EndRoom;
                     break;
                 default:
                     Debug.LogError("Route type error.");
                     break;
             }
 
-            curFloor = mapDataManager.RoomFloor[nextRoom];
+            curFloor = mapDataManager.Rooms[nextRoom].Floor;
             for (int i = 0; i < curRoute.NodeSet.Length; i++)
             {
-                if (startPoint == curRoute.NodeSet[i])
+                if (genPoint == curRoute.NodeSet[i])
                 {
                     curNodeNum = i;
                     break;
@@ -174,7 +175,7 @@ namespace com.MJT.FindTheTheif
 
         private void RouteCheck()
         {
-            if (transform.position.Equals(routeNodeSet[curNodeNum + 1].transform.position))
+            /*if (transform.position.Equals(routeNodeSet[curNodeNum + 1].transform.position))
             {
                 //transform.position = routeNodeSet[curNodeNum + 1].transform.position;
 
@@ -219,7 +220,7 @@ namespace com.MJT.FindTheTheif
                         case Route.RouteType.Room_to_Stair:
                         case Route.RouteType.Stair_to_Stair:
                             //StopCoroutine("MoveCheck");
-                            if (curRoute.stairType == Route.StairType.down) // 계단을 통해 내려옴 -> 올라가는 계단에서 해당 방으로
+                            if (curRoute.StairType == Route.StairType.down) // 계단을 통해 내려옴 -> 올라가는 계단에서 해당 방으로
                             {
                                 curFloor -= 1;
 
@@ -230,7 +231,7 @@ namespace com.MJT.FindTheTheif
                                 }
                                 else
                                 {
-                                    if (curRoute.stairSide == Route.StairSide.left)
+                                    if (curRoute.StairSide == Route.StairSide.left)
                                     {
                                         //Debug.Log("Case: Down-down left");
                                         curRoute = mapDataManager.StairToStairRoutes[(curFloor - 1) * mapDataManager.maxFloorNum];
@@ -254,7 +255,7 @@ namespace com.MJT.FindTheTheif
                                 }
                                 else
                                 {
-                                    if (curRoute.stairSide == Route.StairSide.left)
+                                    if (curRoute.StairSide == Route.StairSide.left)
                                     {
                                         //Debug.Log("Case: Up-up left");
                                         curRoute = mapDataManager.StairToStairRoutes[(curFloor - 1) * mapDataManager.maxFloorNum + 1];
@@ -278,7 +279,7 @@ namespace com.MJT.FindTheTheif
                     routeNodeSet = curRoute.NodeSet;
                     curNodeNum = 0;
                 }
-            }
+            }*/
         }
 
         #endregion

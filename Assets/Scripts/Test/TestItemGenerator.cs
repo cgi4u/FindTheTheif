@@ -6,7 +6,7 @@ namespace com.MJT.FindTheTheif
 {
     public class TestItemGenerator : MonoBehaviour
     {
-        public readonly int itemNum = 10;
+        public readonly int itemNum =10;
         public GameObject[] itemPrefabs;
 
         private void Awake()
@@ -39,18 +39,18 @@ namespace com.MJT.FindTheTheif
             }
 
             MapDataManager mapDataManager = MapDataManager.Instance;
-            if (mapDataManager.ItemGenerationPoints.Count > itemNum)
+            if (mapDataManager.ItemGenPoints.Count > itemNum)
             {
                 Debug.LogError("There are fewer items than generation points.");
                 return;
             }
 
-            for (int i = 0; i < mapDataManager.ItemGenerationPoints.Count; i++)
+            for (int i = 0; i < mapDataManager.ItemGenPoints.Count; i++)
             {
-                GameObject newItem = Instantiate(itemPrefabs[i], mapDataManager.ItemGenerationPoints[i].position, Quaternion.identity);
+                GameObject newItem = Instantiate(itemPrefabs[i], mapDataManager.ItemGenPoints[i].position, Quaternion.identity);
 
-                ExhibitRoom roomOfItem = mapDataManager.ItemGenerationPoints[i].GetComponentInParent<ExhibitRoom>();
-                newItem.GetComponent<ItemController>().Init(roomOfItem.floor, roomOfItem.num);
+                ExhibitRoom roomOfItem = mapDataManager.ItemGenPoints[i].GetComponentInParent<ExhibitRoom>();
+                //newItem.GetComponent<ItemController>().Init(roomOfItem.Floor, roomOfItem.num);
             }
         }
     }

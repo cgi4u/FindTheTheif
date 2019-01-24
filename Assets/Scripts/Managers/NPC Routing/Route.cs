@@ -7,15 +7,24 @@ namespace com.MJT.FindTheTheif
     // 각 경로의 타입과 노드 집합을 저장하는 객체
     public class Route : MonoBehaviour
     {
-        // 경로 타입
-        // 방 내 순환경로, 같은 층에서의 방과 방 사이 이동경로, 방에서 계단으로의 경로, 계단에서 방으로의 경로
-        public enum RouteType { In_Room, Room_to_Room, Room_to_Stair, Stair_to_Room, Stair_to_Stair }  
-        public RouteType routeType;
+        [SerializeField]
+        private RouteType routeType;
+        /// <summary>
+        /// Type of this route(In Room, Room to Room, Stair to Room, Room to Stair, Stair to Stair)
+        /// </summary>
+        public RouteType RouteType
+        {
+            get
+            {
+                return routeType;
+            }
+        }
 
-        // 경로에 포함되어 있는 노드 집합
-        // NPC가 참조해서 경로를 따라가는 데 사용
         [SerializeField]
         private RouteNode[] nodeSet;
+        /// <summary>
+        /// The set of nodes which are contained in this route. NPC follows there positions.
+        /// </summary>
         public RouteNode[] NodeSet
         {
             get
@@ -24,27 +33,94 @@ namespace com.MJT.FindTheTheif
             }
         }
 
-        //For room-to-room
-        public int startRoom;
-        public int endRoom;
+        #region Room to Room Route Properties
 
-        //For in-room
-        public int curRoom;
-
-        //For stair-to-room or room-to-stair
-        public enum StairType { up, down, none }
-        public enum StairSide { left, right }
-
-        public StairType stairType;
-        public StairSide stairSide;
-
-        //For stair-to-stair
-        public int floor;
-
-        private void Awake()
+        [SerializeField]
+        private int startRoom;
+        /// <summary>
+        /// The room where this route starts.(used by Room to Room and Room to Stair type Routes)
+        /// </summary>
+        public int StartRoom
         {
-            // 노드 집합 초기화
-            //nodeSet = GetComponentsInChildren<RouteNode>();
+            get
+            {
+                return startRoom;
+            }
         }
+
+        [SerializeField]
+        private int endRoom;
+        /// <summary>
+        /// The room where this route ends.(used by Room to Room and Stair to Room type Routes)
+        /// </summary>
+        public int EndRoom
+        {
+            get
+            {
+                return endRoom;
+            }
+        }
+
+        #endregion
+
+        #region In Room Route Properties
+
+        [SerializeField]
+        private int curRoom;
+        /// <summary>
+        /// The room contains this route.(used by In Room Routes)
+        /// </summary>
+        public int CurRoom
+        {
+            get
+            {
+                return curRoom;
+            }
+        }
+
+        #endregion
+
+        #region Stair to Room / Room to Stair Route Properties
+
+        private StairType stairType;
+        /// <summary>
+        /// The type of stair(up, down) where this route starts or ends.(used by Stair to Room and Room to Stair Routes)
+        /// </summary>
+        public StairType StairType
+        {
+            get
+            {
+                return stairType;
+            }
+        }
+        /// <summary>
+        /// The side of stair(left, right) where this route starts or ends.(used by Stair to Room and Room to Stair Routes)
+        /// </summary>
+        private StairSide stairSide;
+        public StairSide StairSide
+        {
+            get
+            {
+                return stairSide;
+            }
+        }
+
+        #endregion
+
+        #region Stair to Stair Route Properties
+
+        private int floor;
+        /// <summary>
+        /// The floor number in which this route is.(used by Stair to Stair Routes)
+        /// </summary>
+        public int Floor
+        {
+            get
+            {
+                return floor;
+            }
+        }
+
+        #endregion
     }
 }
