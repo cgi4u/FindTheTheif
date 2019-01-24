@@ -46,4 +46,5 @@ MonoBehaviour:
   - TestRPC
   - RenewStealItemList
   - ManualStart
+  - RenewCurRoute
   DisableAutoOpenWizard: 1

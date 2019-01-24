@@ -61,21 +61,21 @@ namespace com.MJT.FindTheTheif
             }
         }
         [SerializeField]
-        private Route[] toStairRoutes;
-        public Route[] ToStairRoutes
-        {
-            get
-            {
-                return toStairRoutes;
-            }
-        }
-        [SerializeField]
-        private Route[] fromStairRoutes;
-        public Route[] FromStairRoutes
+        private StairRouteContainer fromStairRoutes;
+        public StairRouteContainer FromStairRoutes
         {
             get
             {
                 return fromStairRoutes;
+            }
+        }
+        [SerializeField]
+        private StairRouteContainer toStairRoutes;
+        public StairRouteContainer ToStairRoutes
+        {
+            get
+            {
+                return toStairRoutes;
             }
         }
     }

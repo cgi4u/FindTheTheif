@@ -8,7 +8,21 @@ namespace com.MJT.FindTheTheif
     public class NPCController : Photon.PunBehaviour, IPunObservable
     {
         [SerializeField]
-        public Route curRoute;              // 현재 진행중인 경로
+        private Route curRoute;              // 현재 진행중인 경로
+
+        #region Current Route Networking
+
+        [SerializeField]
+        private int curRouteRoom;
+        [SerializeField]
+        private RouteType curRouteType;
+        [SerializeField]
+        private StairSide curRouteStairSide;
+        [SerializeField]
+        private StairType curRouteStairType;
+
+        #endregion
+
         [SerializeField]
         private RouteNode[] routeNodeSet;   // 현재 진행중인 경로의 노드집합
         [SerializeField]
@@ -173,61 +187,62 @@ namespace com.MJT.FindTheTheif
         [SerializeField]
         int nextRoom;
 
+        /// <summary>
+        /// Check if this NPC arrived at next node or route end. If did, change target node or current route. 
+        /// </summary>
         private void RouteCheck()
         {
-            /*if (transform.position.Equals(routeNodeSet[curNodeNum + 1].transform.position))
+            if (transform.position.Equals(routeNodeSet[curNodeNum + 1].transform.position))
             {
-                //transform.position = routeNodeSet[curNodeNum + 1].transform.position;
-
                 curNodeNum += 1;
-                if (curNodeNum < routeNodeSet.Length - 1)
+                if (curNodeNum < routeNodeSet.Length - 1)       // Route not ends, arrived at next node.
                 {
-                    if (routeNodeSet[curNodeNum].ifItemPoint)
+                    if (routeNodeSet[curNodeNum].IfItemPoint)   // Set item watching time.
                     {
                         blockedTime = Random.Range(1, 3);
                         isMoving = false;
                     }
                 }
-                else
+                else                                            // Route ends, get next route.
                 {
-                    switch (curRoute.routeType)
-                    {
-                        case Route.RouteType.In_Room:
+                    switch (curRoute.RouteType)
+                    { 
+                        case RouteType.In_Room:                 // Currunt root is In Room Route -> Next can be Room to Room/Stair
                             prevRoom = nextRoom;
                             do
                             {
-                                nextRoom = Random.Range(0, 5);
+                                nextRoom = Random.Range(0, mapDataManager.Rooms.Length);
                             } while (prevRoom == nextRoom);
 
-                            //다음 방의 층수에 따라 다음 경로의 형태가 정해진다]
-                            if (curFloor == mapDataManager.RoomFloor[nextRoom])      // 같은 층 내에서에 이동
+                            if (curFloor == mapDataManager.Rooms[nextRoom].Floor)       // The next room is in the same floor -> Room to Room route
                             {
                                 //Debug.Log("Case: Room-to-Room");
-                                curRoute = mapDataManager.RoomToRoomRoutes[prevRoom * mapDataManager.maxRoomNum + nextRoom];
+                                curRouteType = RouteType.Room_to_Room;
                             }
-                            else if (curFloor > mapDataManager.RoomFloor[nextRoom])  // 내려가는 계단으로 이동
-                            {
-                                //Debug.Log("Case: Room-to-down");
-                                curRoute = mapDataManager.RoomToStairRoutes[prevRoom * 2];
-                            }
-                            else                                                                    // 올라가는 계단으로 이동
+                            else                                                         // The next room is in one of the other floors -> Room to Stair route
                             {
                                 //Debug.Log("Case: Room-to-up");
-                                curRoute = mapDataManager.RoomToStairRoutes[prevRoom * 2 + 1];
+                                curRouteType = RouteType.Room_to_Stair;
+                                curRouteStairSide = mapDataManager.Rooms[prevRoom].AdjStairSide;
+                                if (curFloor > mapDataManager.Rooms[nextRoom].Floor)
+                                    curRouteStairType = StairType.down;
+                                else
+                                    curRouteStairType = StairType.up;
                             }
                             
                             break;
-                        case Route.RouteType.Room_to_Stair:
-                        case Route.RouteType.Stair_to_Stair:
-                            //StopCoroutine("MoveCheck");
-                            if (curRoute.StairType == Route.StairType.down) // 계단을 통해 내려옴 -> 올라가는 계단에서 해당 방으로
+                        case RouteType.Room_to_Stair:              // Current route is To Stair Route -> Next can be Stair to Room/Stair
+                        case RouteType.Stair_to_Stair:
+                            if (curRoute.StairType == StairType.down)       // Current route ends with down stair -> Next starts with up stair
                             {
                                 curFloor -= 1;
 
-                                if (mapDataManager.RoomFloor[nextRoom] == curFloor)
+                                if (mapDataManager.Rooms[nextRoom].Floor == curFloor)   // The target room is in this floor.
                                 {
                                     //Debug.Log("Case: Stair-to-Room");
-                                    curRoute = mapDataManager.StairToRoomRoutes[nextRoom * 2 + 1];
+                                    curRouteRoom = nextRoom;
+                                    curRouteStairSide = curRoute.StairSide;             // From Stair Route starts in the side where previous route ends
+                                    curRouteType = 
                                 }
                                 else
                                 {
@@ -279,7 +294,13 @@ namespace com.MJT.FindTheTheif
                     routeNodeSet = curRoute.NodeSet;
                     curNodeNum = 0;
                 }
-            }*/
+            }
+        }
+
+        [PunRPC]
+        void RenewCurRoute(int roomNum, RouteType routeType, int targetRoom, StairType stairType, StairSide stairSide, int floor)
+        {
+
         }
 
         #endregion

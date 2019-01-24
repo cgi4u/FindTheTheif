@@ -161,6 +161,7 @@
     <Compile Include="Assets\Scripts\Managers\NPC Routing\MapDataManager.cs" />
     <Compile Include="Assets\Scripts\Managers\NPC Routing\Route.cs" />
     <Compile Include="Assets\Scripts\Managers\NPC Routing\RouteNode.cs" />
+    <Compile Include="Assets\Scripts\Managers\NPC Routing\StairRouteContainer.cs" />
     <Compile Include="Assets\Scripts\Test\MoveTestManager.cs" />
     <Compile Include="Assets\Scripts\Test\TestItemGenerator.cs" />
     <Compile Include="Assets\Scripts\Test\TestNPCGenerator.cs" />
@@ -172,19 +173,19 @@
     <None Include="Assets\Photon Unity Networking\readme.txt" />
     <None Include="Assets\Photon Unity Networking\changelog.txt" />
     <Reference Include="Unity.TextMeshPro.Editor">
-      <HintPath>C:/Users/CGI/Desktop/Unity Projects/FindTheTheif/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
+      <HintPath>C:/Users/MJT/Desktop/GameDev/FindTheTheif/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.PackageManagerUI.Editor">
-      <HintPath>C:/Users/CGI/Desktop/Unity Projects/FindTheTheif/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
+      <HintPath>C:/Users/MJT/Desktop/GameDev/FindTheTheif/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.CollabProxy.Editor">
-      <HintPath>C:/Users/CGI/Desktop/Unity Projects/FindTheTheif/Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll</HintPath>
+      <HintPath>C:/Users/MJT/Desktop/GameDev/FindTheTheif/Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro">
-      <HintPath>C:/Users/CGI/Desktop/Unity Projects/FindTheTheif/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
+      <HintPath>C:/Users/MJT/Desktop/GameDev/FindTheTheif/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Analytics.DataPrivacy">
-      <HintPath>C:/Users/CGI/Desktop/Unity Projects/FindTheTheif/Library/ScriptAssemblies/Unity.Analytics.DataPrivacy.dll</HintPath>
+      <HintPath>C:/Users/MJT/Desktop/GameDev/FindTheTheif/Library/ScriptAssemblies/Unity.Analytics.DataPrivacy.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AIModule">
       <HintPath>C:/Program Files/Unity/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
@@ -385,37 +386,37 @@
       <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/UnitySpatialTracking/RuntimeEditor/UnityEngine.SpatialTracking.dll</HintPath>
     </Reference>
     <Reference Include="Facebook.Unity">
-      <HintPath>C:/Users/CGI/Desktop/Unity Projects/FindTheTheif/Assets/FacebookSDK/Plugins/Facebook.Unity.dll</HintPath>
+      <HintPath>C:/Users/MJT/Desktop/GameDev/FindTheTheif/Assets/FacebookSDK/Plugins/Facebook.Unity.dll</HintPath>
     </Reference>
     <Reference Include="Facebook.Unity.Gameroom">
-      <HintPath>C:/Users/CGI/Desktop/Unity Projects/FindTheTheif/Assets/FacebookSDK/Plugins/Gameroom/Facebook.Unity.Gameroom.dll</HintPath>
+      <HintPath>C:/Users/MJT/Desktop/GameDev/FindTheTheif/Assets/FacebookSDK/Plugins/Gameroom/Facebook.Unity.Gameroom.dll</HintPath>
     </Reference>
     <Reference Include="FacebookNamedPipeClient">
-      <HintPath>C:/Users/CGI/Desktop/Unity Projects/FindTheTheif/Assets/FacebookSDK/Plugins/Gameroom/FacebookNamedPipeClient.dll</HintPath>
+      <HintPath>C:/Users/MJT/Desktop/GameDev/FindTheTheif/Assets/FacebookSDK/Plugins/Gameroom/FacebookNamedPipeClient.dll</HintPath>
     </Reference>
     <Reference Include="Facebook.Unity.Settings">
-      <HintPath>C:/Users/CGI/Desktop/Unity Projects/FindTheTheif/Assets/FacebookSDK/Plugins/Settings/Facebook.Unity.Settings.dll</HintPath>
+      <HintPath>C:/Users/MJT/Desktop/GameDev/FindTheTheif/Assets/FacebookSDK/Plugins/Settings/Facebook.Unity.Settings.dll</HintPath>
     </Reference>
     <Reference Include="Photon3Unity3D">
-      <HintPath>C:/Users/CGI/Desktop/Unity Projects/FindTheTheif/Assets/Plugins/Photon3Unity3D.dll</HintPath>
+      <HintPath>C:/Users/MJT/Desktop/GameDev/FindTheTheif/Assets/Plugins/Photon3Unity3D.dll</HintPath>
     </Reference>
     <Reference Include="websocket-sharp">
-      <HintPath>C:/Users/CGI/Desktop/Unity Projects/FindTheTheif/Assets/Plugins/WebSocket/websocket-sharp.dll</HintPath>
+      <HintPath>C:/Users/MJT/Desktop/GameDev/FindTheTheif/Assets/Plugins/WebSocket/websocket-sharp.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.Advertisements">
-      <HintPath>C:/Users/CGI/Desktop/Unity Projects/FindTheTheif/Library/PackageCache/com.unity.ads@2.3.1/Runtime/UnityEngine.Advertisements.dll</HintPath>
+      <HintPath>C:/Users/MJT/Desktop/GameDev/FindTheTheif/Library/PackageCache/com.unity.ads@2.3.1/Runtime/UnityEngine.Advertisements.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.Advertisements.Editor">
-      <HintPath>C:/Users/CGI/Desktop/Unity Projects/FindTheTheif/Library/PackageCache/com.unity.ads@2.3.1/Runtime/UnityEngine.Advertisements.Editor.dll</HintPath>
+      <HintPath>C:/Users/MJT/Desktop/GameDev/FindTheTheif/Library/PackageCache/com.unity.ads@2.3.1/Runtime/UnityEngine.Advertisements.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Analytics.Editor">
-      <HintPath>C:/Users/CGI/Desktop/Unity Projects/FindTheTheif/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Editor.dll</HintPath>
+      <HintPath>C:/Users/MJT/Desktop/GameDev/FindTheTheif/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Analytics.StandardEvents">
-      <HintPath>C:/Users/CGI/Desktop/Unity Projects/FindTheTheif/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.StandardEvents.dll</HintPath>
+      <HintPath>C:/Users/MJT/Desktop/GameDev/FindTheTheif/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.StandardEvents.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Analytics.Tracker">
-      <HintPath>C:/Users/CGI/Desktop/Unity Projects/FindTheTheif/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Tracker.dll</HintPath>
+      <HintPath>C:/Users/MJT/Desktop/GameDev/FindTheTheif/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Tracker.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib">
       <HintPath>C:/Program Files/Unity/Editor/Data/MonoBleedingEdge/lib/mono/unity/mscorlib.dll</HintPath>

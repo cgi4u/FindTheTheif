@@ -4,13 +4,28 @@ using UnityEngine;
 
 namespace com.MJT.FindTheTheif
 {
-    // 각 노드의 데이터를 저장하는 객체
+    /// <summary>
+    /// Store datas for item(If it is an item watching point or not, item direction)
+    /// </summary>
     public class RouteNode : MonoBehaviour
     {
-        // 아이템 관람 지점인지, 맞다면 아이템의 방향은 어느쪽인지 판단
         [SerializeField]
         private bool ifItemPoint;
+        public bool IfItemPoint
+        {
+            get
+            {
+                return ifItemPoint;
+            }
+        }
         [SerializeField]
         private Direction itemDir;
+        public Direction ItemDir
+        {
+            get
+            {
+                return itemDir;
+            }
+        }
     }
 }

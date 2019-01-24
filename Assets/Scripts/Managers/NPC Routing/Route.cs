@@ -4,7 +4,9 @@ using UnityEngine;
 
 namespace com.MJT.FindTheTheif
 {
-    // 각 경로의 타입과 노드 집합을 저장하는 객체
+    /// <summary>
+    /// Store datas for NPC moving route.
+    /// </summary>
     public class Route : MonoBehaviour
     {
         [SerializeField]
@@ -82,6 +84,7 @@ namespace com.MJT.FindTheTheif
 
         #region Stair to Room / Room to Stair Route Properties
 
+        [SerializeField]
         private StairType stairType;
         /// <summary>
         /// The type of stair(up, down) where this route starts or ends.(used by Stair to Room and Room to Stair Routes)
@@ -93,10 +96,12 @@ namespace com.MJT.FindTheTheif
                 return stairType;
             }
         }
+        
+        [SerializeField]
+        private StairSide stairSide;
         /// <summary>
         /// The side of stair(left, right) where this route starts or ends.(used by Stair to Room and Room to Stair Routes)
         /// </summary>
-        private StairSide stairSide;
         public StairSide StairSide
         {
             get
@@ -109,6 +114,7 @@ namespace com.MJT.FindTheTheif
 
         #region Stair to Stair Route Properties
 
+        [SerializeField]
         private int floor;
         /// <summary>
         /// The floor number in which this route is.(used by Stair to Stair Routes)

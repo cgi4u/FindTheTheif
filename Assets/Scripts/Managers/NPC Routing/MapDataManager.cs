@@ -3,15 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace com.MJT.FindTheTheif
-{
-    public class FloorSTSRouteContainer
-    {
-        public Route leftDownDownRoute;
-        public Route leftUpUpRoute;
-        public Route rightDownDownRoute;
-        public Route rightUpUpRoute;
-    }
-
+{   
+    /// <summary>
+    /// Serialize constant datas of a map, and make other classes be able to get them by using singleton object.
+    /// </summary>
     public class MapDataManager : MonoBehaviour
     {
         //Singleton Instance
@@ -64,8 +59,13 @@ namespace com.MJT.FindTheTheif
         }
 
         [SerializeField]
-        private FloorSTSRouteContainer[] stairToStairRoutes;
-        public FloorSTSRouteContainer[] StairToStairRoutes
+        private StairRouteContainer[] stairToStairRoutes;
+        /// <summary>
+        /// Stair to Stair Routes. 
+        /// Since the first and the last floor don't have Stair to Stair Routes, the number of container is (roomNum - 2).
+        /// ex) Routes in 2nd floor are stored in index (2 - 1) - 1 = 0.
+        /// </summary>
+        public StairRouteContainer[] StairToStairRoutes
         {
             get
             {
@@ -82,14 +82,19 @@ namespace com.MJT.FindTheTheif
 
             foreach (ExhibitRoom room in rooms)
             {
+                //Find all NPC-generatable routes
                 NPCGenRoutes.Add(room.InRoomRoute);
                 NPCGenRoutes.AddRange(room.ToRoomRoutes);
-                foreach (Route fromStairRoute in room.FromStairRoutes)
-                {
-                    if (fromStairRoute != null)
-                        NPCGenRoutes.Add(fromStairRoute);
-                }
+                if (room.FromStairRoutes.LeftDownRoute != null)
+                    NPCGenRoutes.Add(room.FromStairRoutes.LeftDownRoute);
+                if (room.FromStairRoutes.LeftUpRoute != null)
+                    NPCGenRoutes.Add(room.FromStairRoutes.LeftUpRoute);
+                if (room.FromStairRoutes.RightDownRoute != null)
+                    NPCGenRoutes.Add(room.FromStairRoutes.RightDownRoute);
+                if (room.FromStairRoutes.RightUpRoute != null)
+                    NPCGenRoutes.Add(room.FromStairRoutes.RightUpRoute);
 
+                //Find all Item Generation Points
                 itemGenPoints.AddRange(room.ItemGenPoints);
             }
 
