@@ -35,6 +35,23 @@ namespace com.MJT.FindTheTheif
             }
         }
 
+        #region In Room Route Properties
+
+        [SerializeField]
+        private int curRoom;
+        /// <summary>
+        /// The room contains this route.(used by In Room Routes)
+        /// </summary>
+        public int CurRoom
+        {
+            get
+            {
+                return curRoom;
+            }
+        }
+
+        #endregion
+
         #region Room to Room Route Properties
 
         [SerializeField]
@@ -60,23 +77,6 @@ namespace com.MJT.FindTheTheif
             get
             {
                 return endRoom;
-            }
-        }
-
-        #endregion
-
-        #region In Room Route Properties
-
-        [SerializeField]
-        private int curRoom;
-        /// <summary>
-        /// The room contains this route.(used by In Room Routes)
-        /// </summary>
-        public int CurRoom
-        {
-            get
-            {
-                return curRoom;
             }
         }
 

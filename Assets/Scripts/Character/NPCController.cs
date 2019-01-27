@@ -10,6 +10,7 @@ namespace com.MJT.FindTheTheif
         [SerializeField]
         private Route curRoute;              // 현재 진행중인 경로
 
+        /*
         #region Current Route Networking
 
         [SerializeField]
@@ -22,13 +23,12 @@ namespace com.MJT.FindTheTheif
         private StairType curRouteStairType;
 
         #endregion
+        */
 
         [SerializeField]
         private RouteNode[] routeNodeSet;   // 현재 진행중인 경로의 노드집합
         [SerializeField]
         private int curNodeNum;             // 가장 마지막으로 지난 노드의 인덱스
-        [SerializeField]
-        private int curFloor;               //현재 층
         [SerializeField]
         private bool ifStarted = false;     //ManualStart를 통해 초기화되었는지에 대한 변수
         [SerializeField]
@@ -50,7 +50,7 @@ namespace com.MJT.FindTheTheif
         }
 
         [PunRPC]
-        public void ManualStart(int genPointIdx)
+        public void Init(int genPointIdx)
         {
             mapDataManager = MapDataManager.Instance;
 
@@ -79,7 +79,7 @@ namespace com.MJT.FindTheTheif
                 {
                     curNodeNum = i;
                     break;
-                } 
+                }
             }
             transform.position = (Vector2)routeNodeSet[curNodeNum].transform.position;
             ifStarted = true;
@@ -186,6 +186,11 @@ namespace com.MJT.FindTheTheif
         int prevRoom;
         [SerializeField]
         int nextRoom;
+        /// <summary>
+        /// The number of floor in which this NPC exists. Index 0 is used for the 1st floor
+        /// </summary>
+        [SerializeField]
+        private int curFloor;
 
         /// <summary>
         /// Check if this NPC arrived at next node or route end. If did, change target node or current route. 
@@ -205,102 +210,167 @@ namespace com.MJT.FindTheTheif
                 }
                 else                                            // Route ends, get next route.
                 {
-                    switch (curRoute.RouteType)
-                    { 
-                        case RouteType.In_Room:                 // Currunt root is In Room Route -> Next can be Room to Room/Stair
-                            prevRoom = nextRoom;
-                            do
-                            {
-                                nextRoom = Random.Range(0, mapDataManager.Rooms.Length);
-                            } while (prevRoom == nextRoom);
-
-                            if (curFloor == mapDataManager.Rooms[nextRoom].Floor)       // The next room is in the same floor -> Room to Room route
-                            {
-                                //Debug.Log("Case: Room-to-Room");
-                                curRouteType = RouteType.Room_to_Room;
-                            }
-                            else                                                         // The next room is in one of the other floors -> Room to Stair route
-                            {
-                                //Debug.Log("Case: Room-to-up");
-                                curRouteType = RouteType.Room_to_Stair;
-                                curRouteStairSide = mapDataManager.Rooms[prevRoom].AdjStairSide;
-                                if (curFloor > mapDataManager.Rooms[nextRoom].Floor)
-                                    curRouteStairType = StairType.down;
-                                else
-                                    curRouteStairType = StairType.up;
-                            }
-                            
-                            break;
-                        case RouteType.Room_to_Stair:              // Current route is To Stair Route -> Next can be Stair to Room/Stair
-                        case RouteType.Stair_to_Stair:
-                            if (curRoute.StairType == StairType.down)       // Current route ends with down stair -> Next starts with up stair
-                            {
-                                curFloor -= 1;
-
-                                if (mapDataManager.Rooms[nextRoom].Floor == curFloor)   // The target room is in this floor.
-                                {
-                                    //Debug.Log("Case: Stair-to-Room");
-                                    curRouteRoom = nextRoom;
-                                    curRouteStairSide = curRoute.StairSide;             // From Stair Route starts in the side where previous route ends
-                                    curRouteType = 
-                                }
-                                else
-                                {
-                                    if (curRoute.StairSide == Route.StairSide.left)
-                                    {
-                                        //Debug.Log("Case: Down-down left");
-                                        curRoute = mapDataManager.StairToStairRoutes[(curFloor - 1) * mapDataManager.maxFloorNum];
-                                    }
-                                    else
-                                    {
-                                        //Debug.Log("Case: Down-down right");
-                                        curRoute = mapDataManager.StairToStairRoutes[(curFloor - 1) * mapDataManager.maxFloorNum + 2];
-                                    }
-                                }
-
-                            }
-                            else                                            // 계단을 통해 올라옴 -> 내려가는 계단에서 해당 방으로
-                            {
-                                curFloor += 1;
-
-                                if (mapDataManager.RoomFloor[nextRoom] == curFloor)
-                                {
-                                    //Debug.Log("Case: Stair-to-Room");
-                                    curRoute = mapDataManager.StairToRoomRoutes[nextRoom * 2];
-                                }
-                                else
-                                {
-                                    if (curRoute.StairSide == Route.StairSide.left)
-                                    {
-                                        //Debug.Log("Case: Up-up left");
-                                        curRoute = mapDataManager.StairToStairRoutes[(curFloor - 1) * mapDataManager.maxFloorNum + 1];
-                                    }
-                                    else
-                                    {
-                                        //Debug.Log("Case: Up-up left");
-                                        curRoute = mapDataManager.StairToStairRoutes[(curFloor - 1) * mapDataManager.maxFloorNum + 3];
-                                    }
-                                }
-                            }
-                            transform.position = (Vector2)curRoute.NodeSet[0].transform.position;
-                            //StartCoroutine("MoveCheck");
-                            break;
-                        default: 
-                            //Debug.Log("Case: In-Room");
-                            curRoute = mapDataManager.InRoomRoutes[curRoute.endRoom];
-                            break;
-                    }
-
-                    routeNodeSet = curRoute.NodeSet;
-                    curNodeNum = 0;
+                    if (PhotonNetwork.connected)
+                        photonView.RPC("RenewCurRoute", PhotonTargets.All);
+                    else
+                        RenewCurRoute();
                 }
             }
         }
 
         [PunRPC]
-        void RenewCurRoute(int roomNum, RouteType routeType, int targetRoom, StairType stairType, StairSide stairSide, int floor)
+        void RenewCurRoute()
         {
+            switch (curRoute.RouteType)
+            {
+                case RouteType.In_Room:                 // Currunt root is In Room Route -> Next can be Room to Room/Stair
+                    prevRoom = nextRoom;
+                    do
+                    {
+                        nextRoom = Random.Range(0, mapDataManager.Rooms.Count);
+                    } while (prevRoom == nextRoom);
 
+                    if (curFloor == mapDataManager.Rooms[nextRoom].Floor)       // The next room is in the same floor -> Room to Room route
+                    {
+                        //Debug.Log("Case: Room-to-Room");
+                        curRoute = null;
+                        foreach (Route roomToRoomRoute in mapDataManager.Rooms[prevRoom].ToRoomRoutes)
+                        {
+                            if (roomToRoomRoute.EndRoom == nextRoom)
+                            {
+                                curRoute = roomToRoomRoute;
+                                break;
+                            }
+                        }
+
+                        if (curRoute == null)
+                        {
+                            Debug.LogError("Room " + prevRoom + " to Room " + nextRoom + " Route is not set.");
+                            return;
+                        }
+                    }
+                    else        // The next room is in one of the other floors -> Room to Stair route
+                    {
+                        string sideAndType;
+
+                        //Debug.Log("Case: Room-to-Stair");
+                        if (mapDataManager.Rooms[nextRoom].Floor < curFloor && mapDataManager.Rooms[prevRoom].AdjStairSide == StairSide.left)
+                        {
+                            sideAndType = "Left Down";
+                            curRoute = mapDataManager.Rooms[prevRoom].ToStairRoutes.LeftDownRoute;
+                        }
+                        else if (mapDataManager.Rooms[nextRoom].Floor > curFloor && mapDataManager.Rooms[prevRoom].AdjStairSide == StairSide.left)
+                        {
+                            sideAndType = "Left Up";
+                            curRoute = mapDataManager.Rooms[prevRoom].ToStairRoutes.LeftUpRoute;
+                        }
+                        else if (mapDataManager.Rooms[nextRoom].Floor < curFloor && mapDataManager.Rooms[prevRoom].AdjStairSide == StairSide.right)
+                        {
+                            sideAndType = "Right Down";
+                            curRoute = mapDataManager.Rooms[prevRoom].ToStairRoutes.RightDownRoute;
+                        }
+                        else
+                        {
+                            sideAndType = "Right Up";
+                            curRoute = mapDataManager.Rooms[prevRoom].ToStairRoutes.RightUpRoute;
+                        }
+
+                        if (curRoute == null)
+                        {
+                            Debug.LogError("Room " + prevRoom + " to " + sideAndType + " Stair Route is not set.");
+                            return;
+                        }
+                    }
+
+                    break;
+                case RouteType.Room_to_Stair:              // Current route is To Stair Route -> Next can be Stair to Room/Stair
+                case RouteType.Stair_to_Stair:
+                    if (curRoute.StairType == StairType.down)       // Current route ends with down stair
+                        curFloor -= 1;
+                    else
+                        curFloor += 1;
+
+                    if (mapDataManager.Rooms[nextRoom].Floor == curFloor)   // The target room is in this floor -> Stair to Room Route
+                    {
+                        //Debug.Log("Case: Stair-to-Room");
+                        string sideAndType;
+
+                        if (curRoute.StairSide == StairSide.left && curRoute.StairType == StairType.down)   // From Stair Route starts in the side where previous route ends
+                        {
+                            sideAndType = "Left Up";
+                            curRoute = mapDataManager.Rooms[nextRoom].FromStairRoutes.LeftUpRoute;
+                        }
+                        else if (curRoute.StairSide == StairSide.left && curRoute.StairType == StairType.up)
+                        {
+                            sideAndType = "Left Down";
+                            curRoute = mapDataManager.Rooms[nextRoom].FromStairRoutes.LeftDownRoute;
+                        }
+                        else if (curRoute.StairSide == StairSide.right && curRoute.StairType == StairType.down)
+                        {
+                            sideAndType = "Right Up";
+                            curRoute = mapDataManager.Rooms[nextRoom].FromStairRoutes.RightUpRoute;
+                        }
+                        else
+                        {
+                            sideAndType = "Right Down";
+                            curRoute = mapDataManager.Rooms[nextRoom].FromStairRoutes.RightDownRoute;
+                        }
+
+                        if (curRoute == null)
+                        {
+                            Debug.LogError(sideAndType + " Stair to Room " + nextRoom + " Route is not set.");
+                            return;
+                        }
+                    }
+                    else   // The target room isn't in this floor -> Stair to Stair Route
+                    {
+                        string sideAndType;
+
+                        if (curRoute.StairSide == StairSide.left && curRoute.StairType == StairType.down)   // From Stair Route starts in the side where previous route ends
+                        {
+                            sideAndType = "Left Down Down";
+                            curRoute = mapDataManager.StairToStairRoutes[curFloor - 1].LeftDownRoute;
+                        }
+                        else if (curRoute.StairSide == StairSide.left && curRoute.StairType == StairType.up)
+                        {
+                            sideAndType = "Left Up Up";
+                            curRoute = mapDataManager.StairToStairRoutes[curFloor - 1].LeftUpRoute;
+                        }
+                        else if (curRoute.StairSide == StairSide.right && curRoute.StairType == StairType.down)
+                        {
+                            sideAndType = "Right Down Down";
+                            curRoute = mapDataManager.StairToStairRoutes[curFloor - 1].RightDownRoute;
+                        }
+                        else
+                        {
+                            sideAndType = "Right Up Up";
+                            curRoute = mapDataManager.StairToStairRoutes[curFloor - 1].RightUpRoute;
+                        }
+
+                        if (curRoute == null)
+                        {
+                            Debug.LogError(sideAndType + " Stair to Stair Route in " + curFloor + "th Floor is not set.");
+                            return;
+                        }
+                    }
+                    break;
+                default:    // The current route is To Room Route -> Next is In Room Route
+                    //Debug.Log("Case: In-Room");
+                    curRoute = mapDataManager.Rooms[nextRoom].InRoomRoute;
+
+                    if (curRoute == null)
+                    {
+                        Debug.LogError("In Room Route of " + nextRoom + "th room is not set.");
+                        return;
+                    }
+                    break;
+            }
+
+            routeNodeSet = curRoute.NodeSet;
+            curNodeNum = 0;
+
+            if (!PhotonNetwork.connected || photonView.isMine)
+                transform.position = routeNodeSet[curNodeNum].transform.position;
         }
 
         #endregion
@@ -315,6 +385,7 @@ namespace com.MJT.FindTheTheif
                 stream.SendNext(blockedTime);
                 stream.SendNext(prevRoom);
                 stream.SendNext(nextRoom);
+                stream.SendNext(curNodeNum);
 
                 //stream.SendNext(curRoute);
             }
@@ -326,6 +397,7 @@ namespace com.MJT.FindTheTheif
                 blockedTime = (float)stream.ReceiveNext();
                 prevRoom = (int)stream.ReceiveNext();
                 nextRoom = (int)stream.ReceiveNext();
+                curNodeNum = (int)stream.ReceiveNext();
 
                 //curRoute = (Route)stream.ReceiveNext();
             }

@@ -113,7 +113,6 @@ namespace com.MJT.FindTheTheif
 
         #endregion
 
-
         #region Item Information Panel
 
         public Text checkedItemListText;
@@ -190,7 +189,7 @@ namespace com.MJT.FindTheTheif
                     break;
             }
 
-            itemInfo += item.floorNum + "층 " + item.roomNum + "번 방";
+            itemInfo += item.FloorNum + "층 " + item.RoomNum + "번 방";
 
             return itemInfo;
         }

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+
 using UnityEngine;
 
 using Hashtable = ExitGames.Client.Photon.Hashtable;
@@ -41,6 +42,8 @@ namespace com.MJT.FindTheTheif
         //Player ready-check flag array
         private List<bool> isPlayersReady;
 
+        MapDataManager mapDataManager;
+
         void Awake()
         {
             if (!PhotonNetwork.connected)
@@ -75,13 +78,19 @@ namespace com.MJT.FindTheTheif
 
         void Start()
         {
+            //Initialize variables related to items
+            mapDataManager = MapDataManager.Instance;
+            itemNum = itemPrefabs.Length;
+            itemGenPointNum = mapDataManager.ItemGenPoints.Count;
+            isItemStolen = new bool[itemGenPointNum];
+
             if (PhotonNetwork.isMasterClient)
             {
                 //Generate NPCs
                 NPCGeneration(10);
 
                 //Generate Items
-                ItemGeneration();
+                GenerateItems();
             }
         }
 
@@ -110,73 +119,137 @@ namespace com.MJT.FindTheTheif
         public GameObject NPCPrefab;
         void NPCGeneration(int NPCNum)
         {
-            /*for (int i = 0; i < NPCNum; i++)
+            for (int i = 0; i < NPCNum; i++)
             {
-                RouteNode randomPoint = MapDataManager.Instance.GetRandomNPCGenPointIdx();
-                if (randomPoint == null)
+                int randomPointIdx = MapDataManager.Instance.GetRandomNPCGenPointIdx();
+                if (randomPointIdx == -1)
                 {
                     Debug.LogError("Error: Attempt to generate more number of NPC than available");
                     return;
                 }
 
                 GameObject newNPC = PhotonNetwork.InstantiateSceneObject(NPCPrefab.name, new Vector3(0, 0, 0), Quaternion.identity, 0, null);
-                //PhotonView.Get(newNPC).RPC("ManualStart", PhotonTargets.All, randomPoint);
-                newNPC.GetComponent<NPCController>().ManualStart(randomPoint);
-            }*/
+                PhotonView.Get(newNPC).RPC("Init", PhotonTargets.All, randomPointIdx);
+            }
         }
 
         public GameObject[] itemPrefabs;
-        public int itemNum;                     // 맵 상 아이템의 총 개수
-        public int stealItemNum;                // 훔쳐야 할 아이템의 개수
-        List<ItemController> stealItemList;     // 훔쳐야 할 아이템의 리스트
+        [SerializeField]
+        private int itemNum;                    // The number of item prefabs = The number of kind of items which can be generated
+        
+        List<ItemController> itemInGenPoint = new List<ItemController>();
+        [SerializeField]
+        private int itemGenPointNum;            // The number of item generation points = The number of items generated in a game room
         bool[] isItemStolen;                    // 아이템이 훔쳐졌는가 여부
-        void ItemGeneration()
+
+        [SerializeField]
+        private int targetItemNum;                // 훔쳐야 할 아이템의 개수
+        List<ItemController> targetItemList = new List<ItemController>();     // 훔쳐야 할 아이템의 리스트
+
+        /// <summary>
+        /// Generate items at generation points randomly. 
+        /// </summary>
+        void GenerateItems()
         {
-            if (itemNum < stealItemNum)
-            {
-                Debug.LogError("The number of items to steal can't exceed the number of all items.");
-            }
-
-            for (int i = 0; i < itemNum; i++)
-            {
-                int r1 = Random.Range(0, itemNum);
-                int r2 = Random.Range(0, itemNum);
-
-                GameObject temp = itemPrefabs[r1];
-                itemPrefabs[r1] = itemPrefabs[r2];
-                itemPrefabs[r2] = temp;
-            }
-
-            MapDataManager mapDataManager = MapDataManager.Instance;
-            if (mapDataManager.ItemGenPoints.Count > itemNum)
+            if (itemGenPointNum > itemNum)
             {
                 Debug.LogError("There are fewer items than generation points.");
                 return;
             }
-
-            bool[] isItemToSteal = new bool[itemNum];
-            int count = 0;
-            while (count < stealItemNum)
+            if (itemNum < targetItemNum)
             {
-                int r = Random.Range(0, itemNum);
-                if (isItemToSteal[r] == false)
+                Debug.LogError("The number of items to steal can't exceed the number of all items.");
+                return;
+            }
+
+            // Select item for each generation point randomly.
+            int[] itemNumInGenPoint = new int[itemNum];
+            for (int i = 0; i < itemNum; i++)
+                itemNumInGenPoint[i] = i;
+
+            for (int i = 0; i < itemNum * 3; i++)
+            {
+                int r1 = Random.Range(0, itemNum);
+                int r2 = Random.Range(0, itemNum);
+
+                int temp = itemNumInGenPoint[r1];
+                itemNumInGenPoint[r1] = itemNumInGenPoint[r2];
+                itemNumInGenPoint[r2] = temp;
+            }
+
+            // Select items that theives should steal.
+            int[] targetItemPointSelector = new int[itemGenPointNum];
+            for (int i = 0; i < itemGenPointNum; i++)
+                targetItemPointSelector[i] = i;
+
+            for (int i = 0; i < itemGenPointNum * 3; i++)
+            {
+                int r1 = Random.Range(0, itemNum);
+                int r2 = Random.Range(0, itemNum);
+
+                int temp = targetItemPointSelector[r1];
+                targetItemPointSelector[r1] = targetItemPointSelector[r2];
+                targetItemPointSelector[r2] = temp;
+            }
+
+            int[] targetItemPointIndex = new int[targetItemNum];
+            int count = 0;
+            List<ExhibitRoom> roomContainTargetItem = new List<ExhibitRoom>();
+            for (int i = 0; i < itemGenPointNum; i++)
+            {
+                //Not allow the case in which multiple items in a same room.
+                ExhibitRoom roomOfPoint = mapDataManager.ItemGenPoints[targetItemPointSelector[i]].GetComponentInParent<ExhibitRoom>();
+                if (!roomContainTargetItem.Contains(roomOfPoint))
                 {
-                    isItemToSteal[r] = true;
-                    count++;
+                    targetItemPointIndex[count++] = targetItemPointSelector[i];
+                    roomContainTargetItem.Add(roomOfPoint);
+                    if (count == targetItemNum)
+                        break;
                 }
             }
 
-            for (int i = 0; i < mapDataManager.ItemGenPoints.Count; i++)
+            if (count != targetItemNum)
             {
-                GameObject newItem = PhotonNetwork.Instantiate("Items\\" + itemPrefabs[i].name, mapDataManager.ItemGenPoints[i].position, Quaternion.identity, 0);
-                if (isItemToSteal[i] == true)
-                    stealItemList.Add(newItem.GetComponent<ItemController>());
+                Debug.LogError("There are not enough rooms for item generation.");
+                return;
+            }
+
+            for (int i = 0; i < itemGenPointNum; i++)
+            {
+                GameObject newItem = PhotonNetwork.InstantiateSceneObject("Items\\" + itemPrefabs[itemNumInGenPoint[i]].name, 
+                                                                    mapDataManager.ItemGenPoints[i].position, Quaternion.identity, 0, null);
 
                 ExhibitRoom roomOfItem = mapDataManager.ItemGenPoints[i].GetComponentInParent<ExhibitRoom>();
-                //newItem.GetComponent<ItemController>().Init(roomOfItem.Floor, roomOfItem.num);
+                PhotonView.Get(newItem).RPC("Init", PhotonTargets.All, roomOfItem.Floor, mapDataManager.Rooms.FindIndex(room => room == roomOfItem),
+                                                                                            i, itemNumInGenPoint, targetItemPointIndex);
             }
-            isItemStolen = new bool[stealItemNum];
-            UIManager.Instance.RenewStealItemList(stealItemList, stealItemNum, isItemStolen);
+
+            photonView.RPC("InitItemSetting", PhotonTargets.All, itemNumInGenPoint, targetItemPointSelector);
         }
+
+        /// <summary>
+        /// Send the result of random select in master client to other players
+        /// </summary>
+        /// <param name="itemNumInGenPoint">Item Prefab index of item that generated at point of same index</param>
+        /// <param name="stealItemSelector">Randomize result for steal targets</param>
+        [PunRPC]
+        void InitItemSetting(int[] itemNumInGenPoint, int[] stealItemSelector)
+        {
+
+
+            //Prefab은 실제 게임 내에 존재하는 오브젝트가 아님. 실제 Instantiate한 오브젝트를 참조해서 steal target item 리스트에 넣어야함.
+            //이것을 위해 target item만 갱신하는 rpc를 따로 넣어야할수도 있음.
+            for (int i = 0; i < targetItemNum; i++)
+            {
+                ItemController newTargetItem = itemPrefabs[stealItemSelector[i]].GetComponent<ItemController>();
+                if (itemInGenPoint.Exists(item => item == newTargetItem))
+                    targetItemList.Add(itemPrefabs[stealItemSelector[i]].GetComponent<ItemController>());
+                else
+                    i--;
+            }
+
+            UIManager.Instance.RenewStealItemList(targetItemList, targetItemNum, isItemStolen);
+        }
+        
     }
 }

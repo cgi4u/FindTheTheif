@@ -1,6 +1,6 @@
 Android
 PlayerPath?
-C:/Users/MJT/Desktop/FindTheTheif.apk
+C:/Users/CGI/Desktop/FindTheTheif.apk
 SceneListBegin?
 Assets/Scenes/Launcher.unity
 Assets/Scenes/Lobby.unity
@@ -23,7 +23,7 @@ e1bbf0ab858085e38fae6b12ebbdcd35 UnityEngine.Timeline.dll:UnityEngine.Timeline.G
 e1bbf0ab858085e38fae6b12ebbdcd35 UnityEngine.Timeline.dll:UnityEngine.Timeline.PlayableTrack
 201e3fde670b00545944bb3db215c80a UnityEngine.Timeline.dll:UnityEngine.Timeline.TimelineAsset
 3ba023cd67d72cace33969ab863e0fd4 Assembly-CSharp.dll:.PhotonStatsGui
-e28c017fb7b2388c7c1d887ef72e56ff Assembly-CSharp.dll:com.MJT.FindTheTheif.NPCController
+d852e08357efd36eee1158de49679682 Assembly-CSharp.dll:com.MJT.FindTheTheif.NPCController
 e7a73f5f78ba6445195ec23b74a1ce2d Unity.TextMeshPro.dll:TMPro.TMP_ScrollbarEventHandler
 2b1d1de79e4d31f1861f586502176c81 Assembly-CSharp.dll:.PhotonAnimatorView
 428849b6ca87815ef6cdbc8093b8c981 Assembly-CSharp.dll:com.MJT.FindTheTheif.ItemPopUp
@@ -34,7 +34,7 @@ ee1dba1a186ac062d564e9eb73a1c56f Assembly-CSharp.dll:ExitGames.UtilityScripts.Te
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:ExitGames.UtilityScripts.PlayerRoomIndexing
 71bb6a6b6c8f052f948db64c7dd3ca4f UnityEngine.Advertisements.Editor.dll:UnityEngine.Advertisements.Editor.Placeholder
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:Facebook.Unity.Example.AccessTokenMenu
-197f404d4daaa86b3ed90ec94ea1e5ac Assembly-CSharp.dll:com.MJT.FindTheTheif.ExhibitRoom
+0d6f5e8dc84144c08930e62f6808b21c Assembly-CSharp.dll:com.MJT.FindTheTheif.ExhibitRoom
 cf9f5cf2c3145a37ac07f00e50e460f9 UnityEngine.UI.dll:UnityEngine.UI.AspectRatioFitter
 71bb6a6b6c8f052f948db64c7dd3ca4f UnityEngine.UI.dll:UnityEngine.EventSystems.BaseInput
 5fc094978ce3e3591a7500ed380d854a UnityEngine.UI.dll:UnityEngine.UI.Button
@@ -69,6 +69,7 @@ abf1930d8126d0b2e00e9449129a0190 UnityEngine.UI.dll:UnityEngine.EventSystems.Tou
 64e54c0cbb0177c5ea26f340efb9ff85 UnityEngine.UI.dll:UnityEngine.UI.VerticalLayoutGroup
 98ad81e9f689a492509f07e75b810aaa Unity.TextMeshPro.dll:TMPro.TMP_InputField
 07d7dd9c0560fd4cffdebc7ee8ecef23 Assembly-CSharp.dll:.InputToEvent
+71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:.TestObjects
 cf9f5cf2c3145a37ac07f00e50e460f9 UnityEngine.UI.dll:UnityEngine.UI.AspectRatioFitter
 71bb6a6b6c8f052f948db64c7dd3ca4f UnityEngine.UI.dll:UnityEngine.EventSystems.BaseInput
 5fc094978ce3e3591a7500ed380d854a UnityEngine.UI.dll:UnityEngine.UI.Button
@@ -150,10 +151,10 @@ e7aa62e1f291228958626e122c23c8f0 Assembly-CSharp.dll:.ConnectAndJoinRandom
 94017dcc9f00fe671ea7dc427b4da011 Unity.TextMeshPro.dll:TMPro.TMP_SpriteAsset
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:Facebook.Unity.Example.DialogShare
 1dab134e635ae95ca624bc204c8e7c73 Assembly-CSharp.dll:com.MJT.FindTheTheif.UIManager
-4830a855ae9de8d25624f009f05c99c6 Assembly-CSharp.dll:com.MJT.FindTheTheif.Route
+7c3c528d577a18fd22064b5a610c44fe Assembly-CSharp.dll:com.MJT.FindTheTheif.Route
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:Facebook.Unity.Example.GraphRequest
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:Facebook.Unity.Example.LogView
-0557e8527f26452ed422d736c664408f Assembly-CSharp.dll:com.MJT.FindTheTheif.MapDataManager
+cd57c631310bbe7faf5639502e0fc2c2 Assembly-CSharp.dll:com.MJT.FindTheTheif.MapDataManager
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:Facebook.Unity.Example.ConsoleBase
 b3ab2106268377ffe25dd18ac23dca28 Unity.TextMeshPro.dll:TMPro.TMP_Asset
 e62da994668faad2847b449595fc27cb Assembly-CSharp.dll:com.MJT.FindTheTheif.RouteNode
@@ -246,4 +247,4 @@ e1b8eaae6a90f88343f8be6d517488f6 Assembly-CSharp.dll:.PhotonView
 a01528258fe67fa484658e5b5d14c189 Facebook.Unity.Settings.dll:Facebook.Unity.Settings.FacebookSettings
 8649814970b42d345b89944b862453cc Unity.TextMeshPro.dll:TMPro.TMP_SubMesh
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:Facebook.Unity.Example.AppRequests
-2064186c5fca96cdfb1f1244dbc4570a Assembly-CSharp.dll:com.MJT.FindTheTheif.MultiplayRoomManager
+8bd4c3e128e3fa8f3e19e17e962e8559 Assembly-CSharp.dll:com.MJT.FindTheTheif.MultiplayRoomManager

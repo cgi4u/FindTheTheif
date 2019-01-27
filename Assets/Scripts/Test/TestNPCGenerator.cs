@@ -24,7 +24,7 @@ namespace com.MJT.FindTheTheif
                 }
 
                 GameObject newNPC = Instantiate(NPCPrefab);
-                newNPC.GetComponent<NPCController>().ManualStart(randomPointIdx);
+                newNPC.GetComponent<NPCController>().Init(randomPointIdx);
             }
         }
     }

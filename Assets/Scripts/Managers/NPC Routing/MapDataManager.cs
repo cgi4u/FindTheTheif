@@ -22,11 +22,11 @@ namespace com.MJT.FindTheTheif
         #region Map Object Properties
 
         [SerializeField]
-        private ExhibitRoom[] rooms;
+        private List<ExhibitRoom> rooms;
         /// <summary>
         /// Room datas(should be serialized)
         /// </summary>
-        public ExhibitRoom[] Rooms
+        public List<ExhibitRoom> Rooms
         {
             get
             {
@@ -59,13 +59,13 @@ namespace com.MJT.FindTheTheif
         }
 
         [SerializeField]
-        private StairRouteContainer[] stairToStairRoutes;
+        private List<StairRouteContainer> stairToStairRoutes;
         /// <summary>
         /// Stair to Stair Routes. 
         /// Since the first and the last floor don't have Stair to Stair Routes, the number of container is (roomNum - 2).
         /// ex) Routes in 2nd floor are stored in index (2 - 1) - 1 = 0.
         /// </summary>
-        public StairRouteContainer[] StairToStairRoutes
+        public List<StairRouteContainer> StairToStairRoutes
         {
             get
             {

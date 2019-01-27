@@ -6,8 +6,8 @@ namespace com.MJT.FindTheTheif
     public enum Direction { none, up, down, right, left }
 
     public enum RouteType { In_Room, Room_to_Room, Room_to_Stair, Stair_to_Room, Stair_to_Stair }
-    public enum StairType { up, down }
-    public enum StairSide { left, right }
+    public enum StairType { up, down, none }
+    public enum StairSide { left, right, none }
 
     //Item properties
     public enum ItemColor { Red, Blue, Yellow }

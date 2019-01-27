@@ -12,6 +12,36 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlueAncientDaily
       objectReference: {fileID: 0}
+    - target: {fileID: 1398978320534156988, guid: f45d73c9e53777343926b98126757bb1,
+        type: 3}
+      propertyPath: m_PositionModel.SynchronizeEnabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1398978320534156988, guid: f45d73c9e53777343926b98126757bb1,
+        type: 3}
+      propertyPath: m_PositionModel.TeleportEnabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1398978320534156988, guid: f45d73c9e53777343926b98126757bb1,
+        type: 3}
+      propertyPath: m_PositionModel.InterpolateOption
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1767984582041642346, guid: f45d73c9e53777343926b98126757bb1,
+        type: 3}
+      propertyPath: ObservedComponents.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1767984582041642346, guid: f45d73c9e53777343926b98126757bb1,
+        type: 3}
+      propertyPath: viewIdField
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1767984582041642346, guid: f45d73c9e53777343926b98126757bb1,
+        type: 3}
+      propertyPath: instantiationId
+      value: -1
+      objectReference: {fileID: 0}
     - target: {fileID: 6009032931105501773, guid: f45d73c9e53777343926b98126757bb1,
         type: 3}
       propertyPath: myColor

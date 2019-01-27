@@ -47,4 +47,6 @@ MonoBehaviour:
   - RenewStealItemList
   - ManualStart
   - RenewCurRoute
+  - Init
+  - InitItemSetting
   DisableAutoOpenWizard: 1

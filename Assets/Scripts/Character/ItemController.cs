@@ -14,9 +14,24 @@ namespace com.MJT.FindTheTheif
         public ItemAge myAge;
         public ItemUsage myUsage;
 
-        //private 변경 필요
-        public int floorNum;
-        public int roomNum;
+        [SerializeField]
+        private int floorNum;
+        public int FloorNum
+        {
+            get
+            {
+                return floorNum;
+            }
+        }
+        [SerializeField]
+        private int roomNum;
+        public int RoomNum
+        {
+            get
+            {
+                return roomNum;
+            }
+        }
 
         private void Start()
         {
@@ -28,10 +43,13 @@ namespace com.MJT.FindTheTheif
             UIManager.Instance.SetItemPopUp(myColor, myAge, myUsage, transform.position);
         }
 
-        public void Init(int _floorNum, int _roomNum)
+        [PunRPC]
+        public void Init(int _floorNum, int _roomNum, int genPointIdx, int[] itemNumInGenPoint, int[] targetItemPointIndex)
         {
             floorNum = _floorNum;
             roomNum = _roomNum;
+
+            if gen
         }
 
         private void OnBecameVisible()
