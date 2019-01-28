@@ -138,9 +138,9 @@ namespace com.MJT.FindTheTheif
             Vector2 nextPos = Vector2.MoveTowards(transform.position, targetPoint, moveSpeed * Time.deltaTime);
             transform.position = (Vector3)nextPos;
 
-            if (transform.position.Equals(targetPoint))
+            RouteCheck();
+            if ((Vector2)transform.position == targetPoint)
             {
-                RouteCheck();
                 SetNewTargetPoint();
             }
 
@@ -197,7 +197,7 @@ namespace com.MJT.FindTheTheif
         /// </summary>
         private void RouteCheck()
         {
-            if (transform.position.Equals(routeNodeSet[curNodeNum + 1].transform.position))
+            if (transform.position == routeNodeSet[curNodeNum + 1].transform.position)
             {
                 curNodeNum += 1;
                 if (curNodeNum < routeNodeSet.Length - 1)       // Route not ends, arrived at next node.
@@ -210,6 +210,7 @@ namespace com.MJT.FindTheTheif
                 }
                 else                                            // Route ends, get next route.
                 {
+                    //In Room 루트의 경우 여기서 랜덤룸을 뽑아서 RPC에 인수로줘야함
                     if (PhotonNetwork.connected)
                         photonView.RPC("RenewCurRoute", PhotonTargets.All);
                     else
@@ -227,7 +228,7 @@ namespace com.MJT.FindTheTheif
                     prevRoom = nextRoom;
                     do
                     {
-                        nextRoom = Random.Range(0, mapDataManager.Rooms.Count);
+                        nextRoom = Random.Range(0, mapDataManager.Rooms.Count); // 오류원인: 랜덤을 각자 뽑으면 당연히 안됨!!!
                     } while (prevRoom == nextRoom);
 
                     if (curFloor == mapDataManager.Rooms[nextRoom].Floor)       // The next room is in the same floor -> Room to Room route
@@ -365,12 +366,16 @@ namespace com.MJT.FindTheTheif
                     }
                     break;
             }
-
+            
             routeNodeSet = curRoute.NodeSet;
             curNodeNum = 0;
 
             if (!PhotonNetwork.connected || photonView.isMine)
+            {
                 transform.position = routeNodeSet[curNodeNum].transform.position;
+                SetNewTargetPoint();
+            }
+               
         }
 
         #endregion
@@ -386,8 +391,6 @@ namespace com.MJT.FindTheTheif
                 stream.SendNext(prevRoom);
                 stream.SendNext(nextRoom);
                 stream.SendNext(curNodeNum);
-
-                //stream.SendNext(curRoute);
             }
             else
             {
@@ -398,8 +401,6 @@ namespace com.MJT.FindTheTheif
                 prevRoom = (int)stream.ReceiveNext();
                 nextRoom = (int)stream.ReceiveNext();
                 curNodeNum = (int)stream.ReceiveNext();
-
-                //curRoute = (Route)stream.ReceiveNext();
             }
         }
     }

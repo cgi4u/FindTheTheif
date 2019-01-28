@@ -136,7 +136,8 @@ namespace com.MJT.FindTheTheif
         public GameObject[] itemPrefabs;
         [SerializeField]
         private int itemNum;                    // The number of item prefabs = The number of kind of items which can be generated
-        
+
+        [SerializeField]
         List<ItemController> itemInGenPoint = new List<ItemController>();
         [SerializeField]
         private int itemGenPointNum;            // The number of item generation points = The number of items generated in a game room
@@ -144,6 +145,7 @@ namespace com.MJT.FindTheTheif
 
         [SerializeField]
         private int targetItemNum;                // 훔쳐야 할 아이템의 개수
+        [SerializeField]
         List<ItemController> targetItemList = new List<ItemController>();     // 훔쳐야 할 아이템의 리스트
 
         /// <summary>
@@ -220,11 +222,10 @@ namespace com.MJT.FindTheTheif
                                                                     mapDataManager.ItemGenPoints[i].position, Quaternion.identity, 0, null);
 
                 ExhibitRoom roomOfItem = mapDataManager.ItemGenPoints[i].GetComponentInParent<ExhibitRoom>();
-                PhotonView.Get(newItem).RPC("Init", PhotonTargets.All, roomOfItem.Floor, mapDataManager.Rooms.FindIndex(room => room == roomOfItem),
-                                                                                            i, itemNumInGenPoint, targetItemPointIndex);
+                PhotonView.Get(newItem).RPC("Init", PhotonTargets.All, roomOfItem.Floor, mapDataManager.Rooms.FindIndex(room => room == roomOfItem), i);
             }
 
-            photonView.RPC("InitItemSetting", PhotonTargets.All, itemNumInGenPoint, targetItemPointSelector);
+            //photonView.RPC("InitItemSetting", PhotonTargets.All, itemNumInGenPoint, targetItemPointSelector);
         }
 
         /// <summary>
@@ -248,7 +249,7 @@ namespace com.MJT.FindTheTheif
                     i--;
             }
 
-            UIManager.Instance.RenewStealItemList(targetItemList, targetItemNum, isItemStolen);
+            //UIManager.Instance.RenewStealItemList(targetItemList, targetItemNum, isItemStolen);
         }
         
     }

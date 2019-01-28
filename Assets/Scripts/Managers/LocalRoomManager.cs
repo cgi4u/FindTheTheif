@@ -75,7 +75,7 @@ namespace com.MJT.FindTheTheif
 
                 Debug.Log("We are Instantiating LocalPlayer from " + SceneManager.GetActiveScene().name);
                 // we're in a room. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate
-                GameObject localPlayer = PhotonNetwork.Instantiate(playerPrefab.name, new Vector3(0.5f, -5.5f, 0f), Quaternion.identity, 0);
+                GameObject localPlayer = PhotonNetwork.Instantiate(playerPrefab.name, new Vector3(0.5f + PhotonNetwork.player.ID, -5.5f, 0f), Quaternion.identity, 0);
                 localPlayer.GetComponent<PlayerController>().SetTeam(MyTeam);
 
             }

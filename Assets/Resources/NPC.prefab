@@ -100,14 +100,16 @@ MonoBehaviour:
   curRoute: {fileID: 0}
   routeNodeSet: []
   curNodeNum: 0
-  curFloor: 0
   ifStarted: 0
   mapDataManager: {fileID: 0}
+  startPoint: {x: 0, y: 0}
+  targetPoint: {x: 0, y: 0}
   moveSpeed: 5
   isMoving: 0
   blockedTime: 0
   prevRoom: 0
   nextRoom: 0
+  curFloor: 0
 --- !u!114 &1900755372417909915
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -210,9 +212,9 @@ MonoBehaviour:
   m_PositionModel:
     SynchronizeEnabled: 1
     TeleportEnabled: 1
-    TeleportIfDistanceGreaterThan: 3
+    TeleportIfDistanceGreaterThan: 0.5
     InterpolateOption: 1
-    InterpolateMoveTowardsSpeed: 6
+    InterpolateMoveTowardsSpeed: 5
     InterpolateLerpSpeed: 100
     InterpolateMoveTowardsAcceleration: 2
     InterpolateMoveTowardsDeceleration: 2
@@ -259,8 +261,8 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
     ExtrapolateOption: 0
-    ExtrapolateSpeed: 1
-    ExtrapolateIncludingRoundTripTime: 1
+    ExtrapolateSpeed: 5
+    ExtrapolateIncludingRoundTripTime: 0
     ExtrapolateNumberOfStoredPositions: 1
     DrawErrorGizmo: 1
   m_RotationModel:

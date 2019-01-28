@@ -131,7 +131,6 @@ namespace com.MJT.FindTheTheif
 
         //Information to items to steal(visible by theives only)
         public Text stealItemListText;
-        [PunRPC]
         public void RenewStealItemList(List<ItemController> stealItemList, int stealItemNum, bool[] isItemStolen)
         {
             stealItemListText.text = "훔칠 아이템: ";

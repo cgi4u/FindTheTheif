@@ -44,12 +44,10 @@ namespace com.MJT.FindTheTheif
         }
 
         [PunRPC]
-        public void Init(int _floorNum, int _roomNum, int genPointIdx, int[] itemNumInGenPoint, int[] targetItemPointIndex)
+        public void Init(int _floorNum, int _roomNum)
         {
             floorNum = _floorNum;
             roomNum = _roomNum;
-
-            if gen
         }
 
         private void OnBecameVisible()
