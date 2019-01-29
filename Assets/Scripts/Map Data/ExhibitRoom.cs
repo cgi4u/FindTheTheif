@@ -32,8 +32,8 @@ namespace com.MJT.FindTheTheif
 
         //방 내부의 아이템 생성 지점
         [SerializeField]
-        private Transform[] itemGenPoints;
-        public Transform[] ItemGenPoints
+        private ItemGenPoint[] itemGenPoints;
+        public ItemGenPoint[] ItemGenPoints
         {
             get
             {

@@ -4,15 +4,21 @@ using UnityEngine;
 
 namespace com.MJT.FindTheTheif
 {
-    public class ItemController : MonoBehaviour
+    public class ItemController : Photon.PunBehaviour
     {
         public readonly int ItemAttrNum = 3;
         public readonly int ItemAttrTypeNum = 3;
+
+        // Transparent sprite used when this item is stolen.
+        [SerializeField]
+        protected Sprite transparentSprite;
 
         // This item's attributes.
         public ItemColor myColor;
         public ItemAge myAge;
         public ItemUsage myUsage;
+
+        #region Properties after generation in game
 
         [SerializeField]
         private int floorNum;
@@ -33,6 +39,13 @@ namespace com.MJT.FindTheTheif
             }
         }
 
+        [SerializeField]
+        private bool isStolen = false;
+        [SerializeField]
+        private bool isTarget = false;
+
+        #endregion
+
         private void Start()
         {
             GetComponent<SpriteRenderer>().sortingOrder = -(int)(transform.position.y * 100f);
@@ -44,10 +57,12 @@ namespace com.MJT.FindTheTheif
         }
 
         [PunRPC]
-        public void Init(int _floorNum, int _roomNum)
+        public void Init(int _floorNum, int _roomNum, int itemGenPoint)
         {
             floorNum = _floorNum;
             roomNum = _roomNum;
+
+            MapDataManager.Instance.ItemGenPoints[itemGenPoint].SetItem(this);
         }
 
         private void OnBecameVisible()

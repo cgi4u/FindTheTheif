@@ -47,7 +47,6 @@ MonoBehaviour:
   timeLeft: 30
   NPCPrefab: {fileID: 1900755372417909919, guid: 135b5b3a8b693284ab93667c9b37cdc8,
     type: 3}
-  itemNum: 10
   itemPrefabs:
   - {fileID: 6160461911215853208, guid: 2fb787f85c225c848886c3132986972c, type: 3}
   - {fileID: 9208698123017409354, guid: 88cda39e5bed8c14aa1f1fee0a824596, type: 3}
@@ -59,7 +58,11 @@ MonoBehaviour:
   - {fileID: 712536485502872174, guid: 3f7696f12ddef7740a3a597fdfed6fde, type: 3}
   - {fileID: 1192389104986055057, guid: 107ca69f092fa554f81e1a8e289a7b06, type: 3}
   - {fileID: 5420556545269972260, guid: 232e1af998a7314449ff6f03eddeecbe, type: 3}
-  stealItemNum: 3
+  itemNum: 10
+  itemInGenPoint: []
+  itemGenPointNum: 0
+  targetItemNum: 3
+  targetItemList: []
 --- !u!114 &114986182949599362
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -83,7 +86,7 @@ MonoBehaviour:
   ObservedComponents:
   - {fileID: 114000243598936320}
   ObservedComponentsFoldoutOpen: 1
-  viewIdField: 0
-  instantiationId: -1
+  viewIdField: 1
+  instantiationId: 1
   currentMasterID: -1
   isRuntimeInstantiated: 0

@@ -146,7 +146,14 @@ namespace com.MJT.FindTheTheif
         [SerializeField]
         private int targetItemNum;                // 훔쳐야 할 아이템의 개수
         [SerializeField]
-        List<ItemController> targetItemList = new List<ItemController>();     // 훔쳐야 할 아이템의 리스트
+        private List<ItemController> targetItems = new List<ItemController>();     // 훔쳐야 할 아이템의 리스트
+        public List<ItemController> TargetItems
+        {
+            get
+            {
+                return targetItems;
+            }
+        }
 
         /// <summary>
         /// Generate items at generation points randomly. 
@@ -186,15 +193,15 @@ namespace com.MJT.FindTheTheif
 
             for (int i = 0; i < itemGenPointNum * 3; i++)
             {
-                int r1 = Random.Range(0, itemNum);
-                int r2 = Random.Range(0, itemNum);
+                int r1 = Random.Range(0, itemGenPointNum);
+                int r2 = Random.Range(0, itemGenPointNum);
 
                 int temp = targetItemPointSelector[r1];
                 targetItemPointSelector[r1] = targetItemPointSelector[r2];
                 targetItemPointSelector[r2] = temp;
             }
 
-            int[] targetItemPointIndex = new int[targetItemNum];
+            int[] targetPoints = new int[targetItemNum];
             int count = 0;
             List<ExhibitRoom> roomContainTargetItem = new List<ExhibitRoom>();
             for (int i = 0; i < itemGenPointNum; i++)
@@ -203,7 +210,9 @@ namespace com.MJT.FindTheTheif
                 ExhibitRoom roomOfPoint = mapDataManager.ItemGenPoints[targetItemPointSelector[i]].GetComponentInParent<ExhibitRoom>();
                 if (!roomContainTargetItem.Contains(roomOfPoint))
                 {
-                    targetItemPointIndex[count++] = targetItemPointSelector[i];
+                    Debug.Log("Count: " + count);
+                    Debug.Log("i: " + i);
+                    targetPoints[count++] = targetItemPointSelector[i];
                     roomContainTargetItem.Add(roomOfPoint);
                     if (count == targetItemNum)
                         break;
@@ -219,11 +228,13 @@ namespace com.MJT.FindTheTheif
             for (int i = 0; i < itemGenPointNum; i++)
             {
                 GameObject newItem = PhotonNetwork.InstantiateSceneObject("Items\\" + itemPrefabs[itemNumInGenPoint[i]].name, 
-                                                                    mapDataManager.ItemGenPoints[i].position, Quaternion.identity, 0, null);
+                                                                    mapDataManager.ItemGenPoints[i].transform.position, Quaternion.identity, 0, null);
 
+                bool isTarget = targetPoints.Contains(i);
                 ExhibitRoom roomOfItem = mapDataManager.ItemGenPoints[i].GetComponentInParent<ExhibitRoom>();
                 PhotonView.Get(newItem).RPC("Init", PhotonTargets.All, roomOfItem.Floor, mapDataManager.Rooms.FindIndex(room => room == roomOfItem), i);
             }
+            photonView.RPC("SetTargetItemList", PhotonTargets.All, targetPoints);
 
             //photonView.RPC("InitItemSetting", PhotonTargets.All, itemNumInGenPoint, targetItemPointSelector);
         }
@@ -244,13 +255,19 @@ namespace com.MJT.FindTheTheif
             {
                 ItemController newTargetItem = itemPrefabs[stealItemSelector[i]].GetComponent<ItemController>();
                 if (itemInGenPoint.Exists(item => item == newTargetItem))
-                    targetItemList.Add(itemPrefabs[stealItemSelector[i]].GetComponent<ItemController>());
+                    targetItems.Add(itemPrefabs[stealItemSelector[i]].GetComponent<ItemController>());
                 else
                     i--;
             }
 
             //UIManager.Instance.RenewStealItemList(targetItemList, targetItemNum, isItemStolen);
         }
-        
+
+        [PunRPC]
+        void SetTargetItemList(int[] targetPoints)
+        {
+            for (int i = 0; i < targetPoints.Length; i++)
+                targetItems.Add(mapDataManager.ItemGenPoints[targetPoints[i]].Item);
+        }
     }
 }

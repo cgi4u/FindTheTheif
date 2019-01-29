@@ -43,10 +43,10 @@ namespace com.MJT.FindTheTheif
 
             for (int i = 0; i < mapDataManager.ItemGenPoints.Count; i++)
             {
-                GameObject newItem = Instantiate(itemPrefabs[i], mapDataManager.ItemGenPoints[i].position, Quaternion.identity);
+                GameObject newItem = Instantiate(itemPrefabs[i], mapDataManager.ItemGenPoints[i].transform.position, Quaternion.identity);
 
                 ExhibitRoom roomOfItem = mapDataManager.ItemGenPoints[i].GetComponentInParent<ExhibitRoom>();
-                //newItem.GetComponent<ItemController>().Init(roomOfItem.Floor, roomOfItem.num);
+                //newItem.GetComponent<ItemController>().Init(roomOfItem.Floor, mapDataManager.Rooms.FindIndex(room => room == roomOfItem), i, new int[1]);
             }
         }
     }

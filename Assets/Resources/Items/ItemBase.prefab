@@ -95,6 +95,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2ab081d26e9af3448f05b5e0b81ee6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  transparentSprite: {fileID: 21300000, guid: ee3345bd10531d54ebb8c9a89b57921b, type: 3}
   myColor: 0
   myAge: 0
   myUsage: 0

@@ -49,4 +49,5 @@ MonoBehaviour:
   - RenewCurRoute
   - Init
   - InitItemSetting
+  - SetTargetItemList
   DisableAutoOpenWizard: 1

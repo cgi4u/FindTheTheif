@@ -34,11 +34,11 @@ namespace com.MJT.FindTheTheif
             }
         }
 
-        private List<Transform> itemGenPoints = new List<Transform>();
+        private List<ItemGenPoint> itemGenPoints = new List<ItemGenPoint>();
         /// <summary>
         /// Points where items can be generated
         /// </summary>
-        public List<Transform> ItemGenPoints
+        public List<ItemGenPoint> ItemGenPoints
         {
             get
             {
