@@ -50,4 +50,6 @@ MonoBehaviour:
   - Init
   - InitItemSetting
   - SetTargetItemList
+  - ReleaseMasterTaskLock
+  - SetTeam
   DisableAutoOpenWizard: 1

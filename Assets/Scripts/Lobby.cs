@@ -27,10 +27,6 @@ namespace com.MJT.FindTheTheif
 
         #endregion
 
-
-
-        #region Unity Callbacks
-
         void Start()
         {
 
@@ -59,12 +55,6 @@ namespace com.MJT.FindTheTheif
             }
         }
 
-        #endregion
-
-
-
-        #region Public Mehods
-
         public void GameMatching()
         {
             if (string.IsNullOrEmpty(nameInputField.text))
@@ -85,28 +75,27 @@ namespace com.MJT.FindTheTheif
             SceneManager.LoadScene("Launcher");
         }
 
-        #endregion
-
-
-        
-        #region Private Methods
-
         void InitializeAndLoadScene()
         {
             //Choose theif players randomly
-            PhotonPlayer[] users = PhotonNetwork.playerList;
-            int theifCount = theifPerRoom;
-            bool[] isPlayerTheif = new bool[playersPerRoom];
-            while (theifCount != 0)
+            int[] theifSelector = new int[playersPerRoom];
+            for (int i = 0; i < playersPerRoom; i++)
             {
-                int rp = Random.Range(0, playersPerRoom - 1);
-
-                if (isPlayerTheif[rp] == false)
-                {
-                    isPlayerTheif[rp] = true;
-                    theifCount--;
-                }
+                theifSelector[i] = i + 1;
             }
+
+            for (int i = 0; i < playersPerRoom * 3; i++)
+            {
+                int r1 = Random.Range(0, playersPerRoom);
+                int r2 = Random.Range(0, playersPerRoom);
+
+                int temp = theifSelector[r1];
+                theifSelector[r1] = theifSelector[r2];
+                theifSelector[r2] = temp;
+            }
+
+            PhotonPlayer[] users = PhotonNetwork.playerList;
+            bool[] isPlayerTheif = new bool[playersPerRoom];
 
             //Save players' team in their custom property
             foreach (PhotonPlayer player in PhotonNetwork.playerList)
@@ -128,12 +117,6 @@ namespace com.MJT.FindTheTheif
             //Load the game level. Use LoadLevel to synchronize(automaticallySyncScene is true)
             PhotonNetwork.LoadLevel("Demo Room");
         }
-
-        #endregion
-
-
-
-        #region Photon Callbacks
 
         //랜덤 방참가(JoinRandomRoom)가 실패했을 때 콜백
         public override void OnPhotonRandomJoinFailed(object[] codeAndMsg)
@@ -165,7 +148,7 @@ namespace com.MJT.FindTheTheif
 
             curPlayerNum.text = PhotonNetwork.room.PlayerCount.ToString();
 
-            //Codes for Test
+            //Codes for test with 1 user
             /*Hashtable cp = new Hashtable();
             cp["Team"] = Team.detective;
             PhotonNetwork.player.SetCustomProperties(cp);
@@ -177,14 +160,11 @@ namespace com.MJT.FindTheTheif
             curPlayerNum.text = PhotonNetwork.room.PlayerCount.ToString();
 
             // Load scene when the local player is the master client
-            if (PhotonNetwork.room.PlayerCount == playersPerRoom
-                && PhotonNetwork.player.ID == PhotonNetwork.masterClient.ID)
+            if (PhotonNetwork.room.PlayerCount == playersPerRoom && PhotonNetwork.isMasterClient)
             {
                 InitializeAndLoadScene();
             }
         }
-
-        #endregion
 
     }
 }

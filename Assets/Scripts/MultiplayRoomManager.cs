@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 using UnityEngine;
 
@@ -22,7 +21,6 @@ namespace com.MJT.FindTheTheif
             }
         }
 
-        //데이터
         // 1. 방 내 현재 남은 도둑의 수
         private int remainingThief;
         public int RemainingTheif
@@ -30,6 +28,15 @@ namespace com.MJT.FindTheTheif
             get
             {
                 return remainingThief;
+            }
+        }
+
+        private Team myTeam;
+        public Team MyTeam
+        {
+            get
+            {
+                return myTeam;
             }
         }
 
@@ -44,20 +51,24 @@ namespace com.MJT.FindTheTheif
 
         MapDataManager mapDataManager;
 
+        [SerializeField]
+        private int thievesNum;
+        [SerializeField]
+        private int[] teamOfPlayer;
+        [SerializeField]
+        private bool ifRoomloaded = false;
+        [SerializeField]
+        private string levelName;
+
         void Awake()
         {
-            mapDataManager = MapDataManager.Instance;
-
-            //Initialize variables related to items
-            itemNum = itemPrefabs.Length;
-            itemGenPointNum = mapDataManager.ItemGenPoints.Count;
-            isItemStolen = new bool[itemGenPointNum];
-
             if (!PhotonNetwork.connected)
             {
                 Debug.LogError("Multiplay manager must be used in online environment.");
                 return;
             }
+
+            DontDestroyOnLoad(this);
 
             //Set the singleton
             if (instance == null)
@@ -70,6 +81,19 @@ namespace com.MJT.FindTheTheif
                 Debug.LogError("Multiple instantiation of the room controller");
             }
 
+            if (PhotonNetwork.isMasterClient)
+            {
+                InitRoomAndLoadScene();
+            }
+
+            mapDataManager = MapDataManager.Instance;
+
+            //Initialize variables related to items
+            itemNum = itemPrefabs.Length;
+            itemGenPointNum = mapDataManager.ItemGenPoints.Count;
+            isItemStolen = new bool[itemGenPointNum];
+
+            /*
             //Get values sent by Lobby
             Hashtable roomCp = PhotonNetwork.room.CustomProperties;
             int.TryParse(roomCp["Theif Number"].ToString(), out remainingThief);
@@ -79,10 +103,58 @@ namespace com.MJT.FindTheTheif
             isPlayersReady = new List<bool>();
             for (int i = 0; i < playerNum; i++)
                 isPlayersReady.Add(false);
+            */
             
         }
 
+        private void InitRoomAndLoadScene()
+        {
+            int playerNum = PhotonNetwork.playerList.Length;
+            if (playerNum <= thievesNum)
+            {
+                Debug.LogError("Not enough player for game(Should be more than " + thievesNum + " players(number of thieves).");
+                return;
+            }
+
+            //Choose theif players randomly
+            int[] thiefSelector = new int[playerNum];
+            for (int i = 0; i < playerNum; i++)
+            {
+                thiefSelector[i] = i + 1;
+            }
+
+            for (int i = 0; i < playerNum * 3; i++)
+            {
+                int r1 = Random.Range(0, playerNum);
+                int r2 = Random.Range(0, playerNum);
+
+                int temp = thiefSelector[r1];
+                thiefSelector[r1] = thiefSelector[r2];
+                thiefSelector[r2] = temp;
+            }
+
+            teamOfPlayer = new int[playerNum];
+            for (int i = 0; i < playerNum; i++)
+                teamOfPlayer[i] = (int)Team.detective;
+            for (int i = 0; i < thievesNum; i++)
+                teamOfPlayer[thiefSelector[i]-1] = (int)Team.theif;
+            for (int i = 0; i < playerNum; i++)
+                photonView.RPC("SetTeam", PhotonPlayer.Find(i + 1), teamOfPlayer[i]);
+
+            Debug.Log("We load the " + levelName);
+            //Load the game level. Use LoadLevel to synchronize(automaticallySyncScene is true)
+            PhotonNetwork.LoadLevel(levelName);
+            ifRoomloaded = true;
+        }
+
+        [PunRPC]
+        private void SetTeam(int myTeamInt)
+        {
+            myTeam = (Team)myTeamInt;
+        }
+
         void Start()
+
         {
             if (PhotonNetwork.isMasterClient)
             {
@@ -109,10 +181,16 @@ namespace com.MJT.FindTheTheif
             if (stream.isWriting)
             {
                 stream.SendNext(remainingThief);
+
+                stream.SendNext(thievesNum);
+                stream.SendNext(teamOfPlayer);
             }
             else
             {
                 remainingThief = (int)stream.ReceiveNext();
+
+                thievesNum = (int)stream.ReceiveNext();
+                teamOfPlayer = (int[])stream.ReceiveNext();
             }
         }
 
@@ -274,6 +352,15 @@ namespace com.MJT.FindTheTheif
 
             for (int i = 0; i < targetPoints.Length; i++)
                 targetItems.Add(mapDataManager.ItemGenPoints[targetPoints[i]].Item);
+        }
+
+        //issue point
+        //1. 초기화가 덜됐을때 나갔으면 새로 마스터로 지정된사람이 초기화를 돌려줘야함
+        //2. 다른 플레이어가 나갈때 도둑 또는 탐정의 명수를 줄여줘야함
+        public override void OnPhotonPlayerDisconnected(PhotonPlayer otherPlayer)
+        {
+            base.OnPhotonPlayerDisconnected(otherPlayer);
+           
         }
     }
 }
