@@ -101,7 +101,10 @@ namespace com.MJT.FindTheTheif
             }
 
             if (isMoving)
+            {
+                GetComponent<PhotonTransformView>().SetSynchronizedValues(moveSpeed * direction, 0f);
                 Move();
+            }
             else
                 SetNewTargetPoint();
         }
@@ -210,26 +213,32 @@ namespace com.MJT.FindTheTheif
                 }
                 else                                            // Route ends, get next route.
                 {
-                    //In Room 루트의 경우 여기서 랜덤룸을 뽑아서 RPC에 인수로줘야함
+                    // If this NPC is moving on In-Room Route, next room should be picked in master client and sent to other clients
+                    int randomNextRoom = -1;
+                    if (curRoute.RouteType == RouteType.In_Room)
+                    {
+                        randomNextRoom = Random.Range(curRoute.CurRoom + 1,
+                                                        curRoute.CurRoom + mapDataManager.Rooms.Count - 1) % mapDataManager.Rooms.Count;
+                    }
+
                     if (PhotonNetwork.connected)
-                        photonView.RPC("RenewCurRoute", PhotonTargets.All);
+                    {
+                        photonView.RPC("RenewCurRoute", PhotonTargets.All, randomNextRoom);
+                    }
                     else
-                        RenewCurRoute();
+                        RenewCurRoute(randomNextRoom);
                 }
             }
         }
 
         [PunRPC]
-        void RenewCurRoute()
+        void RenewCurRoute(int randomNextRoom)
         {
             switch (curRoute.RouteType)
             {
                 case RouteType.In_Room:                 // Currunt root is In Room Route -> Next can be Room to Room/Stair
-                    prevRoom = nextRoom;
-                    do
-                    {
-                        nextRoom = Random.Range(0, mapDataManager.Rooms.Count); // 오류원인: 랜덤을 각자 뽑으면 당연히 안됨!!!
-                    } while (prevRoom == nextRoom);
+                    prevRoom = curRoute.CurRoom;
+                    nextRoom = randomNextRoom;
 
                     if (curFloor == mapDataManager.Rooms[nextRoom].Floor)       // The next room is in the same floor -> Room to Room route
                     {
@@ -391,6 +400,8 @@ namespace com.MJT.FindTheTheif
                 stream.SendNext(prevRoom);
                 stream.SendNext(nextRoom);
                 stream.SendNext(curNodeNum);
+
+                //stream.SendNext(transform.position);
             }
             else
             {
@@ -401,6 +412,8 @@ namespace com.MJT.FindTheTheif
                 prevRoom = (int)stream.ReceiveNext();
                 nextRoom = (int)stream.ReceiveNext();
                 curNodeNum = (int)stream.ReceiveNext();
+
+                //transform.position = (Vector3)stream.ReceiveNext();
             }
         }
     }

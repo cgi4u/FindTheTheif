@@ -74,7 +74,10 @@ namespace com.MJT.FindTheTheif
         void Update()
         {
             if (isMoving)
+            {
+                GetComponent<PhotonTransformView>().SetSynchronizedValues(moveSpeed * direction, 0f);
                 Move();
+            }
             else if (btnCount > 0)
                 SetNewTargetPoint();
         }
@@ -178,26 +181,28 @@ namespace com.MJT.FindTheTheif
             return;
         }
 
+        Vector2 direction = new Vector2(0f, 0f);
         private void SetNewTargetPoint()
         {
             startPoint = (Vector2)transform.position;   // Set starting point
 
             if (btnCount == buttons[0])
             {
-                targetPoint = startPoint + Vector2.up;
+                direction = Vector2.up;
             }
             else if (btnCount == buttons[1])
             {
-                targetPoint = startPoint + Vector2.down;
+                direction = Vector2.down;
             }
             else if (btnCount == buttons[2])
             {
-                targetPoint = startPoint + Vector2.left;
+                direction = Vector2.left;
             }
             else if (btnCount == buttons[3])
             {
-                targetPoint = startPoint + Vector2.right;
+                direction = Vector2.right;
             }
+            targetPoint = startPoint + direction;
 
             //움직이는 과정에서 플레이어와 충돌하는 물체가 있을지를 판단.
             //플레이어(자기자신)의 콜라이더와 무조건 충돌하므로 다른 콜라이더가 있는지 판단하기 위해 BoxCast가 아닌 BoxCastAll을 쓴다.

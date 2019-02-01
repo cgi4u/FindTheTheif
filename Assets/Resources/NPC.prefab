@@ -104,7 +104,7 @@ MonoBehaviour:
   mapDataManager: {fileID: 0}
   startPoint: {x: 0, y: 0}
   targetPoint: {x: 0, y: 0}
-  moveSpeed: 5
+  moveSpeed: 4
   isMoving: 0
   blockedTime: 0
   prevRoom: 0
@@ -193,8 +193,8 @@ MonoBehaviour:
   - {fileID: 4624130643943377836}
   - {fileID: 1900755372417909914}
   ObservedComponentsFoldoutOpen: 1
-  viewIdField: 0
-  instantiationId: -1
+  viewIdField: 1
+  instantiationId: 1
   currentMasterID: -1
   isRuntimeInstantiated: 0
 --- !u!114 &4624130643943377836
@@ -212,10 +212,10 @@ MonoBehaviour:
   m_PositionModel:
     SynchronizeEnabled: 1
     TeleportEnabled: 1
-    TeleportIfDistanceGreaterThan: 0.5
-    InterpolateOption: 1
+    TeleportIfDistanceGreaterThan: 0.9
+    InterpolateOption: 3
     InterpolateMoveTowardsSpeed: 5
-    InterpolateLerpSpeed: 100
+    InterpolateLerpSpeed: 10
     InterpolateMoveTowardsAcceleration: 2
     InterpolateMoveTowardsDeceleration: 2
     InterpolateSpeedCurve:

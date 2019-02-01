@@ -34,6 +34,7 @@ namespace com.MJT.FindTheTheif
             }
         }
 
+        [SerializeField]
         private List<ItemGenPoint> itemGenPoints = new List<ItemGenPoint>();
         /// <summary>
         /// Points where items can be generated
@@ -160,7 +161,7 @@ namespace com.MJT.FindTheTheif
         /// Return random NPC Generation Point(RouteNode).
         /// </summary>
         /// <returns>A random RouteNode that can be selected as NPC Generation Point. If all points are assigned, -1.</returns>
-        public int GetRandomNPCGenPointIdx()
+        public int GetRandomNPCGenPoint()
         {
             if (assignedPointNum >= nPCGenPoints.Count)  //All available points are assinged
                 return -1;

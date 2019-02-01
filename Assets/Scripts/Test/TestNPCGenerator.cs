@@ -16,7 +16,7 @@ namespace com.MJT.FindTheTheif
             //Route Test
             for (int i = 0; i < NPCNumber; i++)
             {
-                int randomPointIdx = MapDataManager.Instance.GetRandomNPCGenPointIdx();
+                int randomPointIdx = MapDataManager.Instance.GetRandomNPCGenPoint();
                 if (randomPointIdx == -1)
                 {
                     Debug.LogError("Error: Attempt to generate more number of NPC than available");

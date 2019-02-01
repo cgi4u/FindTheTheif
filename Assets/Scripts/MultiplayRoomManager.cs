@@ -46,14 +46,20 @@ namespace com.MJT.FindTheTheif
 
         void Awake()
         {
+            mapDataManager = MapDataManager.Instance;
+
+            //Initialize variables related to items
+            itemNum = itemPrefabs.Length;
+            itemGenPointNum = mapDataManager.ItemGenPoints.Count;
+            isItemStolen = new bool[itemGenPointNum];
+
             if (!PhotonNetwork.connected)
             {
                 Debug.LogError("Multiplay manager must be used in online environment.");
                 return;
             }
 
-            //Set singleton
-            //이 오류 체크는 사실 큰 필요가 없음.
+            //Set the singleton
             if (instance == null)
             {
                 //Debug.Log("Room Manager Instantiation");
@@ -78,12 +84,6 @@ namespace com.MJT.FindTheTheif
 
         void Start()
         {
-            //Initialize variables related to items
-            mapDataManager = MapDataManager.Instance;
-            itemNum = itemPrefabs.Length;
-            itemGenPointNum = mapDataManager.ItemGenPoints.Count;
-            isItemStolen = new bool[itemGenPointNum];
-
             if (PhotonNetwork.isMasterClient)
             {
                 //Generate NPCs
@@ -121,15 +121,15 @@ namespace com.MJT.FindTheTheif
         {
             for (int i = 0; i < NPCNum; i++)
             {
-                int randomPointIdx = MapDataManager.Instance.GetRandomNPCGenPointIdx();
-                if (randomPointIdx == -1)
+                int randomPoint = MapDataManager.Instance.GetRandomNPCGenPoint();
+                if (randomPoint == -1)
                 {
                     Debug.LogError("Error: Attempt to generate more number of NPC than available");
                     return;
                 }
 
                 GameObject newNPC = PhotonNetwork.InstantiateSceneObject(NPCPrefab.name, new Vector3(0, 0, 0), Quaternion.identity, 0, null);
-                PhotonView.Get(newNPC).RPC("Init", PhotonTargets.All, randomPointIdx);
+                PhotonView.Get(newNPC).RPC("Init", PhotonTargets.All, randomPoint);
             }
         }
 
@@ -210,8 +210,8 @@ namespace com.MJT.FindTheTheif
                 ExhibitRoom roomOfPoint = mapDataManager.ItemGenPoints[targetItemPointSelector[i]].GetComponentInParent<ExhibitRoom>();
                 if (!roomContainTargetItem.Contains(roomOfPoint))
                 {
-                    Debug.Log("Count: " + count);
-                    Debug.Log("i: " + i);
+                    //Debug.Log("Count: " + count);
+                    //Debug.Log("i: " + i);
                     targetPoints[count++] = targetItemPointSelector[i];
                     roomContainTargetItem.Add(roomOfPoint);
                     if (count == targetItemNum)
@@ -266,6 +266,12 @@ namespace com.MJT.FindTheTheif
         [PunRPC]
         void SetTargetItemList(int[] targetPoints)
         {
+            for (int i = 0; i < targetPoints.Length; i++)
+            {
+                print(targetPoints[i]);
+                Debug.Log(mapDataManager.ItemGenPoints[targetPoints[i]]);
+            }
+
             for (int i = 0; i < targetPoints.Length; i++)
                 targetItems.Add(mapDataManager.ItemGenPoints[targetPoints[i]].Item);
         }
