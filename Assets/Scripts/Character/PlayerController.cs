@@ -113,16 +113,16 @@ namespace com.MJT.FindTheTheif
             //어떤 버튼이 마지막으로 눌렸는지를 판단하여 이동한다.
             switch (dir)
             {
-                case Direction.up:
+                case Direction.Up:
                     buttons[0] = btnCount;
                     break;
-                case Direction.down:
+                case Direction.Down:
                     buttons[1] = btnCount;
                     break;
-                case Direction.left:
+                case Direction.Left:
                     buttons[2] = btnCount;
                     break;
-                case Direction.right:
+                case Direction.Right:
                     buttons[3] = btnCount;
                     break;
                 default:
@@ -135,16 +135,16 @@ namespace com.MJT.FindTheTheif
         {
             switch (dir)
             {
-                case Direction.up:
+                case Direction.Up:
                     buttons[0] = 0;
                     break;
-                case Direction.down:
+                case Direction.Down:
                     buttons[1] = 0;
                     break;
-                case Direction.left:
+                case Direction.Left:
                     buttons[2] = 0;
                     break;
-                case Direction.right:
+                case Direction.Right:
                     buttons[3] = 0;
                     break;
                 default:

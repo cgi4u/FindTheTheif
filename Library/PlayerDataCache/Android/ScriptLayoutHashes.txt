@@ -1,6 +1,6 @@
 Android
 PlayerPath?
-C:/Users/CGI/Desktop/FindTheTheif.apk
+C:/Users/MJT/Desktop/FindTheThief.apk
 SceneListBegin?
 Assets/Scenes/Launcher.unity
 Assets/Scenes/Lobby.unity
@@ -150,7 +150,7 @@ e7aa62e1f291228958626e122c23c8f0 Assembly-CSharp.dll:.ConnectAndJoinRandom
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:Facebook.Unity.Example.AppLinks
 94017dcc9f00fe671ea7dc427b4da011 Unity.TextMeshPro.dll:TMPro.TMP_SpriteAsset
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:Facebook.Unity.Example.DialogShare
-1dab134e635ae95ca624bc204c8e7c73 Assembly-CSharp.dll:com.MJT.FindTheTheif.UIManager
+51f7b0725ab077b28639818cbb966c34 Assembly-CSharp.dll:com.MJT.FindTheTheif.UIManager
 7c3c528d577a18fd22064b5a610c44fe Assembly-CSharp.dll:com.MJT.FindTheTheif.Route
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:Facebook.Unity.Example.GraphRequest
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:Facebook.Unity.Example.LogView
@@ -230,7 +230,7 @@ a4f0a4f62100f1a4fb5cbe0e00dde83f Unity.TextMeshPro.dll:TMPro.TextMeshProUGUI
 5fc094978ce3e3591a7500ed380d854a Unity.Analytics.DataPrivacy.dll:UnityEngine.Analytics.DataPrivacyButton
 5421466ed6291c1ab2d1650a128005b2 Assembly-CSharp.dll:.PhotonLagSimulationGui
 d251bf88db6c95a6b1aa0b69298da9ef UnityEngine.SpatialTracking.dll:UnityEngine.SpatialTracking.TrackedPoseDriver
-eef1058a2f3e2c27bce2a4864b315d3c Assembly-CSharp.dll:com.MJT.FindTheTheif.Lobby
+ce0ff9f22b12f02dfe70d8def53c5cc0 Assembly-CSharp.dll:com.MJT.FindTheTheif.Lobby
 17f7c4e46293cf9193b0f5464cae45dd Assembly-CSharp.dll:com.MJT.FindTheTheif.LocalRoomManager
 c5fd97cc10b89deaf7c60af66a6b0d5a Assembly-CSharp.dll:.SupportLogger
 04ce0a15712e697086a256d6850935ca Assembly-CSharp.dll:com.MJT.FindTheTheif.ItemController
@@ -249,4 +249,4 @@ e1b8eaae6a90f88343f8be6d517488f6 Assembly-CSharp.dll:.PhotonView
 a01528258fe67fa484658e5b5d14c189 Facebook.Unity.Settings.dll:Facebook.Unity.Settings.FacebookSettings
 8649814970b42d345b89944b862453cc Unity.TextMeshPro.dll:TMPro.TMP_SubMesh
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:Facebook.Unity.Example.AppRequests
-1dd34355d39df7ac73dad863a3285d4c Assembly-CSharp.dll:com.MJT.FindTheTheif.MultiplayRoomManager
+de8b1468dd28316bc6614823dc4378cc Assembly-CSharp.dll:com.MJT.FindTheTheif.MultiplayRoomManager

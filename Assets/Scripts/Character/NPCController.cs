@@ -264,17 +264,17 @@ namespace com.MJT.FindTheTheif
                         string sideAndType;
 
                         //Debug.Log("Case: Room-to-Stair");
-                        if (mapDataManager.Rooms[nextRoom].Floor < curFloor && mapDataManager.Rooms[prevRoom].AdjStairSide == StairSide.left)
+                        if (mapDataManager.Rooms[nextRoom].Floor < curFloor && mapDataManager.Rooms[prevRoom].AdjStairSide == StairSide.Left)
                         {
                             sideAndType = "Left Down";
                             curRoute = mapDataManager.Rooms[prevRoom].ToStairRoutes.LeftDownRoute;
                         }
-                        else if (mapDataManager.Rooms[nextRoom].Floor > curFloor && mapDataManager.Rooms[prevRoom].AdjStairSide == StairSide.left)
+                        else if (mapDataManager.Rooms[nextRoom].Floor > curFloor && mapDataManager.Rooms[prevRoom].AdjStairSide == StairSide.Left)
                         {
                             sideAndType = "Left Up";
                             curRoute = mapDataManager.Rooms[prevRoom].ToStairRoutes.LeftUpRoute;
                         }
-                        else if (mapDataManager.Rooms[nextRoom].Floor < curFloor && mapDataManager.Rooms[prevRoom].AdjStairSide == StairSide.right)
+                        else if (mapDataManager.Rooms[nextRoom].Floor < curFloor && mapDataManager.Rooms[prevRoom].AdjStairSide == StairSide.Right)
                         {
                             sideAndType = "Right Down";
                             curRoute = mapDataManager.Rooms[prevRoom].ToStairRoutes.RightDownRoute;
@@ -295,7 +295,7 @@ namespace com.MJT.FindTheTheif
                     break;
                 case RouteType.Room_to_Stair:              // Current route is To Stair Route -> Next can be Stair to Room/Stair
                 case RouteType.Stair_to_Stair:
-                    if (curRoute.StairType == StairType.down)       // Current route ends with down stair
+                    if (curRoute.StairType == StairType.Down)       // Current route ends with down stair
                         curFloor -= 1;
                     else
                         curFloor += 1;
@@ -305,17 +305,17 @@ namespace com.MJT.FindTheTheif
                         //Debug.Log("Case: Stair-to-Room");
                         string sideAndType;
 
-                        if (curRoute.StairSide == StairSide.left && curRoute.StairType == StairType.down)   // From Stair Route starts in the side where previous route ends
+                        if (curRoute.StairSide == StairSide.Left && curRoute.StairType == StairType.Down)   // From Stair Route starts in the side where previous route ends
                         {
                             sideAndType = "Left Up";
                             curRoute = mapDataManager.Rooms[nextRoom].FromStairRoutes.LeftUpRoute;
                         }
-                        else if (curRoute.StairSide == StairSide.left && curRoute.StairType == StairType.up)
+                        else if (curRoute.StairSide == StairSide.Left && curRoute.StairType == StairType.Up)
                         {
                             sideAndType = "Left Down";
                             curRoute = mapDataManager.Rooms[nextRoom].FromStairRoutes.LeftDownRoute;
                         }
-                        else if (curRoute.StairSide == StairSide.right && curRoute.StairType == StairType.down)
+                        else if (curRoute.StairSide == StairSide.Right && curRoute.StairType == StairType.Down)
                         {
                             sideAndType = "Right Up";
                             curRoute = mapDataManager.Rooms[nextRoom].FromStairRoutes.RightUpRoute;
@@ -336,17 +336,17 @@ namespace com.MJT.FindTheTheif
                     {
                         string sideAndType;
 
-                        if (curRoute.StairSide == StairSide.left && curRoute.StairType == StairType.down)   // From Stair Route starts in the side where previous route ends
+                        if (curRoute.StairSide == StairSide.Left && curRoute.StairType == StairType.Down)   // From Stair Route starts in the side where previous route ends
                         {
                             sideAndType = "Left Down Down";
                             curRoute = mapDataManager.StairToStairRoutes[curFloor - 1].LeftDownRoute;
                         }
-                        else if (curRoute.StairSide == StairSide.left && curRoute.StairType == StairType.up)
+                        else if (curRoute.StairSide == StairSide.Left && curRoute.StairType == StairType.Up)
                         {
                             sideAndType = "Left Up Up";
                             curRoute = mapDataManager.StairToStairRoutes[curFloor - 1].LeftUpRoute;
                         }
-                        else if (curRoute.StairSide == StairSide.right && curRoute.StairType == StairType.down)
+                        else if (curRoute.StairSide == StairSide.Right && curRoute.StairType == StairType.Down)
                         {
                             sideAndType = "Right Down Down";
                             curRoute = mapDataManager.StairToStairRoutes[curFloor - 1].RightDownRoute;

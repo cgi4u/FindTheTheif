@@ -283,7 +283,7 @@ GameObject:
   - component: {fileID: 652813876}
   - component: {fileID: 652813875}
   m_Layer: 0
-  m_Name: Launcher Controller
+  m_Name: Launcher Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

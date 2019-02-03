@@ -33,12 +33,15 @@ namespace com.MJT.FindTheTheif
         {
             if (instance == null)
                 instance = this;
+
+            charPopUp.SetActive(false);
+            itemPopUp.gameObject.SetActive(false);
+            targetItemList.gameObject.SetActive(false);
         }
 
         private void Start()
         {
-            charPopUp.SetActive(false);
-            itemPopUp.gameObject.SetActive(false);
+            
         }
 
         private void Update()
@@ -60,7 +63,6 @@ namespace com.MJT.FindTheTheif
             if (MultiplayRoomManager.Instance != null)
             {
                 timeLabel.text = Mathf.Floor(MultiplayRoomManager.Instance.timeLeft).ToString();
-                remainingTheifLabel.text = "남은 도둑: " + MultiplayRoomManager.Instance.RemainingTheif;
             }
         }
 
@@ -125,24 +127,31 @@ namespace com.MJT.FindTheTheif
             checkedItemListText.text =  "확인한 아이템: ";
             foreach (ItemController item in checkedItemList)
             {
-                checkedItemListText.text += "\n" + ConvertItemInfoToString(item);
+                checkedItemListText.text += "\n" + ItemInfoToString(item);
             }
         }
 
         //Information to items to steal(visible by theives only)
-        public Text stealItemListText;
-        public void RenewStealItemList(List<ItemController> stealItemList, int stealItemNum, bool[] isItemStolen)
+        public Text targetItemList;
+        public void RenewTargetItemList(List<ItemController> targetItems, int targetItemNum, bool[] isItemStolen)
         {
-            stealItemListText.text = "훔칠 아이템: ";
-            foreach (ItemController item in stealItemList)
+            targetItemList.gameObject.SetActive(true);
+
+            this.targetItemList.text = "훔칠 아이템: ";
+            foreach (ItemController item in targetItems)
             {
-                stealItemListText.text += "\n" + ConvertItemInfoToString(item);
+                this.targetItemList.text += "\n" + ItemInfoToString(item);
             }
         }
 
         #endregion
 
-        private string ConvertItemInfoToString(ItemController item)
+        public void RenewThievesNum(int thievesNum)
+        {
+            remainingTheifLabel.text = "남은 도둑: " + thievesNum;
+        }
+
+        private string ItemInfoToString(ItemController item)
         {
             string itemInfo = "";
 

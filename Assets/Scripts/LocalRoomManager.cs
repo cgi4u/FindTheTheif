@@ -40,7 +40,7 @@ namespace com.MJT.FindTheTheif
         void Start()
         {
             //Inctantiate the room controller(only when the client is the master)
-            if (PhotonNetwork.player.IsMasterClient)
+            /*if (PhotonNetwork.player.IsMasterClient)
             {
                 if (multiplayRoomManagerPrefab == null)
                 {
@@ -50,7 +50,7 @@ namespace com.MJT.FindTheTheif
                 {
                     PhotonNetwork.InstantiateSceneObject(multiplayRoomManagerPrefab.name, new Vector3(0f, 0f, 10f), Quaternion.identity, 0, null);
                 }
-            }
+            }*/
 
             //Instantiate the local player(my player)
             if (playerPrefab == null)
@@ -59,19 +59,19 @@ namespace com.MJT.FindTheTheif
             }
             else if (PhotonNetwork.connected)
             {
-                Hashtable playerCp = PhotonNetwork.player.CustomProperties;
+                /*Hashtable playerCp = PhotonNetwork.player.CustomProperties;
 
                 if (playerCp["Team"] != null)
                     MyTeam = (Team)playerCp["Team"];
                 else
-                    MyTeam = Team.undefined;
+                    MyTeam = Team.Undefined;
 
                 switch (MyTeam)
                 {
-                    case Team.theif: teamLabel.text = "도둑"; break;
-                    case Team.detective: teamLabel.text = "탐정"; break;
+                    case Team.Thief: teamLabel.text = "도둑"; break;
+                    case Team.Detective: teamLabel.text = "탐정"; break;
                     default: teamLabel.text = "오류"; break;
-                }
+                }*/
 
                 Debug.Log("We are Instantiating LocalPlayer from " + SceneManager.GetActiveScene().name);
                 // we're in a room. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate

@@ -45,6 +45,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeLeft: 30
+  thievesNum: 0
+  teamOfPlayer: 
+  ifGameInited: 0
+  levelName: Demo Room
   NPCPrefab: {fileID: 1900755372417909919, guid: 135b5b3a8b693284ab93667c9b37cdc8,
     type: 3}
   itemPrefabs:
@@ -62,7 +66,7 @@ MonoBehaviour:
   itemInGenPoint: []
   itemGenPointNum: 0
   targetItemNum: 3
-  targetItemList: []
+  targetItems: []
 --- !u!114 &114986182949599362
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -86,7 +90,7 @@ MonoBehaviour:
   ObservedComponents:
   - {fileID: 114000243598936320}
   ObservedComponentsFoldoutOpen: 1
-  viewIdField: 1
-  instantiationId: 1
+  viewIdField: 0
+  instantiationId: -1
   currentMasterID: -1
   isRuntimeInstantiated: 0

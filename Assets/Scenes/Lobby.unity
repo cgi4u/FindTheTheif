@@ -793,7 +793,7 @@ GameObject:
   - component: {fileID: 446397742}
   - component: {fileID: 446397741}
   m_Layer: 0
-  m_Name: Lobby Controller
+  m_Name: Lobby Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -812,10 +812,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playersPerRoom: 2
-  theifPerRoom: 1
+  thievesPerRoom: 0
   nameInputField: {fileID: 313351831}
   curPlayerNumPanel: {fileID: 469709590}
   curPlayerNum: {fileID: 1966322884}
+  multiplayRoomManager: {fileID: 1012472278439320, guid: f65ec36051d3d1042bf6111d8b2d53ec,
+    type: 3}
 --- !u!4 &446397742
 Transform:
   m_ObjectHideFlags: 0

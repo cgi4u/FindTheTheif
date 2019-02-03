@@ -2,12 +2,12 @@
 
 namespace com.MJT.FindTheTheif
 {
-    public enum Team { undefined, detective, theif }
-    public enum Direction { none, up, down, right, left }
+    public enum Team { Undefined, Detective, Thief }
+    public enum Direction { None, Up, Down, Right, Left }
 
     public enum RouteType { In_Room, Room_to_Room, Room_to_Stair, Stair_to_Room, Stair_to_Stair }
-    public enum StairType { up, down, none }
-    public enum StairSide { left, right, none }
+    public enum StairType { Up, Down, None }
+    public enum StairSide { Left, Right, None }
 
     //Item properties
     public enum ItemColor { Red, Blue, Yellow }

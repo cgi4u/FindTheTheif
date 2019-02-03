@@ -11,13 +11,11 @@ namespace com.MJT.FindTheTheif
 {
     public class Lobby : Photon.PunBehaviour
     {
-        #region Public Properties
-
         /* 이 둘은 현 시점에서 고정값이지만, 유저가 변경할 수 있도록 수정될 가능성이 있으니 여기서 결정하고 룸으로 전달하는 식으로 한다. */
         //The number of players per room 
         public byte playersPerRoom;
         //The number players in each team
-        public byte theifPerRoom;
+        public byte thievesPerRoom;
 
         public InputField nameInputField;
 
@@ -25,7 +23,7 @@ namespace com.MJT.FindTheTheif
         public GameObject curPlayerNumPanel;
         public Text curPlayerNum;
 
-        #endregion
+        public GameObject multiplayRoomManager;
 
         void Start()
         {
@@ -75,7 +73,7 @@ namespace com.MJT.FindTheTheif
             SceneManager.LoadScene("Launcher");
         }
 
-        void InitializeAndLoadScene()
+        /*void InitializeAndLoadScene()
         {
             //Choose theif players randomly
             int[] theifSelector = new int[playersPerRoom];
@@ -116,7 +114,7 @@ namespace com.MJT.FindTheTheif
             Debug.Log("We load the 'Demo Room' ");
             //Load the game level. Use LoadLevel to synchronize(automaticallySyncScene is true)
             PhotonNetwork.LoadLevel("Demo Room");
-        }
+        }*/
 
         //랜덤 방참가(JoinRandomRoom)가 실패했을 때 콜백
         public override void OnPhotonRandomJoinFailed(object[] codeAndMsg)
@@ -136,11 +134,9 @@ namespace com.MJT.FindTheTheif
             if (PhotonNetwork.room.PlayerCount == 1)    //When local player made this room
             {
                 //Set room properties
-                //1. The Number of players in the room, 2. The number of thiefs in the room
-                // ISSUE:  플레이어 수를 건네줘야 할 필요가 있는가? PhotonNetWork에서 참조 가능하고 이게 더 정확할 수 있음
                 Hashtable roomCp = new Hashtable();
-                roomCp["Player Number"] = playersPerRoom;
-                roomCp["Theif Number"] = theifPerRoom;
+                //roomCp["Player Number"] = playersPerRoom;
+                roomCp["Thieves Number"] = thievesPerRoom;
                 PhotonNetwork.room.SetCustomProperties(roomCp);
 
                 //InitializeAndLoadScene();
@@ -162,7 +158,7 @@ namespace com.MJT.FindTheTheif
             // Load scene when the local player is the master client
             if (PhotonNetwork.room.PlayerCount == playersPerRoom && PhotonNetwork.isMasterClient)
             {
-                InitializeAndLoadScene();
+                PhotonNetwork.InstantiateSceneObject(multiplayRoomManager.name, new Vector3(0f, 0f, 0f), Quaternion.identity, 0, null);
             }
         }
 

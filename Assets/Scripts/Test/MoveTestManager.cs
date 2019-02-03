@@ -17,25 +17,25 @@ namespace com.MJT.FindTheTheif
                 Debug.Log(vertical);
                 Debug.Log(horizontal);
 
-                Direction direction = Direction.none;
+                Direction direction = Direction.None;
                 if (horizontal > 0)
                 {
-                    direction = Direction.right;
+                    direction = Direction.Right;
                 }
                 else if (horizontal < 0)
                 {
-                    direction = Direction.left;
+                    direction = Direction.Left;
                 }
                 else if (vertical > 0)
                 {
-                    direction = Direction.up;
+                    direction = Direction.Up;
                 }
                 else if (vertical < 0)
                 {
-                    direction = Direction.down;
+                    direction = Direction.Down;
                 }
 
-                if (direction != Direction.none)
+                if (direction != Direction.None)
                 {
                     Debug.Log("Button pushed stage 1: " + direction);
                     PlayerController.LocalPlayer.OnMoveButtonPushed(direction);
