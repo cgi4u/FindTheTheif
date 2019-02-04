@@ -11,8 +11,6 @@ namespace com.MJT.FindTheTheif
 {
     public class LocalRoomManager: Photon.PunBehaviour
     {
-        #region Public Properties
-
         [Tooltip("The prefab to use for representing the player")]
         public GameObject playerPrefab;
         /*
@@ -24,19 +22,8 @@ namespace com.MJT.FindTheTheif
         [Tooltip("The prefab of the room controller")]
         public GameObject multiplayRoomManagerPrefab;
 
-        #endregion
-
-        #region Private Properties
-
         Team MyTeam;
 
-        #endregion
-
-        #region Unity Callbacks
-
-        //TODO: 마스터 클라이언트일 경우, 멀티플레이 룸컨트롤러 생성
-
-        // Use this for initialization
         void Start()
         {
             //Inctantiate the room controller(only when the client is the master)
@@ -81,17 +68,10 @@ namespace com.MJT.FindTheTheif
             }
         }
 
-        #endregion
-
-        #region Public Methods
-
         public void ExitRoom()
         {
             PhotonNetwork.LeaveRoom();
             SceneManager.LoadScene("Lobby");
         }
-
-        #endregion
-
     }
 }

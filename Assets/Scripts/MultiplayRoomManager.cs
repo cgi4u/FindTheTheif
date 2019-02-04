@@ -45,7 +45,7 @@ namespace com.MJT.FindTheTheif
         [SerializeField]
         private int thievesNum;
         [SerializeField]
-        private int[] teamOfPlayer;
+        private Dictionary<int, int> teamOfPlayer = new Dictionary<int, int>();
 
         /// <summary>
         /// Used to check if the game initialization ends or not.
@@ -105,10 +105,12 @@ namespace com.MJT.FindTheTheif
             int[] thiefSelector = new int[playerNum];
             for (int i = 0; i < playerNum; i++)
             {
-                thiefSelector[i] = i + 1;
+                thiefSelector[i] = PhotonNetwork.playerList[i].ID;
             }
 
-            for (int i = 0; i < playerNum * 3; i++)
+            GlobalFunctions.RandomizeArray<int>(thiefSelector);
+
+            /*for (int i = 0; i < playerNum * 3; i++)
             {
                 int r1 = Random.Range(0, playerNum);
                 int r2 = Random.Range(0, playerNum);
@@ -116,13 +118,12 @@ namespace com.MJT.FindTheTheif
                 int temp = thiefSelector[r1];
                 thiefSelector[r1] = thiefSelector[r2];
                 thiefSelector[r2] = temp;
-            }
+            }*/
 
-            teamOfPlayer = new int[playerNum];
             for (int i = 0; i < playerNum; i++)
-                teamOfPlayer[i] = (int)Team.Detective;
+                teamOfPlayer[PhotonNetwork.playerList[i].ID] = (int)Team.Detective;
             for (int i = 0; i < thievesNum; i++)
-                teamOfPlayer[thiefSelector[i]-1] = (int)Team.Thief;
+                teamOfPlayer[thiefSelector[i]] = (int)Team.Thief;
 
             Debug.Log("We load the " + levelName);
             //Load the game level. Use LoadLevel to synchronize(automaticallySyncScene is true)
@@ -146,11 +147,13 @@ namespace com.MJT.FindTheTheif
             itemGenPointNum = mapDataManager.ItemGenPoints.Count;
             isItemStolen = new bool[itemGenPointNum];
 
-            //Initilaize team information
-            myTeam = (Team)teamOfPlayer[PhotonNetwork.player.ID - 1];
-
+            //Initilaize team information and set UI informations
+            Debug.Log(PhotonNetwork.player.ID);
+            myTeam = (Team)teamOfPlayer[PhotonNetwork.player.ID];
+            UIManager.Instance.SetTeamLabel(myTeam);
             UIManager.Instance.RenewThievesNum(thievesNum);
 
+            //Generate NPCs and Items
             if (PhotonNetwork.isMasterClient)
             {
                 //Generate NPCs
@@ -164,6 +167,8 @@ namespace com.MJT.FindTheTheif
         void Update()
         {
             //issue: 다른 플레이어들이 게임 준비가 됐는지를 확인 후 시작해야하고, 시간 체크도 그 이후부터 시작해야함.
+
+            Debug.Log(teamOfPlayer[PhotonNetwork.player.ID]);
 
             //Reduce spent time
             if (PhotonNetwork.isMasterClient && timeLeft - Time.deltaTime > 0.0f)
@@ -233,7 +238,9 @@ namespace com.MJT.FindTheTheif
             for (int i = 0; i < itemNum; i++)
                 itemNumInGenPoint[i] = i;
 
-            for (int i = 0; i < itemNum * 3; i++)
+            GlobalFunctions.RandomizeArray<int>(itemNumInGenPoint);
+
+            /*for (int i = 0; i < itemNum * 3; i++)
             {
                 int r1 = Random.Range(0, itemNum);
                 int r2 = Random.Range(0, itemNum);
@@ -241,14 +248,16 @@ namespace com.MJT.FindTheTheif
                 int temp = itemNumInGenPoint[r1];
                 itemNumInGenPoint[r1] = itemNumInGenPoint[r2];
                 itemNumInGenPoint[r2] = temp;
-            }
+            }*/
 
             // Select items that theives should steal.
             int[] targetItemPointSelector = new int[itemGenPointNum];
             for (int i = 0; i < itemGenPointNum; i++)
                 targetItemPointSelector[i] = i;
 
-            for (int i = 0; i < itemGenPointNum * 3; i++)
+            GlobalFunctions.RandomizeArray<int>(targetItemPointSelector);
+
+            /*for (int i = 0; i < itemGenPointNum * 3; i++)
             {
                 int r1 = Random.Range(0, itemGenPointNum);
                 int r2 = Random.Range(0, itemGenPointNum);
@@ -256,7 +265,7 @@ namespace com.MJT.FindTheTheif
                 int temp = targetItemPointSelector[r1];
                 targetItemPointSelector[r1] = targetItemPointSelector[r2];
                 targetItemPointSelector[r2] = temp;
-            }
+            }*/
 
             int[] targetPoints = new int[targetItemNum];
             int count = 0;
@@ -292,34 +301,14 @@ namespace com.MJT.FindTheTheif
             foreach (PhotonPlayer player in PhotonNetwork.playerList)
             {
                 if ((Team)teamOfPlayer[player.ID - 1] == Team.Thief)
-                    photonView.RPC("SetTargetItemList", PhotonTargets.All, targetPoints);
+                    photonView.RPC("SetTargetItemList", player, targetPoints);
             }
         }
 
-        /*
         /// <summary>
-        /// Send the result of random select in master client to other players
+        /// Set target items which the player should be steal(For a thief player).
         /// </summary>
-        /// <param name="itemNumInGenPoint">Item Prefab index of item that generated at point of same index</param>
-        /// <param name="stealItemSelector">Randomize result for steal targets</param>
-        [PunRPC]
-        void InitItemSetting(int[] itemNumInGenPoint, int[] stealItemSelector)
-        {
-            //Prefab은 실제 게임 내에 존재하는 오브젝트가 아님. 실제 Instantiate한 오브젝트를 참조해서 steal target item 리스트에 넣어야함.
-            //이것을 위해 target item만 갱신하는 rpc를 따로 넣어야할수도 있음.
-            for (int i = 0; i < targetItemNum; i++)
-            {
-                ItemController newTargetItem = itemPrefabs[stealItemSelector[i]].GetComponent<ItemController>();
-                if (itemInGenPoint.Exists(item => item == newTargetItem))
-                    targetItems.Add(itemPrefabs[stealItemSelector[i]].GetComponent<ItemController>());
-                else
-                    i--;
-            }
-
-            //UIManager.Instance.RenewStealItemList(targetItemList, targetItemNum, isItemStolen);
-        }
-        */
-
+        /// <param name="targetPoints">Indices of item generation points which have target items.</param>
         [PunRPC]
         void SetTargetItemList(int[] targetPoints)
         {
@@ -367,14 +356,21 @@ namespace com.MJT.FindTheTheif
         {
             if (stream.isWriting)
             {
+                stream.SendNext(ifGameInited);
                 stream.SendNext(teamOfPlayer);
                 stream.SendNext(timeLeft);
             }
             else
             {
-                teamOfPlayer = (int[])stream.ReceiveNext();
+                ifGameInited = (bool)stream.ReceiveNext();
+                teamOfPlayer = (Dictionary<int,int>)stream.ReceiveNext();
                 timeLeft = (float)stream.ReceiveNext();
             }
+        }
+
+        public override void OnLeftRoom()
+        {
+            Destroy(this);
         }
     }
 }

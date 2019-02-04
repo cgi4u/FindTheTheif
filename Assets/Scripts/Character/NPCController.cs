@@ -107,6 +107,9 @@ namespace com.MJT.FindTheTheif
             }
             else
                 SetNewTargetPoint();
+
+            //Set sprite sorting order by using y-axis postion
+            GetComponent<SpriteRenderer>().sortingOrder = -(int)(transform.position.y * 100f);
         }
 
         private void OnCollisionEnter2D(Collision2D collision)
@@ -146,9 +149,6 @@ namespace com.MJT.FindTheTheif
             {
                 SetNewTargetPoint();
             }
-
-            //이동 위치에 따라 스프라이트 우선순위를 결정(y축 위치가 더 큰 캐릭터가 뒤로 가도록)
-            GetComponent<SpriteRenderer>().sortingOrder = -(int)(transform.position.y * 100f);
 
             return;
         }
@@ -202,14 +202,14 @@ namespace com.MJT.FindTheTheif
         {
             if (transform.position == routeNodeSet[curNodeNum + 1].transform.position)
             {
+                isMoving = false;
+                blockedTime = Random.Range(0f, 0.5f);   // Set delay at each node for thief user control easily
+
                 curNodeNum += 1;
                 if (curNodeNum < routeNodeSet.Length - 1)       // Route not ends, arrived at next node.
                 {
                     if (routeNodeSet[curNodeNum].IfItemPoint)   // Set item watching time.
-                    {
-                        blockedTime = Random.Range(1, 3);
-                        isMoving = false;
-                    }
+                        blockedTime = Random.Range(1f, 3f);
                 }
                 else                                            // Route ends, get next route.
                 {

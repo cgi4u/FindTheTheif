@@ -39,10 +39,12 @@ namespace com.MJT.FindTheTheif
             }
         }
 
+        /*
         [SerializeField]
         private bool isStolen = false;
         [SerializeField]
         private bool isTarget = false;
+        */
 
         #endregion
 

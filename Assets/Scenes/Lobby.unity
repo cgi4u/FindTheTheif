@@ -812,7 +812,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playersPerRoom: 2
-  thievesPerRoom: 0
+  thievesPerRoom: 1
   nameInputField: {fileID: 313351831}
   curPlayerNumPanel: {fileID: 469709590}
   curPlayerNum: {fileID: 1966322884}

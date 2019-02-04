@@ -22,12 +22,15 @@ namespace com.MJT.FindTheTheif
             }
         }
 
-        //Label to show reamaing game time
-        public Text timeLabel;
-        //Label to show remaining theif number
-        public Text remainingTheifLabel;
-
+        /// <summary>
+        /// A panel that has movement buttons
+        /// </summary>
         public RectTransform moveButtonPanel;
+
+        /// <summary>
+        /// Label to show remaining game time
+        /// </summary>
+        public Text timeLabel;
 
         private void Awake()
         {
@@ -66,20 +69,17 @@ namespace com.MJT.FindTheTheif
             }
         }
 
-        #region Character(Theif, NPC) Pop-up
-        public GameObject charPopUp;
+        #region Pop-up(for NPC/Thieves and for items)
 
+        public GameObject charPopUp;
         public void SetCharPopUp(int playerID, Vector3 objPos)
         {
             Vector3 screenPoint = Camera.main.WorldToScreenPoint(objPos);
             charPopUp.transform.position = screenPoint;
             charPopUp.SetActive(true);
         }
-        #endregion
 
-        #region Item Pop-up
         public ItemPopUp itemPopUp;
-
         public void SetItemPopUp(ItemColor itemColor, ItemAge itemAge, ItemUsage itemUsage, Vector3 objPos)
         {
             Vector3 screenPoint = Camera.main.WorldToScreenPoint(objPos);
@@ -99,7 +99,7 @@ namespace com.MJT.FindTheTheif
                 oldWorldPoint -= move;
                 charPopUp.transform.position = Camera.main.WorldToScreenPoint(oldWorldPoint);
 
-                
+
                 if (!screentRect.Contains(charPopUp.transform.position))
                 {
                     charPopUp.SetActive(false);
@@ -146,9 +146,33 @@ namespace com.MJT.FindTheTheif
 
         #endregion
 
+        /// <summary>
+        /// Label to show the team of the local player.
+        /// </summary>
+        public Text TeamLabel;
+        public void SetTeamLabel(Team myTeam)
+        {
+            switch (myTeam)
+            {
+                case Team.Detective:
+                    TeamLabel.text = "탐정";
+                    break;
+                case Team.Thief:
+                    TeamLabel.text = "도둑";
+                    break;
+                default:
+                    Debug.LogError("Undefined Team.");
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Label to show remaining theif number
+        /// </summary>
+        public Text thievesNumLabel;
         public void RenewThievesNum(int thievesNum)
         {
-            remainingTheifLabel.text = "남은 도둑: " + thievesNum;
+            thievesNumLabel.text = "남은 도둑: " + thievesNum;
         }
 
         private string ItemInfoToString(ItemController item)

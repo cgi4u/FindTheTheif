@@ -80,6 +80,9 @@ namespace com.MJT.FindTheTheif
             }
             else if (btnCount > 0)
                 SetNewTargetPoint();
+
+            //Set sprite sorting order by using y-axis postion
+            GetComponent<SpriteRenderer>().sortingOrder = -(int)(transform.position.y * 100f);
         }
 
         private void OnCollisionEnter2D(Collision2D collision)
@@ -174,9 +177,6 @@ namespace com.MJT.FindTheTheif
                 else
                     isMoving = false;
             }
-
-            //이동 위치에 따라 스프라이트 우선순위를 결정(y축 위치가 더 큰 캐릭터가 뒤로 가도록)
-            GetComponent<SpriteRenderer>().sortingOrder = -(int)(transform.position.y * 100f);
 
             return;
         }
