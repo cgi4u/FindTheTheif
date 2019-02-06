@@ -5226,6 +5226,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Team Label
       objectReference: {fileID: 0}
+    - target: {fileID: 1483871676697404368, guid: 740bb71e75d695745981ea374bf83e9b,
+        type: 3}
+      propertyPath: m_Text
+      value: Team
+      objectReference: {fileID: 0}
     - target: {fileID: 1483871676697404369, guid: 740bb71e75d695745981ea374bf83e9b,
         type: 3}
       propertyPath: m_LocalPosition.x

@@ -31,5 +31,22 @@ namespace com.MJT.FindTheTheif
                 arr[r2] = temp;
             }
         }
+
+        public static PhotonPlayer GetPlayerByID(int id)
+        {
+            if (!PhotonNetwork.inRoom)
+            {
+                Debug.LogError("GetPlayerByID must be called in a Photon game room.");
+                return null;
+            }
+
+            foreach (PhotonPlayer player in PhotonNetwork.playerList)
+            {
+                if (player.ID == id)
+                    return player;
+            }
+
+            return null;
+        }
     }
 }

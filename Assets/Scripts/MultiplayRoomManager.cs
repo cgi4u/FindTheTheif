@@ -44,8 +44,6 @@ namespace com.MJT.FindTheTheif
 
         [SerializeField]
         private int thievesNum;
-        [SerializeField]
-        private Dictionary<int, int> teamOfPlayer = new Dictionary<int, int>();
 
         /// <summary>
         /// Used to check if the game initialization ends or not.
@@ -88,10 +86,40 @@ namespace com.MJT.FindTheTheif
                 return;
             }
 
-            if (PhotonNetwork.isMasterClient)
-                InitRoomAndLoadScene();         
+            if (PhotonNetwork.isMasterClient) {
+                //Randomly switch the master client. It prevents that the player who made room always be picked as a thief.
+                int[] randomPlayerSelector = new int[PhotonNetwork.playerList.Length];
+                for (int i = 0; i < PhotonNetwork.playerList.Length; i++)
+                    randomPlayerSelector[i] = PhotonNetwork.playerList[i].ID;
+
+                GlobalFunctions.RandomizeArray<int>(randomPlayerSelector);
+
+                if (randomPlayerSelector[0] == PhotonNetwork.player.ID)
+                    InitRoomAndLoadScene();
+                else
+                {
+                    Debug.Log("Change the master client.");
+
+                    PhotonPlayer newMaster = null;
+                    foreach (PhotonPlayer player in PhotonNetwork.playerList)
+                    {
+                        if (randomPlayerSelector[0] == player.ID)
+                        {
+                            newMaster = player;
+                            break;
+                        }
+                    }
+
+                    //issue: null 오류처리 필요
+                    PhotonNetwork.SetMasterClient(newMaster);
+                }
+            }
         }
 
+        /// <summary>
+        /// Select theives player randomly and load scene.
+        /// Should be called only by the master client. The master client must not be a detective because of sync delay issue.
+        /// </summary>
         private void InitRoomAndLoadScene()
         {
             int playerNum = PhotonNetwork.playerList.Length;
@@ -101,29 +129,38 @@ namespace com.MJT.FindTheTheif
                 return;
             }
 
-            //Choose theif players randomly
-            int[] thiefSelector = new int[playerNum];
+            // Set each player's team
+            Hashtable roomCp = PhotonNetwork.room.CustomProperties;
+
+            foreach (PhotonPlayer player in PhotonNetwork.playerList)
+                roomCp[TeamKey(player.ID)] = (int)Team.Detective;
+
+            // Choose theif players randomly
+            int[] thiefSelector = new int[playerNum - 1];
+            int offset = 0;
             for (int i = 0; i < playerNum; i++)
             {
-                thiefSelector[i] = PhotonNetwork.playerList[i].ID;
+                // Because the master client must be a thief, not picked as a random thief player
+                if (PhotonNetwork.playerList[i].ID == PhotonNetwork.player.ID)
+                {
+                    offset = 1;
+                    continue;
+                }
+
+                thiefSelector[i - offset] = PhotonNetwork.playerList[i].ID;
             }
 
             GlobalFunctions.RandomizeArray<int>(thiefSelector);
 
-            /*for (int i = 0; i < playerNum * 3; i++)
+            // Select thieves(master client + others)
+            roomCp[TeamKey(PhotonNetwork.player.ID)] = (int)Team.Thief;
+            for (int i = 0; i < thievesNum - 1; i++)
             {
-                int r1 = Random.Range(0, playerNum);
-                int r2 = Random.Range(0, playerNum);
+                PhotonPlayer thiefPlayer = GlobalFunctions.GetPlayerByID(thiefSelector[i]);
+                roomCp[TeamKey(thiefPlayer.ID)] = (int)Team.Thief;
+            }
 
-                int temp = thiefSelector[r1];
-                thiefSelector[r1] = thiefSelector[r2];
-                thiefSelector[r2] = temp;
-            }*/
-
-            for (int i = 0; i < playerNum; i++)
-                teamOfPlayer[PhotonNetwork.playerList[i].ID] = (int)Team.Detective;
-            for (int i = 0; i < thievesNum; i++)
-                teamOfPlayer[thiefSelector[i]] = (int)Team.Thief;
+            PhotonNetwork.room.SetCustomProperties(roomCp);
 
             Debug.Log("We load the " + levelName);
             //Load the game level. Use LoadLevel to synchronize(automaticallySyncScene is true)
@@ -140,6 +177,9 @@ namespace com.MJT.FindTheTheif
                 return;
             }
 
+            // Remove scene load delegate
+            SceneManager.sceneLoaded -= OnGameSceneLoaded;
+
             mapDataManager = MapDataManager.Instance;
 
             //Initialize variables related to items
@@ -148,8 +188,7 @@ namespace com.MJT.FindTheTheif
             isItemStolen = new bool[itemGenPointNum];
 
             //Initilaize team information and set UI informations
-            Debug.Log(PhotonNetwork.player.ID);
-            myTeam = (Team)teamOfPlayer[PhotonNetwork.player.ID];
+            myTeam = (Team)PhotonNetwork.room.CustomProperties[TeamKey(PhotonNetwork.player.ID)];
             UIManager.Instance.SetTeamLabel(myTeam);
             UIManager.Instance.RenewThievesNum(thievesNum);
 
@@ -167,8 +206,6 @@ namespace com.MJT.FindTheTheif
         void Update()
         {
             //issue: 다른 플레이어들이 게임 준비가 됐는지를 확인 후 시작해야하고, 시간 체크도 그 이후부터 시작해야함.
-
-            Debug.Log(teamOfPlayer[PhotonNetwork.player.ID]);
 
             //Reduce spent time
             if (PhotonNetwork.isMasterClient && timeLeft - Time.deltaTime > 0.0f)
@@ -240,32 +277,12 @@ namespace com.MJT.FindTheTheif
 
             GlobalFunctions.RandomizeArray<int>(itemNumInGenPoint);
 
-            /*for (int i = 0; i < itemNum * 3; i++)
-            {
-                int r1 = Random.Range(0, itemNum);
-                int r2 = Random.Range(0, itemNum);
-
-                int temp = itemNumInGenPoint[r1];
-                itemNumInGenPoint[r1] = itemNumInGenPoint[r2];
-                itemNumInGenPoint[r2] = temp;
-            }*/
-
             // Select items that theives should steal.
             int[] targetItemPointSelector = new int[itemGenPointNum];
             for (int i = 0; i < itemGenPointNum; i++)
                 targetItemPointSelector[i] = i;
 
             GlobalFunctions.RandomizeArray<int>(targetItemPointSelector);
-
-            /*for (int i = 0; i < itemGenPointNum * 3; i++)
-            {
-                int r1 = Random.Range(0, itemGenPointNum);
-                int r2 = Random.Range(0, itemGenPointNum);
-
-                int temp = targetItemPointSelector[r1];
-                targetItemPointSelector[r1] = targetItemPointSelector[r2];
-                targetItemPointSelector[r2] = temp;
-            }*/
 
             int[] targetPoints = new int[targetItemNum];
             int count = 0;
@@ -300,7 +317,7 @@ namespace com.MJT.FindTheTheif
 
             foreach (PhotonPlayer player in PhotonNetwork.playerList)
             {
-                if ((Team)teamOfPlayer[player.ID - 1] == Team.Thief)
+                if ((Team)PhotonNetwork.room.CustomProperties[TeamKey(player.ID)] == Team.Thief)
                     photonView.RPC("SetTargetItemList", player, targetPoints);
             }
         }
@@ -324,19 +341,31 @@ namespace com.MJT.FindTheTheif
         }
 
         //issue point
-        //1. 초기화가 덜됐을때 나갔으면 새로 마스터로 지정된사람이 초기화를 돌려줘야함
-        //2. 다른 플레이어가 나갈때 도둑 또는 탐정의 명수를 줄여줘야함
-        public override void OnOwnershipTransfered(object[] viewAndPlayers)
+        // 현재 게임 도중에 나가도 실행되는 버그가 있음
+        // 정확히는 처음에 마스터 클라이언트를 바꾸었을 경우 InitRoomAndLoadScene()를 실행하는 과정에서 ifGameInited가 싱크가 안됨
+        public override void OnMasterClientSwitched(PhotonPlayer newMasterClient)
+        {
+            if (newMasterClient != PhotonNetwork.player)
+                return;
+
+            Debug.Log("Assgined to the new master client.");
+            if (!ifGameInited)
+                InitRoomAndLoadScene();
+        }
+
+        /*public override void OnOwnershipTransfered(object[] viewAndPlayers)
         {
             if (!ifGameInited && PhotonNetwork.isMasterClient)
             {
                 InitRoomAndLoadScene();
             }
-        }
+        }*/
 
         public override void OnPhotonPlayerDisconnected(PhotonPlayer otherPlayer)
         {
-            if ((Team)teamOfPlayer[otherPlayer.ID - 1] == Team.Thief)
+            Hashtable leftPlayerCp = otherPlayer.CustomProperties;
+
+            if ((Team)PhotonNetwork.room.CustomProperties[TeamKey(otherPlayer.ID)] == Team.Thief)
             {
                 thievesNum -= 1;
                 UIManager.Instance.RenewThievesNum(thievesNum);
@@ -357,13 +386,11 @@ namespace com.MJT.FindTheTheif
             if (stream.isWriting)
             {
                 stream.SendNext(ifGameInited);
-                stream.SendNext(teamOfPlayer);
                 stream.SendNext(timeLeft);
             }
             else
             {
                 ifGameInited = (bool)stream.ReceiveNext();
-                teamOfPlayer = (Dictionary<int,int>)stream.ReceiveNext();
                 timeLeft = (float)stream.ReceiveNext();
             }
         }
@@ -371,6 +398,11 @@ namespace com.MJT.FindTheTheif
         public override void OnLeftRoom()
         {
             Destroy(this);
+        }
+
+        string TeamKey(int id)
+        {
+            return "Team of Player " + id;
         }
     }
 }

@@ -161,7 +161,7 @@ namespace com.MJT.FindTheTheif
                     TeamLabel.text = "도둑";
                     break;
                 default:
-                    Debug.LogError("Undefined Team.");
+                    TeamLabel.text = "오류";
                     break;
             }
         }

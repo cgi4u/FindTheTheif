@@ -1,6 +1,6 @@
 Android
 PlayerPath?
-C:/Users/CGI/Desktop/FindTheTheif.apk
+C:/Users/MJT/Desktop/FindTheThief.apk
 SceneListBegin?
 Assets/Scenes/Launcher.unity
 Assets/Scenes/Lobby.unity

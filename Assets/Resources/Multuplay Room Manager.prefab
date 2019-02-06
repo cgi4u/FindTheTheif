@@ -46,7 +46,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timeLeft: 30
   thievesNum: 0
-  teamOfPlayer: 
   ifGameInited: 0
   levelName: Demo Room
   NPCPrefab: {fileID: 1900755372417909919, guid: 135b5b3a8b693284ab93667c9b37cdc8,
