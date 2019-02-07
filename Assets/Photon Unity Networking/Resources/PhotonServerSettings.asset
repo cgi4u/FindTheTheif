@@ -16,7 +16,7 @@ MonoBehaviour:
   VoiceAppID: 
   ChatAppID: 5ae2c8a8-0c41-462d-9ce1-cc919dd4b930
   HostType: 1
-  PreferredRegion: 0
+  PreferredRegion: 9
   EnabledRegions: -1
   Protocol: 0
   ServerAddress: 
@@ -52,4 +52,5 @@ MonoBehaviour:
   - SetTargetItemList
   - ReleaseMasterTaskLock
   - SetTeam
+  - CheckStartTimeAndReady
   DisableAutoOpenWizard: 1

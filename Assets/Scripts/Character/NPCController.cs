@@ -102,7 +102,7 @@ namespace com.MJT.FindTheTheif
 
             if (isMoving)
             {
-                GetComponent<PhotonTransformView>().SetSynchronizedValues(moveSpeed * direction, 0f);
+                //GetComponent<PhotonTransformView>().SetSynchronizedValues(moveSpeed * direction, 0f);
                 Move();
             }
             else

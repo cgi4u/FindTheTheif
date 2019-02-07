@@ -30,12 +30,6 @@ namespace com.MJT.FindTheTheif
             }
         }
 
-        // Start/End time of the game(use server time to set)
-        [SerializeField]
-        private double startTime;
-        [SerializeField]
-        private double endTime;
-
         //조건3. 게임이 시작하고 종료될 때 모든 플레이어를 통제할 수 있어야 함. RPC를 통해서 구현 가능할 듯
         //Player ready-check flag array
         private List<bool> isPlayersReady;
@@ -45,32 +39,23 @@ namespace com.MJT.FindTheTheif
         [SerializeField]
         private int thievesNum;
 
-        /// <summary>
-        /// Used to check if the room initialization(set team data, load scene) ends or not.
-        /// </summary>
-        [SerializeField]
-        private bool ifRoomInited = false;
-        /// <summary>
-        /// Used to check if the game initialization(generate NPCs and Items) ends or not.
-        /// </summary>
-        [SerializeField]
-        private bool ifGameInited = false;
-        /// <summary>
-        /// Used to check if the game is started(Confirmed that all users are ready);
-        /// </summary>
-        [SerializeField]
-        private bool ifGameStarted = false;
+        static readonly string sceneLoadedKey = "Scene Loaded";
+        static readonly string gameInitKey = "Game Initiated";
+        static readonly string readyKey = "Ready";
 
         [SerializeField]
         private string levelName;
 
-        void Awake()
+        private void Awake()
         {
             if (!PhotonNetwork.connected)
             {
                 Debug.LogError("Multiplay manager must be used in online environment.");
                 return;
             }
+
+            PhotonNetwork.sendRate = 10;
+            PhotonNetwork.sendRateOnSerialize = 10;
 
             DontDestroyOnLoad(this);
 
@@ -96,13 +81,16 @@ namespace com.MJT.FindTheTheif
                 return;
             }
 
+            // Set the player's status as not ready
+            PhotonExtends.SetLocalPlayerPropsByElem(readyKey, false);
+
             if (PhotonNetwork.isMasterClient) {
                 //Randomly switch the master client. It prevents that the player who made room always be picked as a thief.
                 int[] randomPlayerSelector = new int[PhotonNetwork.playerList.Length];
                 for (int i = 0; i < PhotonNetwork.playerList.Length; i++)
                     randomPlayerSelector[i] = PhotonNetwork.playerList[i].ID;
 
-                GlobalFunctions.RandomizeArray<int>(randomPlayerSelector);
+                Globals.RandomizeArray<int>(randomPlayerSelector);
 
                 if (randomPlayerSelector[0] == PhotonNetwork.player.ID)
                     InitRoomAndLoadScene();
@@ -129,6 +117,8 @@ namespace com.MJT.FindTheTheif
         /// <summary>
         /// Select theives player randomly and load scene.
         /// Should be called only by the master client. The master client must not be a detective because of sync delay issue.
+        /// Should be called when reset entire game.
+        /// 
         /// </summary>
         private void InitRoomAndLoadScene()
         {
@@ -160,23 +150,22 @@ namespace com.MJT.FindTheTheif
                 thiefSelector[i - offset] = PhotonNetwork.playerList[i].ID;
             }
 
-            GlobalFunctions.RandomizeArray<int>(thiefSelector);
+            Globals.RandomizeArray<int>(thiefSelector);
 
             // Select thieves(master client + others)
             roomCp[TeamKey(PhotonNetwork.player.ID)] = (int)Team.Thief;
             for (int i = 0; i < thievesNum - 1; i++)
             {
-                PhotonPlayer thiefPlayer = GlobalFunctions.GetPlayerByID(thiefSelector[i]);
+                PhotonPlayer thiefPlayer = PhotonExtends.GetPlayerByID(thiefSelector[i]);
                 roomCp[TeamKey(thiefPlayer.ID)] = (int)Team.Thief;
             }
-
-            PhotonNetwork.room.SetCustomProperties(roomCp);
 
             Debug.Log("We load the " + levelName);
             //Load the game level. Use LoadLevel to synchronize(automaticallySyncScene is true)
             PhotonNetwork.LoadLevel(levelName);
 
-            ifRoomInited = true;
+            roomCp[sceneLoadedKey] = true;
+            PhotonNetwork.room.SetCustomProperties(roomCp);
         }
 
         private void OnGameSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -186,9 +175,6 @@ namespace com.MJT.FindTheTheif
                 Debug.LogError("A wrong scene is loaded. Scene name: " + SceneManager.GetActiveScene().name);
                 return;
             }
-
-            // Remove scene load delegate
-            SceneManager.sceneLoaded -= OnGameSceneLoaded;
 
             mapDataManager = MapDataManager.Instance;
 
@@ -202,31 +188,45 @@ namespace com.MJT.FindTheTheif
             UIManager.Instance.SetTeamLabel(myTeam);
             UIManager.Instance.RenewThievesNum(thievesNum);
 
-            //Generate NPCs and Items
+            //Game initiation by the master client.
             if (PhotonNetwork.isMasterClient)
             {
-                //Generate NPCs
-                NPCGeneration(10);
-
-                //Generate Items
-                GenerateItems();
+                GenerateGameObjects();
+                SetStartTime();
             }
         }
 
-        void Update()
+        private void Start()
         {
-            //issue: 다른 플레이어들이 게임 준비가 됐는지를 확인 후 시작해야하고, 시간 체크도 그 이후부터 시작해야함.
-
-            //Reduce spent time
-            
-
-            //TODO: Game End 처리하기. 일단 메소드 만들고 RPC화
+            prevTimeStamp = PhotonNetwork.ServerTimestamp;
         }
 
-        //List<GameObject>
+        /// <summary>
+        /// Generate NPCs and Items for current game. Should be called by the master client.
+        /// </summary>
+        private void GenerateGameObjects()
+        {
+            if (!PhotonNetwork.isMasterClient) {
+                Debug.LogError("Object generation must be oprated by the master client.");
+                return;
+            }
+
+            //Generate NPCs
+            NPCGeneration(10);
+
+            //Generate Items
+            GenerateItems();
+
+            PhotonExtends.SetRoomCustomPropsByElem(gameInitKey, true);
+        }
 
         public GameObject NPCPrefab;
-        void NPCGeneration(int NPCNum)
+        public Transform NPCParent;
+        /// <summary>
+        /// Generate NPCs at random nodes.
+        /// </summary>
+        /// <param name="NPCNum">number of NPCs to be generated</param>
+        private void NPCGeneration(int NPCNum)
         {
             for (int i = 0; i < NPCNum; i++)
             {
@@ -239,10 +239,12 @@ namespace com.MJT.FindTheTheif
 
                 GameObject newNPC = PhotonNetwork.InstantiateSceneObject(NPCPrefab.name, new Vector3(0, 0, 0), Quaternion.identity, 0, null);
                 PhotonView.Get(newNPC).RPC("Init", PhotonTargets.All, randomPoint);
+                newNPC.transform.parent = NPCParent;
             }
         }
 
         public GameObject[] itemPrefabs;
+        public Transform itemParent;
         [SerializeField]
         private int itemNum;                    // The number of item prefabs = The number of kind of items which can be generated
 
@@ -267,7 +269,7 @@ namespace com.MJT.FindTheTheif
         /// <summary>
         /// Generate items at generation points randomly. 
         /// </summary>
-        void GenerateItems()
+        private void GenerateItems()
         {
             if (itemGenPointNum > itemNum)
             {
@@ -285,14 +287,14 @@ namespace com.MJT.FindTheTheif
             for (int i = 0; i < itemNum; i++)
                 itemNumInGenPoint[i] = i;
 
-            GlobalFunctions.RandomizeArray<int>(itemNumInGenPoint);
+            Globals.RandomizeArray<int>(itemNumInGenPoint);
 
             // Select items that theives should steal.
             int[] targetItemPointSelector = new int[itemGenPointNum];
             for (int i = 0; i < itemGenPointNum; i++)
                 targetItemPointSelector[i] = i;
 
-            GlobalFunctions.RandomizeArray<int>(targetItemPointSelector);
+            Globals.RandomizeArray<int>(targetItemPointSelector);
 
             int[] targetPoints = new int[targetItemNum];
             int count = 0;
@@ -323,6 +325,7 @@ namespace com.MJT.FindTheTheif
 
                 ExhibitRoom roomOfItem = mapDataManager.ItemGenPoints[i].GetComponentInParent<ExhibitRoom>();
                 PhotonView.Get(newItem).RPC("Init", PhotonTargets.All, roomOfItem.Floor, mapDataManager.Rooms.FindIndex(room => room == roomOfItem), i);
+                newItem.transform.parent = itemParent;
             }
 
             foreach (PhotonPlayer player in PhotonNetwork.playerList)
@@ -337,7 +340,7 @@ namespace com.MJT.FindTheTheif
         /// </summary>
         /// <param name="targetPoints">Indices of item generation points which have target items.</param>
         [PunRPC]
-        void SetTargetItemList(int[] targetPoints)
+        private void SetTargetItemList(int[] targetPoints)
         {
             for (int i = 0; i < targetPoints.Length; i++)
             {
@@ -350,10 +353,82 @@ namespace com.MJT.FindTheTheif
             UIManager.Instance.RenewTargetItemList(targetItems, targetItems.Count, null);
         }
 
-        [PunRPC]
-        private void SetEndTime(double startTime)
+        /// <summary>
+        /// Wait time for other user's game-ready(in ms).
+        /// </summary>
+        [SerializeField]
+        private int readyWait = 3000;
+
+        /// <summary>
+        /// Set start time and send it to other players. Should be called by the master client.
+        /// </summary>
+        private void SetStartTime()
         {
-            endTime = startTime + 30f;
+            if (!PhotonNetwork.isMasterClient)
+            {
+                Debug.LogError("Start time must be set by the master client.");
+                return;
+            }
+
+            int curTimeStamp = PhotonNetwork.ServerTimestamp;
+            int startTimeStamp = curTimeStamp + readyWait;
+
+            bool ifOverFlow = false;
+            if (startTimeStamp < curTimeStamp)
+                ifOverFlow = true;
+
+            photonView.RPC("CheckStartTimeAndReady", PhotonTargets.All, curTimeStamp, startTimeStamp, ifOverFlow);
+        }
+
+        // Start/End time of the game(use server time to set)
+        [SerializeField]
+        private int timeStampGone;
+        [SerializeField]
+        bool inReady = false;
+
+        //issue: 애초에 마스터부터가 inready상태에 안들어가면 아무 동작도 안되고 그냥 게임이 헛돌기만 함.
+        //조건도 잘못되서 안맞는듯하고, 그렇게 되는 상황을 고려할 필요가 있음(SetStartTime을 다시돌리는등)
+        [PunRPC]
+        private void CheckStartTimeAndReady(int sentTimeStamp, int startTimeStamp, bool ifOverFlow)
+        {
+            int curTimeStamp = PhotonNetwork.ServerTimestamp;
+            if ((ifOverFlow && (curTimeStamp > sentTimeStamp || curTimeStamp < startTimeStamp))
+                || (!ifOverFlow && (curTimeStamp > sentTimeStamp && curTimeStamp < startTimeStamp)))
+            {
+                timeStampGone = curTimeStamp - startTimeStamp;
+                PhotonExtends.SetLocalPlayerPropsByElem(readyKey, true);
+                inReady = true;
+            }
+        }
+
+        private int prevTimeStamp;
+        private void Update()
+        {
+            if (inReady)
+            {
+                timeStampGone += PhotonNetwork.ServerTimestamp - prevTimeStamp;
+                if (timeStampGone > 0f)
+                {
+                    bool playerIsReady = true;
+                    foreach (PhotonPlayer player in PhotonNetwork.playerList)
+                    {
+                        playerIsReady = (bool)player.CustomProperties[readyKey];
+                        if (!playerIsReady)
+                        {
+                            PhotonExtends.SetLocalPlayerPropsByElem(readyKey, false);
+                            inReady = false;
+                            if (PhotonNetwork.isMasterClient)
+                                SetStartTime();
+                            break;
+                        }
+                    }
+
+                    if (playerIsReady)
+                        Debug.Log("Game Start!");
+                }
+            }
+
+            prevTimeStamp = PhotonNetwork.ServerTimestamp;
         }
 
         //issue point
@@ -364,9 +439,11 @@ namespace com.MJT.FindTheTheif
             if (newMasterClient != PhotonNetwork.player)
                 return;
 
-            Debug.Log("Assgined to the new master client.");
-            if (!ifRoomInited)
+            Debug.Log("Assgined as the new master client.");
+            if (PhotonNetwork.room.CustomProperties[sceneLoadedKey] == null)
                 InitRoomAndLoadScene();
+            else if (PhotonNetwork.room.CustomProperties[gameInitKey] == null)
+                GenerateGameObjects();
         }
 
         public override void OnPhotonPlayerDisconnected(PhotonPlayer otherPlayer)
@@ -391,22 +468,13 @@ namespace com.MJT.FindTheTheif
 
         public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
         {
-            if (stream.isWriting)
-            {
-                stream.SendNext(ifRoomInited);
-                stream.SendNext(ifGameInited);
-                stream.SendNext(ifGameStarted);
-            }
-            else
-            {
-                ifRoomInited = (bool)stream.ReceiveNext();
-                ifGameInited = (bool)stream.ReceiveNext();
-                ifGameStarted = (bool)stream.ReceiveNext();
-            }
+
         }
 
         public override void OnLeftRoom()
         {
+            // Remove scene load delegate
+            SceneManager.sceneLoaded -= OnGameSceneLoaded;
             Destroy(this);
         }
 

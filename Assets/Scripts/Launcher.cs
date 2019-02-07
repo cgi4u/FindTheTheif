@@ -10,8 +10,6 @@ namespace com.MJT.FindTheTheif
 {
     public class Launcher : Photon.PunBehaviour
     {
-        #region Unity Callbacks
-
         // Use this for initialization
         void Awake()
         {
@@ -40,11 +38,6 @@ namespace com.MJT.FindTheTheif
             }
         }
 
-        #endregion
-
-
-        #region Public Methods
-
         //페이스북 로그인 버튼을 누르면 호출되는 로그인 시도 함수
         public void FacebookLogin()
         {
@@ -59,11 +52,6 @@ namespace com.MJT.FindTheTheif
                 FB.LogInWithReadPermissions(perms, AuthCallback);
             }
         }
-
-        #endregion
-
-
-        #region Private Methods
 
         //페이스북 초기화(FB.Init)시 호출되는 콜백
         private void InitCallback()
@@ -103,11 +91,6 @@ namespace com.MJT.FindTheTheif
             PhotonNetwork.ConnectUsingSettings("1.0");
         }
 
-        #endregion
-
-
-        #region Photon Callbacks
-
         // if AutoJoinLobby is false
         public override void OnConnectedToMaster()
         {
@@ -126,8 +109,5 @@ namespace com.MJT.FindTheTheif
         {
             Debug.LogErrorFormat("Error authenticating to Photon using facebook: {0}", debugMessage);
         }
-
-        #endregion
-
     }
 }

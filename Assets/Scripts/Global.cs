@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
 
+using Hashtable = ExitGames.Client.Photon.Hashtable;
+
 namespace com.MJT.FindTheTheif
-{
+{ 
     public enum Team { Undefined, Detective, Thief }
     public enum Direction { None, Up, Down, Right, Left }
 
@@ -14,7 +16,7 @@ namespace com.MJT.FindTheTheif
     public enum ItemAge { Ancient, Middle, Modern }
     public enum ItemUsage { Art, Daily, War }
 
-    public static class GlobalFunctions
+    public static class Globals
     {
         /// <summary>
         /// Randomly shuffle elements of 1-dimensional array. 
@@ -31,7 +33,10 @@ namespace com.MJT.FindTheTheif
                 arr[r2] = temp;
             }
         }
+    }
 
+    public static class PhotonExtends
+    { 
         public static PhotonPlayer GetPlayerByID(int id)
         {
             if (!PhotonNetwork.inRoom)
@@ -47,6 +52,32 @@ namespace com.MJT.FindTheTheif
             }
 
             return null;
+        }
+
+        public static void SetRoomCustomPropsByElem(object key, object value)
+        {
+            if (!PhotonNetwork.inRoom)
+            {
+                Debug.LogError("SetRoomCustomPropsByElem must be called in a Photon game room.");
+                return;
+            }
+
+            Hashtable roomCp = PhotonNetwork.room.CustomProperties;
+            roomCp[key] = value;
+            PhotonNetwork.room.SetCustomProperties(roomCp);
+        }
+
+        public static void SetLocalPlayerPropsByElem(object key, object value)
+        {
+            if (!PhotonNetwork.connected)
+            {
+                Debug.LogError("SetLocalPlayerPropsByElem must be called in Photon server.");
+                return;
+            }
+
+            Hashtable playerCp = PhotonNetwork.player.CustomProperties;
+            playerCp[key] = value;
+            PhotonNetwork.player.SetCustomProperties(playerCp);
         }
     }
 }

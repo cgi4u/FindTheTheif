@@ -1923,12 +1923,12 @@ PrefabInstance:
     - target: {fileID: 6461677395318321203, guid: 135b5b3a8b693284ab93667c9b37cdc8,
         type: 3}
       propertyPath: viewIdField
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 6461677395318321203, guid: 135b5b3a8b693284ab93667c9b37cdc8,
         type: 3}
       propertyPath: instantiationId
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 135b5b3a8b693284ab93667c9b37cdc8, type: 3}
@@ -8382,12 +8382,12 @@ PrefabInstance:
     - target: {fileID: 6461677395318321203, guid: 135b5b3a8b693284ab93667c9b37cdc8,
         type: 3}
       propertyPath: viewIdField
-      value: 6
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 6461677395318321203, guid: 135b5b3a8b693284ab93667c9b37cdc8,
         type: 3}
       propertyPath: instantiationId
-      value: 6
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 135b5b3a8b693284ab93667c9b37cdc8, type: 3}
@@ -8727,8 +8727,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1718482836}
   m_HandleRect: {fileID: 1718482835}
   m_Direction: 2
-  m_Value: 1
-  m_Size: 0.14807709
+  m_Value: 0.99999994
+  m_Size: 0.14807737
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -11440,7 +11440,7 @@ PrefabInstance:
     - target: {fileID: 1483871676697404369, guid: 740bb71e75d695745981ea374bf83e9b,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -444.70026
+      value: -444.6999
       objectReference: {fileID: 0}
     - target: {fileID: 1483871676697404369, guid: 740bb71e75d695745981ea374bf83e9b,
         type: 3}
@@ -14544,13 +14544,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveButtonPanel: {fileID: 2027468906}
-  timeLabel: {fileID: 1963516511}
   charPopUp: {fileID: 1265748064}
   itemPopUp: {fileID: 1680750664}
   checkedItemListText: {fileID: 625540816}
   targetItemList: {fileID: 390587406}
   TeamLabel: {fileID: 1326772355}
   thievesNumLabel: {fileID: 1711496417}
+  timeLabel: {fileID: 1963516511}
 --- !u!1001 &1994063959
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15076,12 +15076,12 @@ PrefabInstance:
     - target: {fileID: 6461677395318321203, guid: 135b5b3a8b693284ab93667c9b37cdc8,
         type: 3}
       propertyPath: viewIdField
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6461677395318321203, guid: 135b5b3a8b693284ab93667c9b37cdc8,
         type: 3}
       propertyPath: instantiationId
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 135b5b3a8b693284ab93667c9b37cdc8, type: 3}
@@ -20935,12 +20935,12 @@ PrefabInstance:
     - target: {fileID: 6461677395318321203, guid: 135b5b3a8b693284ab93667c9b37cdc8,
         type: 3}
       propertyPath: viewIdField
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6461677395318321203, guid: 135b5b3a8b693284ab93667c9b37cdc8,
         type: 3}
       propertyPath: instantiationId
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 135b5b3a8b693284ab93667c9b37cdc8, type: 3}
@@ -21528,12 +21528,12 @@ PrefabInstance:
     - target: {fileID: 6461677395318321203, guid: 135b5b3a8b693284ab93667c9b37cdc8,
         type: 3}
       propertyPath: viewIdField
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6461677395318321203, guid: 135b5b3a8b693284ab93667c9b37cdc8,
         type: 3}
       propertyPath: instantiationId
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4624130643943377836, guid: 135b5b3a8b693284ab93667c9b37cdc8,
         type: 3}

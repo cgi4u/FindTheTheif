@@ -27,11 +27,6 @@ namespace com.MJT.FindTheTheif
         /// </summary>
         public RectTransform moveButtonPanel;
 
-        /// <summary>
-        /// Label to show remaining game time
-        /// </summary>
-        public Text timeLabel;
-
         private void Awake()
         {
             if (instance == null)
@@ -61,11 +56,6 @@ namespace com.MJT.FindTheTheif
                 {
                     itemPopUp.gameObject.SetActive(false);
                 }
-            }
-
-            if (MultiplayRoomManager.Instance != null)
-            {
-                timeLabel.text = Mathf.Floor(MultiplayRoomManager.Instance.timeLeft).ToString();
             }
         }
 
@@ -225,6 +215,11 @@ namespace com.MJT.FindTheTheif
 
             return itemInfo;
         }
+
+        /// <summary>
+        /// Label to show remaining game time
+        /// </summary>
+        public Text timeLabel;
 
     }
 }
