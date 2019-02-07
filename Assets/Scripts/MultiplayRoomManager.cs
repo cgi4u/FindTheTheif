@@ -9,10 +9,9 @@ namespace com.MJT.FindTheTheif
 {
     public class MultiplayRoomManager : Photon.PunBehaviour, IPunObservable
     {
-        //TODO: 룸 하나에서 전체가 공유해야 하는 데이터와 동작들을 관리
-        //조건1. 권한을 주고 받을 수 있어야 함. OnRequest 구현
-
-        //Singleton
+        /// <summary>
+        /// The singleton of room manager
+        /// </summary>
         private static MultiplayRoomManager instance;
         public static MultiplayRoomManager Instance
         {
@@ -31,10 +30,11 @@ namespace com.MJT.FindTheTheif
             }
         }
 
-        // 2. 게임 진행 시간
-        // ISSUE: 시간은 각 플레이어가 갱신하는게 아니라, 소유자 한명만 갱신하고 그걸 뿌려줘야함
-        //          안그러면 각자 게임이 따로따로 끝나는 참사가 생길수도있음
-        public float timeLeft;    //나중에 private으로
+        // Start/End time of the game(use server time to set)
+        [SerializeField]
+        private double startTime;
+        [SerializeField]
+        private double endTime;
 
         //조건3. 게임이 시작하고 종료될 때 모든 플레이어를 통제할 수 있어야 함. RPC를 통해서 구현 가능할 듯
         //Player ready-check flag array
@@ -46,10 +46,20 @@ namespace com.MJT.FindTheTheif
         private int thievesNum;
 
         /// <summary>
-        /// Used to check if the game initialization ends or not.
+        /// Used to check if the room initialization(set team data, load scene) ends or not.
+        /// </summary>
+        [SerializeField]
+        private bool ifRoomInited = false;
+        /// <summary>
+        /// Used to check if the game initialization(generate NPCs and Items) ends or not.
         /// </summary>
         [SerializeField]
         private bool ifGameInited = false;
+        /// <summary>
+        /// Used to check if the game is started(Confirmed that all users are ready);
+        /// </summary>
+        [SerializeField]
+        private bool ifGameStarted = false;
 
         [SerializeField]
         private string levelName;
@@ -166,7 +176,7 @@ namespace com.MJT.FindTheTheif
             //Load the game level. Use LoadLevel to synchronize(automaticallySyncScene is true)
             PhotonNetwork.LoadLevel(levelName);
 
-            ifGameInited = true;
+            ifRoomInited = true;
         }
 
         private void OnGameSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -208,12 +218,12 @@ namespace com.MJT.FindTheTheif
             //issue: 다른 플레이어들이 게임 준비가 됐는지를 확인 후 시작해야하고, 시간 체크도 그 이후부터 시작해야함.
 
             //Reduce spent time
-            if (PhotonNetwork.isMasterClient && timeLeft - Time.deltaTime > 0.0f)
-            {
-                timeLeft -= Time.deltaTime;
-            }
+            
+
             //TODO: Game End 처리하기. 일단 메소드 만들고 RPC화
         }
+
+        //List<GameObject>
 
         public GameObject NPCPrefab;
         void NPCGeneration(int NPCNum)
@@ -340,6 +350,12 @@ namespace com.MJT.FindTheTheif
             UIManager.Instance.RenewTargetItemList(targetItems, targetItems.Count, null);
         }
 
+        [PunRPC]
+        private void SetEndTime(double startTime)
+        {
+            endTime = startTime + 30f;
+        }
+
         //issue point
         // 현재 게임 도중에 나가도 실행되는 버그가 있음
         // 정확히는 처음에 마스터 클라이언트를 바꾸었을 경우 InitRoomAndLoadScene()를 실행하는 과정에서 ifGameInited가 싱크가 안됨
@@ -349,17 +365,9 @@ namespace com.MJT.FindTheTheif
                 return;
 
             Debug.Log("Assgined to the new master client.");
-            if (!ifGameInited)
+            if (!ifRoomInited)
                 InitRoomAndLoadScene();
         }
-
-        /*public override void OnOwnershipTransfered(object[] viewAndPlayers)
-        {
-            if (!ifGameInited && PhotonNetwork.isMasterClient)
-            {
-                InitRoomAndLoadScene();
-            }
-        }*/
 
         public override void OnPhotonPlayerDisconnected(PhotonPlayer otherPlayer)
         {
@@ -385,13 +393,15 @@ namespace com.MJT.FindTheTheif
         {
             if (stream.isWriting)
             {
+                stream.SendNext(ifRoomInited);
                 stream.SendNext(ifGameInited);
-                stream.SendNext(timeLeft);
+                stream.SendNext(ifGameStarted);
             }
             else
             {
+                ifRoomInited = (bool)stream.ReceiveNext();
                 ifGameInited = (bool)stream.ReceiveNext();
-                timeLeft = (float)stream.ReceiveNext();
+                ifGameStarted = (bool)stream.ReceiveNext();
             }
         }
 
