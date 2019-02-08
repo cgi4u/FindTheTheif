@@ -68,9 +68,9 @@ MonoBehaviour:
   itemGenPointNum: 0
   targetItemNum: 3
   targetItems: []
-  readyWait: 3000
-  timeStampGone: 0
+  leftTimeStamp: 60000
   inReady: 0
+  isGameStarted: 0
 --- !u!114 &114986182949599362
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -94,8 +94,8 @@ MonoBehaviour:
   ObservedComponents:
   - {fileID: 114000243598936320}
   ObservedComponentsFoldoutOpen: 1
-  viewIdField: 0
-  instantiationId: -1
+  viewIdField: 1
+  instantiationId: 1
   currentMasterID: -1
   isRuntimeInstantiated: 0
 --- !u!1 &1370759349632718388

@@ -53,4 +53,6 @@ MonoBehaviour:
   - ReleaseMasterTaskLock
   - SetTeam
   - CheckStartTimeAndReady
+  - SetPlayerReady
+  - TestEcho
   DisableAutoOpenWizard: 1

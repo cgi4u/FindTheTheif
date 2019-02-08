@@ -27,21 +27,7 @@ namespace com.MJT.FindTheTheif
 
         void Start()
         {
-
-
-            /*
-            maxMemberInputField.onValidateInput 
-                += delegate (string input, int charIndex, char addedChar) {
-                    //Debug.Log(input.Length);
-                    return NumberValidate(addedChar);
-                };
-
-            RoomInfo[] roomInfo = PhotonNetwork.GetRoomList();
-            for (int i = 0; i < roomInfo.Length; i++)
-            {
-                roomList.text += roomInfo[i].Name + "\n";
-            }
-            */
+            
         }
 
         // Update is called once per frame

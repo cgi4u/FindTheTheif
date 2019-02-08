@@ -43,6 +43,8 @@ namespace com.MJT.FindTheTheif
         static readonly string gameInitKey = "Game Initiated";
         static readonly string readyKey = "Ready";
 
+        static readonly string pauseKey = "Pause";
+
         [SerializeField]
         private string levelName;
 
@@ -54,6 +56,8 @@ namespace com.MJT.FindTheTheif
                 return;
             }
 
+            // Modify PhotonNetwork settings according to in-game mode.
+            PhotonNetwork.BackgroundTimeout = 20f;
             PhotonNetwork.sendRate = 10;
             PhotonNetwork.sendRateOnSerialize = 10;
 
@@ -81,6 +85,7 @@ namespace com.MJT.FindTheTheif
                 return;
             }
 
+            PhotonExtends.SetLocalPlayerPropsByElem(pauseKey, false);
             // Set the player's status as not ready
             PhotonExtends.SetLocalPlayerPropsByElem(readyKey, false);
 
@@ -118,7 +123,6 @@ namespace com.MJT.FindTheTheif
         /// Select theives player randomly and load scene.
         /// Should be called only by the master client. The master client must not be a detective because of sync delay issue.
         /// Should be called when reset entire game.
-        /// 
         /// </summary>
         private void InitRoomAndLoadScene()
         {
@@ -168,6 +172,8 @@ namespace com.MJT.FindTheTheif
             PhotonNetwork.room.SetCustomProperties(roomCp);
         }
 
+        List<PhotonPlayer> detectives = new List<PhotonPlayer>();
+        List<PhotonPlayer> theives = new List<PhotonPlayer>();
         private void OnGameSceneLoaded(Scene scene, LoadSceneMode mode)
         {
             if (scene != SceneManager.GetSceneByName(levelName))
@@ -188,17 +194,25 @@ namespace com.MJT.FindTheTheif
             UIManager.Instance.SetTeamLabel(myTeam);
             UIManager.Instance.RenewThievesNum(thievesNum);
 
+            foreach (PhotonPlayer player in PhotonNetwork.playerList)
+            {
+                Team teamOfPlayer = (Team)PhotonNetwork.room.CustomProperties[TeamKey(player.ID)];
+                if (teamOfPlayer == Team.Detective)
+                {
+                    detectives.Add(player);
+                }
+                else if (teamOfPlayer == Team.Thief)
+                {
+                    theives.Add(player);
+                }
+            }
+
             //Game initiation by the master client.
             if (PhotonNetwork.isMasterClient)
             {
                 GenerateGameObjects();
-                SetStartTime();
+                photonView.RPC("SetPlayerReady", PhotonTargets.All);
             }
-        }
-
-        private void Start()
-        {
-            prevTimeStamp = PhotonNetwork.ServerTimestamp;
         }
 
         /// <summary>
@@ -353,82 +367,117 @@ namespace com.MJT.FindTheTheif
             UIManager.Instance.RenewTargetItemList(targetItems, targetItems.Count, null);
         }
 
-        /// <summary>
-        /// Wait time for other user's game-ready(in ms).
-        /// </summary>
-        [SerializeField]
-        private int readyWait = 3000;
-
-        /// <summary>
-        /// Set start time and send it to other players. Should be called by the master client.
-        /// </summary>
-        private void SetStartTime()
-        {
-            if (!PhotonNetwork.isMasterClient)
-            {
-                Debug.LogError("Start time must be set by the master client.");
-                return;
-            }
-
-            int curTimeStamp = PhotonNetwork.ServerTimestamp;
-            int startTimeStamp = curTimeStamp + readyWait;
-
-            bool ifOverFlow = false;
-            if (startTimeStamp < curTimeStamp)
-                ifOverFlow = true;
-
-            photonView.RPC("CheckStartTimeAndReady", PhotonTargets.All, curTimeStamp, startTimeStamp, ifOverFlow);
-        }
-
         // Start/End time of the game(use server time to set)
         [SerializeField]
-        private int timeStampGone;
+        private int leftTimeStamp;
         [SerializeField]
         bool inReady = false;
 
-        //issue: 애초에 마스터부터가 inready상태에 안들어가면 아무 동작도 안되고 그냥 게임이 헛돌기만 함.
-        //조건도 잘못되서 안맞는듯하고, 그렇게 되는 상황을 고려할 필요가 있음(SetStartTime을 다시돌리는등)
+        //issue: 처음 시작시 일정 시간동안 모든플레이어의 ready상태가 만족되지 않으면 오류처리를 해주는 기능이 필요함
         [PunRPC]
-        private void CheckStartTimeAndReady(int sentTimeStamp, int startTimeStamp, bool ifOverFlow)
+        private void SetPlayerReady()
         {
-            int curTimeStamp = PhotonNetwork.ServerTimestamp;
-            if ((ifOverFlow && (curTimeStamp > sentTimeStamp || curTimeStamp < startTimeStamp))
-                || (!ifOverFlow && (curTimeStamp > sentTimeStamp && curTimeStamp < startTimeStamp)))
-            {
-                timeStampGone = curTimeStamp - startTimeStamp;
-                PhotonExtends.SetLocalPlayerPropsByElem(readyKey, true);
-                inReady = true;
-            }
+            PhotonExtends.SetLocalPlayerPropsByElem(readyKey, true);
+            inReady = true;
         }
 
-        private int prevTimeStamp;
+        [SerializeField]
+        bool gameStarted = false;
+        int prevTimeStamp;
+        private void Start()
+        {
+            prevTimeStamp = PhotonNetwork.ServerTimestamp;
+        }
+
+        int readyWaitTimeStamp = 0;
         private void Update()
         {
+            int curTimeStamp = PhotonNetwork.ServerTimestamp;
+            int deltaTimeStamp = curTimeStamp - prevTimeStamp;
+
             if (inReady)
             {
-                timeStampGone += PhotonNetwork.ServerTimestamp - prevTimeStamp;
-                if (timeStampGone > 0f)
+                bool areAllPlayersReady = true;
+                foreach (PhotonPlayer player in PhotonNetwork.playerList)
                 {
-                    bool playerIsReady = true;
-                    foreach (PhotonPlayer player in PhotonNetwork.playerList)
+                    areAllPlayersReady = (bool)player.CustomProperties[readyKey];
+                    if (!areAllPlayersReady)
                     {
-                        playerIsReady = (bool)player.CustomProperties[readyKey];
-                        if (!playerIsReady)
-                        {
-                            PhotonExtends.SetLocalPlayerPropsByElem(readyKey, false);
-                            inReady = false;
-                            if (PhotonNetwork.isMasterClient)
-                                SetStartTime();
-                            break;
-                        }
+                        readyWaitTimeStamp += deltaTimeStamp;
+                        break;
                     }
+                }
 
-                    if (playerIsReady)
-                        Debug.Log("Game Start!");
+                if (areAllPlayersReady)
+                {
+                    Debug.Log("Game Start!");
+                    inReady = false;
+                    gameStarted = true;
                 }
             }
 
-            prevTimeStamp = PhotonNetwork.ServerTimestamp;
+            if (gameStarted)
+            {
+                leftTimeStamp -= deltaTimeStamp;
+                UIManager.Instance.RenewTimeLabel(leftTimeStamp / 1000);
+
+                if (PhotonNetwork.isMasterClient && myTeam == Team.Detective)
+                {
+                    TryToChangeMaster(true);
+                }
+            }
+
+            prevTimeStamp = curTimeStamp;
+        }
+
+        /// <summary>
+        /// Change master client when the local client is the master.
+        /// </summary>
+        /// <returns>The player of the master client. null when failed to change.</returns>
+        private PhotonPlayer TryToChangeMaster(bool thiefOnly)
+        {
+            if (!PhotonNetwork.isMasterClient)
+            {
+                Debug.LogError("TryToChangeMasterClient must be called by the master client.");
+                return null;
+            }
+            if (!gameStarted)
+            {
+                Debug.LogError("TryToChangeMasterClient must be called after game start.");
+                return null;
+            }
+
+            bool switched = false;
+            PhotonPlayer newMaster = null;
+            foreach (PhotonPlayer thiefPlayer in theives)
+            {
+                if (thiefPlayer != null && PhotonNetwork.player != thiefPlayer 
+                        && (bool)thiefPlayer.CustomProperties[pauseKey] == false)
+                {
+                    switched = true;
+                    PhotonNetwork.SetMasterClient(thiefPlayer);
+                    newMaster = thiefPlayer;
+                    break;
+                }
+            }
+
+            if (thiefOnly)
+                return newMaster;
+
+            if (!switched && PhotonNetwork.playerList.Length > 1)
+            {
+                foreach (PhotonPlayer player in PhotonNetwork.playerList)
+                {
+                    if (PhotonNetwork.player != player 
+                        && (bool)player.CustomProperties[pauseKey] == false)
+                    {
+                        newMaster = player;
+                        break;
+                    }
+                }
+            }
+
+            return newMaster;
         }
 
         //issue point
@@ -448,13 +497,15 @@ namespace com.MJT.FindTheTheif
 
         public override void OnPhotonPlayerDisconnected(PhotonPlayer otherPlayer)
         {
-            Hashtable leftPlayerCp = otherPlayer.CustomProperties;
-
-            if ((Team)PhotonNetwork.room.CustomProperties[TeamKey(otherPlayer.ID)] == Team.Thief)
+            if (theives.Contains(otherPlayer))
             {
+                theives.Remove(otherPlayer);
                 thievesNum -= 1;
                 UIManager.Instance.RenewThievesNum(thievesNum);
             }
+            else
+                detectives.Remove(otherPlayer);
+            
             CheckIfGameEnds();
         }
 
@@ -468,7 +519,7 @@ namespace com.MJT.FindTheTheif
 
         public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
         {
-
+            
         }
 
         public override void OnLeftRoom()
@@ -478,7 +529,27 @@ namespace com.MJT.FindTheTheif
             Destroy(this);
         }
 
-        string TeamKey(int id)
+        public void OnApplicationFocus(bool focusStatus)
+        {
+            photonView.RPC("TestEcho", PhotonTargets.All, PhotonNetwork.player.ID);
+
+            if (!gameStarted)
+                return;
+
+            PhotonExtends.SetLocalPlayerPropsByElem(pauseKey, focusStatus);
+            if (focusStatus && PhotonNetwork.isMasterClient)
+            {
+                TryToChangeMaster(false);
+            }
+        }
+
+        [PunRPC]
+        void TestEcho(int playerID)
+        {
+            Debug.Log("Player " + playerID + "\'s echo.");
+        }
+
+        private string TeamKey(int id)
         {
             return "Team of Player " + id;
         }
