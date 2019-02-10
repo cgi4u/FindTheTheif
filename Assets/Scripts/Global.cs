@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
@@ -31,6 +33,22 @@ namespace com.MJT.FindTheTheif
                 T temp = arr[r1];
                 arr[r1] = arr[r2];
                 arr[r2] = temp;
+            }
+        }
+
+        /// <summary>
+        /// Randomly shuffle elements of 1-dimensional list. 
+        /// </summary>
+        public static void RandomizeList<T>(List<T> list)
+        {
+            for (int i = 0; i < list.Count * 3; i++)
+            {
+                int r1 = Random.Range(0, list.Count);
+                int r2 = Random.Range(0, list.Count);
+
+                T temp = list[r1];
+                list[r1] = list[r2];
+                list[r2] = temp;
             }
         }
     }

@@ -7,34 +7,18 @@ namespace com.MJT.FindTheTheif
     // NPC의 행동 제어 (경로 순환)
     public class NPCController : Photon.PunBehaviour, IPunObservable
     {
-        [SerializeField]
-        private Route curRoute;              // 현재 진행중인 경로
+        private Vector2 raycastBox; // Collider of a characters
 
-        /*
-        #region Current Route Networking
-
-        [SerializeField]
-        private int curRouteRoom;
-        [SerializeField]
-        private RouteType curRouteType;
-        [SerializeField]
-        private StairSide curRouteStairSide;
-        [SerializeField]
-        private StairType curRouteStairType;
-
-        #endregion
-        */
-
-        [SerializeField]
-        private RouteNode[] routeNodeSet;   // 현재 진행중인 경로의 노드집합
-        [SerializeField]
-        private int curNodeNum;             // 가장 마지막으로 지난 노드의 인덱스
         [SerializeField]
         private bool ifStarted = false;     //ManualStart를 통해 초기화되었는지에 대한 변수
         [SerializeField]
         MapDataManager mapDataManager;      //Routing Manager Instance에 대한 참조
 
-        private Vector2 raycastBox; // Collider of a characters
+        [SerializeField]
+        private Route curRoute;              // 현재 진행중인 경로
+        [SerializeField]
+        private int curNodeNum;             // 가장 마지막으로 지난 노드의 인덱스
+        
 
         private void Awake()
         {
@@ -56,7 +40,6 @@ namespace com.MJT.FindTheTheif
 
             RouteNode genPoint = mapDataManager.NPCGenPoints[genPointIdx];
             curRoute = genPoint.gameObject.GetComponentInParent<Route>();
-            routeNodeSet = curRoute.NodeSet;
 
             switch (curRoute.RouteType)
             {
@@ -81,7 +64,8 @@ namespace com.MJT.FindTheTheif
                     break;
                 }
             }
-            transform.position = (Vector2)routeNodeSet[curNodeNum].transform.position;
+            
+            targetPoint = startPoint = transform.position = (Vector2)curRoute.NodeSet[curNodeNum].transform.position;
             ifStarted = true;
         }
 
@@ -90,6 +74,7 @@ namespace com.MJT.FindTheTheif
             if (!ifStarted || (PhotonNetwork.connected && !photonView.isMine))
                 return;
 
+            //내가 블록상태든, 충돌방지 대기상태든 내 위치는 가장 최근의 정지 포인트여야 한다.
             if (blockedTime > 0f)
             {
                 blockedTime -= Time.deltaTime;
@@ -97,16 +82,21 @@ namespace com.MJT.FindTheTheif
                 {
                     blockedTime = 0f;
                 }
-                else return;
             }
 
             if (isMoving)
             {
-                //GetComponent<PhotonTransformView>().SetSynchronizedValues(moveSpeed * direction, 0f);
                 Move();
+                if ((Vector2)transform.position == curRoute.NodeSet[curNodeNum + 1].position)
+                    ChangeNode();
+                else if ((Vector2)transform.position == targetPoint)
+                    SetNewTargetPoint();
             }
-            else
+            else if (blockedTime == 0f)
+            {
                 SetNewTargetPoint();
+            }
+                
         }
 
         private void LateUpdate()
@@ -120,11 +110,30 @@ namespace com.MJT.FindTheTheif
             if (PhotonNetwork.connected && !photonView.isMine)
                 return;
 
-            if (collision.gameObject.tag != "NPC"
-                || collision.gameObject.GetInstanceID() > gameObject.GetInstanceID())
+            if (collision.gameObject.tag == "Player")
             {
-                transform.position = startPoint;
-                isMoving = false;
+                Debug.Log("Collision with a player name: " + collision.gameObject.GetComponent<PhotonView>().owner.NickName);
+                if (Vector2.Distance(collision.gameObject.transform.position, startPoint)
+                    >= Vector2.Distance(collision.gameObject.transform.position, targetPoint))
+                {
+                    isMoving = false;
+                    transform.position = targetPoint = startPoint;
+                }
+                else
+                {
+                    transform.position = targetPoint;
+                }
+            }
+            else if (collision.gameObject.tag == "NPC")
+            {
+                if (collision.gameObject.GetInstanceID() > gameObject.GetInstanceID()) {
+                    isMoving = false;
+                    transform.position = targetPoint = startPoint;
+                }
+            }
+            else
+            {
+                Debug.LogError("Collision with undefined object. Object name: " + collision.gameObject.name);
             }
         }
 
@@ -139,21 +148,12 @@ namespace com.MJT.FindTheTheif
         [SerializeField]
         bool isMoving = false;
         [SerializeField]
-        float blockedTime = 0;
+        float blockedTime = 0f;
 
         private void Move()
         {
             //설정 속도에 따라 움직일 위치를 계산(MoveTowards) 이후 이동
-            Vector2 nextPos = Vector2.MoveTowards(transform.position, targetPoint, moveSpeed * Time.deltaTime);
-            transform.position = (Vector3)nextPos;
-
-            RouteCheck();
-            if ((Vector2)transform.position == targetPoint)
-            {
-                SetNewTargetPoint();
-            }
-
-            return;
+            transform.position = Vector2.MoveTowards(transform.position, targetPoint, moveSpeed * Time.deltaTime);
         }
 
         [SerializeField]
@@ -166,51 +166,12 @@ namespace com.MJT.FindTheTheif
         [SerializeField]
         private int curFloor;
 
-        /// <summary>
-        /// Check if this NPC arrived at next node or route end. If did, change target node or current route. 
-        /// </summary>
-        private void RouteCheck()
-        {
-            if (transform.position == routeNodeSet[curNodeNum + 1].transform.position)
-            {
-                isMoving = false;
-                blockedTime = Random.Range(0f, 0.5f);   // Set delay at each node for thief user control easily
-
-                curNodeNum += 1;
-                if (curNodeNum < routeNodeSet.Length - 1)       // Route not ends, arrived at next node.
-                {
-                    if (routeNodeSet[curNodeNum].IfItemPoint)   // Set item watching time.
-                        blockedTime = Random.Range(1f, 3f);
-                }
-                else                                            // Route ends, get next route.
-                {
-                    // If this NPC is moving on In-Room Route, next room should be picked in master client and sent to other clients
-                    int randomNextRoom = -1;
-                    if (curRoute.RouteType == RouteType.In_Room)
-                    {
-                        randomNextRoom = Random.Range(curRoute.CurRoom + 1,
-                                                        curRoute.CurRoom + mapDataManager.Rooms.Count - 1) % mapDataManager.Rooms.Count;
-                    }
-
-                    if (PhotonNetwork.connected)
-                    {
-                        photonView.RPC("RenewCurRoute", PhotonTargets.All, randomNextRoom);
-                    }
-                    else
-                        RenewCurRoute(randomNextRoom);
-                }
-            }
-        }
-
         [SerializeField]
         Vector2 direction = new Vector2(0, 0);
         private void SetNewTargetPoint()
         {
-            startPoint = (Vector2)transform.position;   // 현재 위치를 새로운 startPoint로 설정
-            if (curNodeNum < routeNodeSet.Length - 1)
-                direction = ((Vector2)routeNodeSet[curNodeNum + 1].transform.position - startPoint).normalized;
-            else
-                direction = new Vector2(0, 0);
+            startPoint = targetPoint;
+            direction = ((Vector2)curRoute.NodeSet[curNodeNum + 1].transform.position - startPoint).normalized;
             targetPoint = startPoint + direction;
 
             //움직이는 과정에서 플레이어와 충돌하는 물체가 있을지를 판단.
@@ -230,13 +191,48 @@ namespace com.MJT.FindTheTheif
             }
 
             if (ifHit)
+            {
                 isMoving = false;
+                targetPoint = startPoint;
+            }
             else
                 isMoving = true;
         }
 
+        /// <summary>
+        /// Check if this NPC arrived at next node or route end. If did, change target node or current route. 
+        /// </summary>
+        private void ChangeNode()
+        {
+            isMoving = false;
+            targetPoint = startPoint = curRoute.NodeSet[curNodeNum + 1].position;
+            blockedTime = Random.Range(0f, 0.5f);   // Set delay at each node for thief user control easily
+
+            curNodeNum += 1;
+            if (curRoute.NodeSet[curNodeNum].IfItemPoint)   // Set item watching time.
+                blockedTime = Random.Range(1f, 3f);
+
+            if (curNodeNum == curRoute.NodeSet.Length - 1)       // Route ends, get next route.
+            {
+                // If this NPC is moving on In-Room Route, next room should be picked in master client and sent to other clients
+                int randomNextRoom = -1;
+                if (curRoute.RouteType == RouteType.In_Room)
+                {
+                    randomNextRoom = Random.Range(curRoute.CurRoom + 1,
+                                                    curRoute.CurRoom + mapDataManager.Rooms.Count - 1) % mapDataManager.Rooms.Count;
+                }
+
+                if (PhotonNetwork.connected)
+                {
+                    photonView.RPC("ChangeCurRoute", PhotonTargets.All, randomNextRoom);
+                }
+                else
+                    ChangeCurRoute(randomNextRoom);
+            }
+        }
+
         [PunRPC]
-        void RenewCurRoute(int randomNextRoom)
+        void ChangeCurRoute(int randomNextRoom)
         {
             switch (curRoute.RouteType)
             {
@@ -379,14 +375,12 @@ namespace com.MJT.FindTheTheif
                     }
                     break;
             }
-            
-            routeNodeSet = curRoute.NodeSet;
             curNodeNum = 0;
 
             if (!PhotonNetwork.connected || photonView.isMine)
             {
-                transform.position = routeNodeSet[curNodeNum].transform.position;
-                SetNewTargetPoint();
+                transform.position = curRoute.NodeSet[curNodeNum].transform.position;
+                //SetNewTargetPoint();
             }
                
         }
@@ -425,22 +419,28 @@ namespace com.MJT.FindTheTheif
 
         public override void OnMasterClientSwitched(PhotonPlayer newMasterClient)
         {
-            Vector2 movingVector;
             if (curNodeNum == curRoute.NodeSet.Length - 1)
             {
-                movingVector = curRoute.NodeSet[curNodeNum].transform.position -
-                                curRoute.NodeSet[curNodeNum - 1].transform.position;
+                positionVaildCheck(curRoute.NodeSet[curNodeNum].transform.position,
+                                    curRoute.NodeSet[curNodeNum - 1].transform.position);
             }
             else
             {
-                movingVector = curRoute.NodeSet[curNodeNum + 1].transform.position -
-                                curRoute.NodeSet[curNodeNum].transform.position;
+                positionVaildCheck(curRoute.NodeSet[curNodeNum + 1].transform.position,
+                                    curRoute.NodeSet[curNodeNum].transform.position);
             }
+        }
 
-            if (movingVector.x == 0f)
-                transform.position = new Vector3(startPoint.x, transform.position.y);
-            if (movingVector.y == 0f)
-                transform.position = new Vector3(transform.position.x, startPoint.y);
+        /// <summary>
+        /// Check this NPC is in the vaild position(it means that this NPC is 'in line'.).
+        /// </summary>
+        private void positionVaildCheck(Vector2 destVector, Vector2 startVector)
+        {
+            Vector2 diffVector = destVector - startVector;
+            if (diffVector.x == 0f)
+                transform.position = new Vector3(startVector.x, transform.position.y);
+            if (diffVector.y == 0f)
+                transform.position = new Vector3(transform.position.x, startVector.y);
         }
     }
 }

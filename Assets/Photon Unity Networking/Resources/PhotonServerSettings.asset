@@ -55,4 +55,6 @@ MonoBehaviour:
   - CheckStartTimeAndReady
   - SetPlayerReady
   - TestEcho
+  - TakeOverMaster
+  - ChangeCurRoute
   DisableAutoOpenWizard: 1

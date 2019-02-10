@@ -9,6 +9,17 @@ namespace com.MJT.FindTheTheif
     /// </summary>
     public class RouteNode : MonoBehaviour
     {
+        /// <summary>
+        /// Position of this node in 2D space.
+        /// </summary>
+        public Vector2 position
+        {
+            get
+            {
+                return (Vector2)transform.position;
+            }
+        }
+
         [SerializeField]
         private bool ifItemPoint;
         public bool IfItemPoint

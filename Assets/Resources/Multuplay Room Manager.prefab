@@ -48,6 +48,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   thievesNum: 0
   levelName: Demo Room
+  numberOfNPC: 15
   NPCPrefab: {fileID: 1900755372417909919, guid: 135b5b3a8b693284ab93667c9b37cdc8,
     type: 3}
   NPCParent: {fileID: 4606024246049365801}
@@ -70,7 +71,7 @@ MonoBehaviour:
   targetItems: []
   leftTimeStamp: 60000
   inReady: 0
-  isGameStarted: 0
+  gameStarted: 0
 --- !u!114 &114986182949599362
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -94,8 +95,8 @@ MonoBehaviour:
   ObservedComponents:
   - {fileID: 114000243598936320}
   ObservedComponentsFoldoutOpen: 1
-  viewIdField: 1
-  instantiationId: 1
+  viewIdField: 0
+  instantiationId: -1
   currentMasterID: -1
   isRuntimeInstantiated: 0
 --- !u!1 &1370759349632718388

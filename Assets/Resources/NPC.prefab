@@ -97,11 +97,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e28822018340d3f4e8bdd434e8c79c60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  curRoute: {fileID: 0}
-  routeNodeSet: []
-  curNodeNum: 0
   ifStarted: 0
   mapDataManager: {fileID: 0}
+  curRoute: {fileID: 0}
+  curNodeNum: 0
   startPoint: {x: 0, y: 0}
   targetPoint: {x: 0, y: 0}
   moveSpeed: 4
@@ -110,6 +109,7 @@ MonoBehaviour:
   prevRoom: 0
   nextRoom: 0
   curFloor: 0
+  direction: {x: 0, y: 0}
 --- !u!114 &1900755372417909915
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -185,7 +185,7 @@ MonoBehaviour:
   group: 0
   OwnerShipWasTransfered: 0
   prefixBackup: -1
-  synchronization: 3
+  synchronization: 2
   onSerializeTransformOption: 3
   onSerializeRigidBodyOption: 2
   ownershipTransfer: 0

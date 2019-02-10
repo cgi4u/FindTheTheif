@@ -105,7 +105,7 @@ namespace com.MJT.FindTheTheif
                 for (int i = 1; i < route.NodeSet.Length - 1; i++)
                 {
                     Vector3 nodeLoc = route.NodeSet[i].transform.position;
-                    if (assignedLoc.FindAll(loc => loc.Equals(nodeLoc)).Count == 0)
+                    if (!assignedLoc.Contains(nodeLoc))
                     {
                         nPCGenPoints.Add(route.NodeSet[i]);
                         assignedLoc.Add(nodeLoc);
@@ -113,8 +113,14 @@ namespace com.MJT.FindTheTheif
                 }
             }
 
-            //ifRouteAssigned = new bool[allGenerationRoutes.Count];
-            ifPointAssigned = new bool[nPCGenPoints.Count];
+            /*//ifRouteAssigned = new bool[allGenerationRoutes.Count];
+            ifPointAssigned = new bool[nPCGenPoints.Count];*/
+
+            NPCGenPointSelector = new int[nPCGenPoints.Count];
+            for (int i = 0; i < nPCGenPoints.Count; i++)
+                NPCGenPointSelector[i] = i;
+
+            Globals.RandomizeArray<int>(NPCGenPointSelector);
 
             //Routing Manager Singlton 생성
             if (instance == null)
@@ -151,11 +157,11 @@ namespace com.MJT.FindTheTheif
         }
         */
 
-
-        /// <summary>
+        int[] NPCGenPointSelector;
+        /*/// <summary>
         /// Check assigned NPC generation points. If assigned, true, if not false.
         /// </summary>
-        bool[] ifPointAssigned;
+        bool[] ifPointAssigned;*/
         int assignedPointNum = 0;
         /// <summary>
         /// Return random NPC Generation Point(RouteNode).
@@ -166,16 +172,16 @@ namespace com.MJT.FindTheTheif
             if (assignedPointNum >= nPCGenPoints.Count)  //All available points are assinged
                 return -1;
 
-            int r;
-            do
-            {
-                r = Random.Range(0, nPCGenPoints.Count);
-            } while (ifPointAssigned[r]);
-
-            ifPointAssigned[r] = true;
+            int ret = NPCGenPointSelector[assignedPointNum];
             assignedPointNum += 1;
 
-            return r;
+            return ret;
+        }
+
+        public void InitNPCGenPoint()
+        {
+            assignedPointNum = 0;
+            Globals.RandomizeArray<int>(NPCGenPointSelector);
         }
     }
 }
