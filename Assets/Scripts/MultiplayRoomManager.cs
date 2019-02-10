@@ -45,6 +45,11 @@ namespace com.MJT.FindTheTheif
 
         static readonly string pauseKey = "Pause";
 
+        private string TeamKey(int id)
+        {
+            return "Team of Player " + id;
+        }
+
         [SerializeField]
         private string levelName;
 
@@ -84,10 +89,6 @@ namespace com.MJT.FindTheTheif
                 Debug.LogError("Thieves number(in custom property) is not set properly.");
                 return;
             }
-
-            PhotonExtends.SetLocalPlayerPropsByElem(pauseKey, false);
-            // Set the player's status as not ready
-            PhotonExtends.SetLocalPlayerPropsByElem(readyKey, false);
 
             if (PhotonNetwork.isMasterClient) {
                 //Randomly switch the master client. It prevents that the player who made room always be picked as a thief.
@@ -160,7 +161,7 @@ namespace com.MJT.FindTheTheif
             roomCp[TeamKey(PhotonNetwork.player.ID)] = (int)Team.Thief;
             for (int i = 0; i < thievesNum - 1; i++)
             {
-                PhotonPlayer thiefPlayer = PhotonExtends.GetPlayerByID(thiefSelector[i]);
+                PhotonPlayer thiefPlayer = PhotonPlayer.Find(thiefSelector[i]);
                 roomCp[TeamKey(thiefPlayer.ID)] = (int)Team.Thief;
             }
 
@@ -174,6 +175,7 @@ namespace com.MJT.FindTheTheif
 
         List<PhotonPlayer> detectives = new List<PhotonPlayer>();
         List<PhotonPlayer> theives = new List<PhotonPlayer>();
+        List<int> masterPriority = new List<int>();
         private void OnGameSceneLoaded(Scene scene, LoadSceneMode mode)
         {
             if (scene != SceneManager.GetSceneByName(levelName))
@@ -207,31 +209,52 @@ namespace com.MJT.FindTheTheif
                 }
             }
 
-            //Game initiation by the master client.
+            // Set master client priority  
+            foreach (PhotonPlayer theifPlayer in theives)
+                masterPriority.Add(theifPlayer.ID);
+            masterPriority.Sort();
+
+            List<int> detectivePriority = new List<int>();
+            foreach (PhotonPlayer detectivePlayer in theives)
+                detectivePriority.Add(detectivePlayer.ID);
+            detectivePriority.Sort();
+
+            masterPriority.AddRange(detectivePriority);
+
+
+            // Game initiation by the master client.
             if (PhotonNetwork.isMasterClient)
             {
-                GenerateGameObjects();
-                photonView.RPC("SetPlayerReady", PhotonTargets.All);
+                GameInitByMaster();
             }
         }
 
         /// <summary>
         /// Generate NPCs and Items for current game. Should be called by the master client.
         /// </summary>
-        private void GenerateGameObjects()
+        private void GameInitByMaster()
         {
             if (!PhotonNetwork.isMasterClient) {
                 Debug.LogError("Object generation must be oprated by the master client.");
                 return;
             }
 
-            //Generate NPCs
-            NPCGeneration(10);
+            // Set player status in room(pause, ready)
+            foreach (PhotonPlayer player in PhotonNetwork.playerList)
+            {
+                Hashtable playerCp = player.CustomProperties;
+                playerCp[pauseKey] = false;
+                playerCp[readyKey] = false;
+                player.SetCustomProperties(playerCp);
+            }
 
-            //Generate Items
+            // Generate Scene Objects(NPCs, Items).
+            NPCGeneration(10);
             GenerateItems();
 
+            // Game initiation ends, send ready signal to other players. 
             PhotonExtends.SetRoomCustomPropsByElem(gameInitKey, true);
+            photonView.RPC("SetPlayerReady", PhotonTargets.All);
         }
 
         public GameObject NPCPrefab;
@@ -416,35 +439,73 @@ namespace com.MJT.FindTheTheif
                 }
             }
 
-            if (gameStarted)
-            {
-                leftTimeStamp -= deltaTimeStamp;
-                UIManager.Instance.RenewTimeLabel(leftTimeStamp / 1000);
+            prevTimeStamp = curTimeStamp;
 
-                if (PhotonNetwork.isMasterClient && myTeam == Team.Detective)
+            if (!gameStarted)
+                return;
+            // Section after game is started
+
+            leftTimeStamp -= deltaTimeStamp;
+            UIManager.Instance.RenewTimeLabel(leftTimeStamp / 1000);
+        }
+
+        private void LateUpdate()
+        {
+            if (!gameStarted)
+                return;
+            // Section after game is started
+
+            // If the local player is the master and in detective team, change the master client to be a theif if it is possible.
+            if (PhotonNetwork.isMasterClient && myTeam == Team.Detective)
+            {
+                foreach (PhotonPlayer thiefPlayer in theives)
                 {
-                    TryToChangeMaster(true);
+                    if (thiefPlayer != null && PhotonNetwork.player != thiefPlayer
+                            && (bool)thiefPlayer.CustomProperties[pauseKey] == false)
+                    {
+                        PhotonNetwork.SetMasterClient(thiefPlayer);
+                        break;
+                    }
                 }
             }
 
-            prevTimeStamp = curTimeStamp;
+            // If master client is paused, the player who has higest priority becomes new master client.
+            if ((bool)PhotonNetwork.masterClient.CustomProperties[pauseKey] == true)
+            {
+                int newMasterID = PhotonNetwork.player.ID;
+                for (int i = 0; i < masterPriority.Count; i++)
+                {
+                    bool isPlayerPaused = (bool)PhotonPlayer.Find(masterPriority[i]).CustomProperties[pauseKey];
+                    if (!isPlayerPaused)
+                    {
+                        newMasterID = masterPriority[i];
+                        break;
+                    }
+                }
+
+                if (newMasterID == PhotonNetwork.player.ID)
+                    PhotonNetwork.SetMasterClient(PhotonNetwork.player);
+            }
         }
 
+        /*
         /// <summary>
         /// Change master client when the local client is the master.
         /// </summary>
         /// <returns>The player of the master client. null when failed to change.</returns>
-        private PhotonPlayer TryToChangeMaster(bool thiefOnly)
+        private void TryToChangeMaster(bool thiefOnly)
         {
+            UIManager.Instance.RenewErrorLabel("Try change master");
+
             if (!PhotonNetwork.isMasterClient)
             {
                 Debug.LogError("TryToChangeMasterClient must be called by the master client.");
-                return null;
+                return;
             }
             if (!gameStarted)
             {
                 Debug.LogError("TryToChangeMasterClient must be called after game start.");
-                return null;
+                return;
             }
 
             bool switched = false;
@@ -462,7 +523,7 @@ namespace com.MJT.FindTheTheif
             }
 
             if (thiefOnly)
-                return newMaster;
+                return;
 
             if (!switched && PhotonNetwork.playerList.Length > 1)
             {
@@ -471,20 +532,23 @@ namespace com.MJT.FindTheTheif
                     if (PhotonNetwork.player != player 
                         && (bool)player.CustomProperties[pauseKey] == false)
                     {
+                        PhotonNetwork.SetMasterClient(player);
                         newMaster = player;
                         break;
                     }
                 }
             }
 
-            return newMaster;
+            return;
         }
+        */
 
         //issue point
         // 현재 게임 도중에 나가도 실행되는 버그가 있음
         // 정확히는 처음에 마스터 클라이언트를 바꾸었을 경우 InitRoomAndLoadScene()를 실행하는 과정에서 ifGameInited가 싱크가 안됨
         public override void OnMasterClientSwitched(PhotonPlayer newMasterClient)
         {
+            Debug.Log("Master Client switched.");
             if (newMasterClient != PhotonNetwork.player)
                 return;
 
@@ -492,7 +556,8 @@ namespace com.MJT.FindTheTheif
             if (PhotonNetwork.room.CustomProperties[sceneLoadedKey] == null)
                 InitRoomAndLoadScene();
             else if (PhotonNetwork.room.CustomProperties[gameInitKey] == null)
-                GenerateGameObjects();
+                GameInitByMaster();
+
         }
 
         public override void OnPhotonPlayerDisconnected(PhotonPlayer otherPlayer)
@@ -505,6 +570,7 @@ namespace com.MJT.FindTheTheif
             }
             else
                 detectives.Remove(otherPlayer);
+            masterPriority.Remove(otherPlayer.ID);
             
             CheckIfGameEnds();
         }
@@ -519,7 +585,7 @@ namespace com.MJT.FindTheTheif
 
         public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
         {
-            
+
         }
 
         public override void OnLeftRoom()
@@ -529,29 +595,19 @@ namespace com.MJT.FindTheTheif
             Destroy(this);
         }
 
-        public void OnApplicationFocus(bool focusStatus)
+        private void OnApplicationPause(bool pauseStatus)
         {
-            photonView.RPC("TestEcho", PhotonTargets.All, PhotonNetwork.player.ID);
-
             if (!gameStarted)
                 return;
 
-            PhotonExtends.SetLocalPlayerPropsByElem(pauseKey, focusStatus);
-            if (focusStatus && PhotonNetwork.isMasterClient)
-            {
-                TryToChangeMaster(false);
-            }
+            PhotonExtends.SetLocalPlayerPropsByElem(pauseKey, pauseStatus);
+            PhotonNetwork.networkingPeer.SendOutgoingCommands();
         }
 
         [PunRPC]
         void TestEcho(int playerID)
         {
             Debug.Log("Player " + playerID + "\'s echo.");
-        }
-
-        private string TeamKey(int id)
-        {
-            return "Team of Player " + id;
         }
     }
 }

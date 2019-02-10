@@ -85,7 +85,7 @@ namespace com.MJT.FindTheTheif
             ifStarted = true;
         }
 
-        void Update()
+        private void Update()
         {
             if (!ifStarted || (PhotonNetwork.connected && !photonView.isMine))
                 return;
@@ -107,7 +107,10 @@ namespace com.MJT.FindTheTheif
             }
             else
                 SetNewTargetPoint();
+        }
 
+        private void LateUpdate()
+        {
             //Set sprite sorting order by using y-axis postion
             GetComponent<SpriteRenderer>().sortingOrder = -(int)(transform.position.y * 100f);
         }
@@ -151,38 +154,6 @@ namespace com.MJT.FindTheTheif
             }
 
             return;
-        }
-
-        Vector2 direction = new Vector2(0, 0);
-        private void SetNewTargetPoint()
-        {
-            startPoint = (Vector2)transform.position;   // 현재 위치를 새로운 startPoint로 설정
-            if (curNodeNum < routeNodeSet.Length - 1)
-                direction = ((Vector2)routeNodeSet[curNodeNum + 1].transform.position - startPoint).normalized;
-            else
-                direction = new Vector2(0, 0);
-            targetPoint = startPoint + direction;
-
-            //움직이는 과정에서 플레이어와 충돌하는 물체가 있을지를 판단.
-            //자기자신의 콜라이더와 무조건 충돌하므로 다른 콜라이더가 있는지 판단하기 위해 BoxCast가 아닌 BoxCastAll을 쓴다.
-            RaycastHit2D[] hits = Physics2D.BoxCastAll(startPoint, raycastBox, 0, targetPoint - startPoint, Vector2.Distance(startPoint, targetPoint));
-
-            //자기 자신 이외에 충돌 물체가 있다면 이동하지 않는다.
-            bool ifHit = false;
-            foreach (RaycastHit2D hit in hits)
-            {
-                if (hit.collider.gameObject != gameObject && !hit.collider.isTrigger)
-                {
-                    //자신의 오브젝트와 충돌체의 오브젝트가 같지 않는 상황, 즉 콜라이더를 갖는 다른 오브젝트에 부딫힌 상황
-                    ifHit = true;
-                    break;
-                }
-            }
-
-            if (ifHit)
-                isMoving = false;
-            else
-                isMoving = true;
         }
 
         [SerializeField]
@@ -229,6 +200,39 @@ namespace com.MJT.FindTheTheif
                         RenewCurRoute(randomNextRoom);
                 }
             }
+        }
+
+        [SerializeField]
+        Vector2 direction = new Vector2(0, 0);
+        private void SetNewTargetPoint()
+        {
+            startPoint = (Vector2)transform.position;   // 현재 위치를 새로운 startPoint로 설정
+            if (curNodeNum < routeNodeSet.Length - 1)
+                direction = ((Vector2)routeNodeSet[curNodeNum + 1].transform.position - startPoint).normalized;
+            else
+                direction = new Vector2(0, 0);
+            targetPoint = startPoint + direction;
+
+            //움직이는 과정에서 플레이어와 충돌하는 물체가 있을지를 판단.
+            //자기자신의 콜라이더와 무조건 충돌하므로 다른 콜라이더가 있는지 판단하기 위해 BoxCast가 아닌 BoxCastAll을 쓴다.
+            RaycastHit2D[] hits = Physics2D.BoxCastAll(startPoint, raycastBox, 0, targetPoint - startPoint, Vector2.Distance(startPoint, targetPoint));
+
+            //자기 자신 이외에 충돌 물체가 있다면 이동하지 않는다.
+            bool ifHit = false;
+            foreach (RaycastHit2D hit in hits)
+            {
+                if (hit.collider.gameObject != gameObject && !hit.collider.isTrigger)
+                {
+                    //자신의 오브젝트와 충돌체의 오브젝트가 같지 않는 상황, 즉 콜라이더를 갖는 다른 오브젝트에 부딫힌 상황
+                    ifHit = true;
+                    break;
+                }
+            }
+
+            if (ifHit)
+                isMoving = false;
+            else
+                isMoving = true;
         }
 
         [PunRPC]
@@ -397,6 +401,7 @@ namespace com.MJT.FindTheTheif
                 stream.SendNext(targetPoint);
                 stream.SendNext(isMoving);
                 stream.SendNext(blockedTime);
+
                 stream.SendNext(prevRoom);
                 stream.SendNext(nextRoom);
                 stream.SendNext(curNodeNum);
@@ -409,12 +414,33 @@ namespace com.MJT.FindTheTheif
                 targetPoint = (Vector2)stream.ReceiveNext();
                 isMoving = (bool)stream.ReceiveNext();
                 blockedTime = (float)stream.ReceiveNext();
+
                 prevRoom = (int)stream.ReceiveNext();
                 nextRoom = (int)stream.ReceiveNext();
                 curNodeNum = (int)stream.ReceiveNext();
 
                 //transform.position = (Vector3)stream.ReceiveNext();
             }
+        }
+
+        public override void OnMasterClientSwitched(PhotonPlayer newMasterClient)
+        {
+            Vector2 movingVector;
+            if (curNodeNum == curRoute.NodeSet.Length - 1)
+            {
+                movingVector = curRoute.NodeSet[curNodeNum].transform.position -
+                                curRoute.NodeSet[curNodeNum - 1].transform.position;
+            }
+            else
+            {
+                movingVector = curRoute.NodeSet[curNodeNum + 1].transform.position -
+                                curRoute.NodeSet[curNodeNum].transform.position;
+            }
+
+            if (movingVector.x == 0f)
+                transform.position = new Vector3(startPoint.x, transform.position.y);
+            if (movingVector.y == 0f)
+                transform.position = new Vector3(transform.position.x, startPoint.y);
         }
     }
 }

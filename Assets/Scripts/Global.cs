@@ -37,23 +37,6 @@ namespace com.MJT.FindTheTheif
 
     public static class PhotonExtends
     { 
-        public static PhotonPlayer GetPlayerByID(int id)
-        {
-            if (!PhotonNetwork.inRoom)
-            {
-                Debug.LogError("GetPlayerByID must be called in a Photon game room.");
-                return null;
-            }
-
-            foreach (PhotonPlayer player in PhotonNetwork.playerList)
-            {
-                if (player.ID == id)
-                    return player;
-            }
-
-            return null;
-        }
-
         public static void SetRoomCustomPropsByElem(object key, object value)
         {
             if (!PhotonNetwork.inRoom)

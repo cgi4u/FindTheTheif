@@ -1,6 +1,6 @@
 Android
 PlayerPath?
-C:/Users/MJT/Desktop/FindTheThief.apk
+C:/Users/CGI/Desktop/FindTheThief.apk
 SceneListBegin?
 Assets/Scenes/Launcher.unity
 Assets/Scenes/Lobby.unity
@@ -150,7 +150,7 @@ e7aa62e1f291228958626e122c23c8f0 Assembly-CSharp.dll:.ConnectAndJoinRandom
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:Facebook.Unity.Example.AppLinks
 94017dcc9f00fe671ea7dc427b4da011 Unity.TextMeshPro.dll:TMPro.TMP_SpriteAsset
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:Facebook.Unity.Example.DialogShare
-f0125c2c02e1a21db1ae98a454ffb4db Assembly-CSharp.dll:com.MJT.FindTheTheif.UIManager
+a3815548744310e325c793b2bbc816d4 Assembly-CSharp.dll:com.MJT.FindTheTheif.UIManager
 7c3c528d577a18fd22064b5a610c44fe Assembly-CSharp.dll:com.MJT.FindTheTheif.Route
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:Facebook.Unity.Example.GraphRequest
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:Facebook.Unity.Example.LogView
@@ -250,3 +250,4 @@ a01528258fe67fa484658e5b5d14c189 Facebook.Unity.Settings.dll:Facebook.Unity.Sett
 8649814970b42d345b89944b862453cc Unity.TextMeshPro.dll:TMPro.TMP_SubMesh
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:Facebook.Unity.Example.AppRequests
 3dc0e95c93b7fb567842e1150eaadd8a Assembly-CSharp.dll:com.MJT.FindTheTheif.MultiplayRoomManager
+71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:.ChangeMaster

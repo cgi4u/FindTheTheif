@@ -220,5 +220,14 @@ namespace com.MJT.FindTheTheif
         {
             timeLabel.text = "남은 시간: " + time;
         }
+
+        /// <summary>
+        /// Label to use check error in device environmnet(Should not work in release version)
+        /// </summary>
+        public Text errorLabel;
+        public void RenewErrorLabel(string errorMsg)
+        {
+            errorLabel.text = errorMsg;
+        }
     }
 }
