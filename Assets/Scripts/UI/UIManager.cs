@@ -166,7 +166,7 @@ namespace com.MJT.FindTheTheif
             string itemInfo = "";
 
             //Modify color text in pop-up.
-            switch (item.myColor)
+            switch (item.Color)
             {
                 case ItemColor.Red:
                     itemInfo += "빨 ";
@@ -180,7 +180,7 @@ namespace com.MJT.FindTheTheif
             }
 
             //Modify age text in pop-up.
-            switch (item.myAge)
+            switch (item.Age)
             {
                 case ItemAge.Ancient:
                     itemInfo += "고 ";
@@ -194,7 +194,7 @@ namespace com.MJT.FindTheTheif
             }
 
             //Modify age text in pop-up.
-            switch (item.myUsage)
+            switch (item.Usage)
             {
                 case ItemUsage.Art:
                     itemInfo += "예 ";

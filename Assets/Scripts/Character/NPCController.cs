@@ -4,27 +4,22 @@ using UnityEngine;
 
 namespace com.MJT.FindTheTheif
 {
-    // NPC의 행동 제어 (경로 순환)
+    /// <summary>
+    /// Control a NPC's behavior, especially routing
+    /// </summary>
+    [RequireComponent(typeof(PhotonTransformView))]
     public class NPCController : Photon.PunBehaviour, IPunObservable
     {
+        #region Intialization
+
         private Vector2 raycastBox; // Collider of a characters
-
-        [SerializeField]
-        private bool ifStarted = false;     //ManualStart를 통해 초기화되었는지에 대한 변수
-        [SerializeField]
-        MapDataManager mapDataManager;      //Routing Manager Instance에 대한 참조
-
-        [SerializeField]
-        private Route curRoute;              // 현재 진행중인 경로
-        [SerializeField]
-        private int curNodeNum;             // 가장 마지막으로 지난 노드의 인덱스
-        
-
         private void Awake()
         {
             raycastBox = GetComponent<BoxCollider2D>().size;   // To ignore collisions on edges
         }
 
+        private bool ifStarted = false;     //ManualStart를 통해 초기화되었는지에 대한 변수
+        MapDataManager mapDataManager;      //Routing Manager Instance에 대한 참조
         // Use this for initialization
         void Start()
         {
@@ -69,6 +64,8 @@ namespace com.MJT.FindTheTheif
             ifStarted = true;
         }
 
+        #endregion
+
         private void Update()
         {
             if (!ifStarted || (PhotonNetwork.connected && !photonView.isMine))
@@ -105,6 +102,18 @@ namespace com.MJT.FindTheTheif
             GetComponent<SpriteRenderer>().sortingOrder = -(int)(transform.position.y * 100f);
         }
 
+        #region NPC Routing
+
+        private bool isMoving = false;
+        private float blockedTime = 0f;
+
+        public float moveSpeed;
+        private void Move()
+        {
+            //설정 속도에 따라 움직일 위치를 계산(MoveTowards) 이후 이동
+            transform.position = Vector2.MoveTowards(transform.position, targetPoint, moveSpeed * Time.deltaTime);
+        }
+
         private void OnCollisionEnter2D(Collision2D collision)
         {
             if (PhotonNetwork.connected && !photonView.isMine)
@@ -116,6 +125,7 @@ namespace com.MJT.FindTheTheif
                 if (Vector2.Distance(collision.gameObject.transform.position, startPoint)
                     >= Vector2.Distance(collision.gameObject.transform.position, targetPoint))
                 {
+                    //GetComponent<PhotonTransformView>().SetSynchronizedValues(new Vector3(0f, 0f), 0f);
                     isMoving = false;
                     transform.position = targetPoint = startPoint;
                 }
@@ -126,7 +136,9 @@ namespace com.MJT.FindTheTheif
             }
             else if (collision.gameObject.tag == "NPC")
             {
-                if (collision.gameObject.GetInstanceID() > gameObject.GetInstanceID()) {
+                if (collision.gameObject.GetInstanceID() > gameObject.GetInstanceID())
+                {
+                    //GetComponent<PhotonTransformView>().SetSynchronizedValues(new Vector3(0f, 0f), 0f);
                     isMoving = false;
                     transform.position = targetPoint = startPoint;
                 }
@@ -137,36 +149,8 @@ namespace com.MJT.FindTheTheif
             }
         }
 
-        #region NPC Routing
-
-        [SerializeField]
         private Vector2 startPoint;
-        [SerializeField]
         private Vector2 targetPoint;
-        public float moveSpeed;
-
-        [SerializeField]
-        bool isMoving = false;
-        [SerializeField]
-        float blockedTime = 0f;
-
-        private void Move()
-        {
-            //설정 속도에 따라 움직일 위치를 계산(MoveTowards) 이후 이동
-            transform.position = Vector2.MoveTowards(transform.position, targetPoint, moveSpeed * Time.deltaTime);
-        }
-
-        [SerializeField]
-        int prevRoom;
-        [SerializeField]
-        int nextRoom;
-        /// <summary>
-        /// The number of floor in which this NPC exists. Index 0 is used for the 1st floor
-        /// </summary>
-        [SerializeField]
-        private int curFloor;
-
-        [SerializeField]
         Vector2 direction = new Vector2(0, 0);
         private void SetNewTargetPoint()
         {
@@ -192,18 +176,25 @@ namespace com.MJT.FindTheTheif
 
             if (ifHit)
             {
+                //GetComponent<PhotonTransformView>().SetSynchronizedValues(new Vector3(0f, 0f), 0f);
                 isMoving = false;
                 targetPoint = startPoint;
             }
             else
+            {
+                //GetComponent<PhotonTransformView>().SetSynchronizedValues(moveSpeed * direction, 0f);
                 isMoving = true;
+            }
         }
 
+        private Route curRoute;
+        private int curNodeNum;
         /// <summary>
         /// Check if this NPC arrived at next node or route end. If did, change target node or current route. 
         /// </summary>
         private void ChangeNode()
         {
+            //GetComponent<PhotonTransformView>().SetSynchronizedValues(new Vector3(0f, 0f), 0f);
             isMoving = false;
             targetPoint = startPoint = curRoute.NodeSet[curNodeNum + 1].position;
             blockedTime = Random.Range(0f, 0.5f);   // Set delay at each node for thief user control easily
@@ -231,6 +222,9 @@ namespace com.MJT.FindTheTheif
             }
         }
 
+        private int prevRoom;
+        private int nextRoom;
+        private int curFloor;
         [PunRPC]
         void ChangeCurRoute(int randomNextRoom)
         {
@@ -387,6 +381,8 @@ namespace com.MJT.FindTheTheif
 
         #endregion
 
+        #region Networking
+
         public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
         {
             if (stream.isWriting)
@@ -442,5 +438,7 @@ namespace com.MJT.FindTheTheif
             if (diffVector.y == 0f)
                 transform.position = new Vector3(transform.position.x, startVector.y);
         }
+
+        #endregion
     }
 }

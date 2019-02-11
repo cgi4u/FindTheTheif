@@ -13,10 +13,13 @@ namespace com.MJT.FindTheTheif
     public enum StairType { Up, Down, None }
     public enum StairSide { Left, Right, None }
 
-    //Item properties
+    #region Item Properties
+
     public enum ItemColor { Red, Blue, Yellow }
     public enum ItemAge { Ancient, Middle, Modern }
     public enum ItemUsage { Art, Daily, War }
+
+    #endregion
 
     public static class Globals
     {

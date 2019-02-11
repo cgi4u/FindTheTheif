@@ -21,38 +21,26 @@ namespace com.MJT.FindTheTheif
             }
         }
 
-        private Team myTeam;
-        public Team MyTeam
-        {
-            get
-            {
-                return myTeam;
-            }
-        }
-
-        //조건3. 게임이 시작하고 종료될 때 모든 플레이어를 통제할 수 있어야 함. RPC를 통해서 구현 가능할 듯
-        //Player ready-check flag array
-        private List<bool> isPlayersReady;
-
         MapDataManager mapDataManager;
 
-        [SerializeField]
-        private int thievesNum;
+        #region Keys for property setting
 
         static readonly string sceneLoadedKey = "Scene Loaded";
         static readonly string gameInitKey = "Game Initiated";
         static readonly string readyKey = "Ready";
-
-        static readonly string pauseKey = "Pause";
+        static readonly string startKey = "Game Started";
 
         private string TeamKey(int id)
         {
             return "Team of Player " + id;
         }
+        static readonly string pauseKey = "Pause";
 
-        [SerializeField]
-        private string levelName;
+        #endregion
 
+        #region Room Initialization(Before Loading Room)
+
+        private int thievesNum;
         private void Awake()
         {
             if (!PhotonNetwork.connected)
@@ -62,9 +50,9 @@ namespace com.MJT.FindTheTheif
             }
 
             // Modify PhotonNetwork settings according to in-game mode.
-            PhotonNetwork.BackgroundTimeout = 20f;
-            PhotonNetwork.sendRate = 10;
-            PhotonNetwork.sendRateOnSerialize = 10;
+            PhotonNetwork.BackgroundTimeout = 30f;
+            //PhotonNetwork.sendRate = 10;
+            //PhotonNetwork.sendRateOnSerialize = 10;
 
             DontDestroyOnLoad(this);
 
@@ -117,6 +105,7 @@ namespace com.MJT.FindTheTheif
             }
         }
 
+        public string roomLevelName;
         /// <summary>
         /// Select theives player randomly and load scene.
         /// Should be called only by the master client. The master client must not be a detective because of sync delay issue.
@@ -162,12 +151,25 @@ namespace com.MJT.FindTheTheif
                 roomCp[TeamKey(thiefPlayer.ID)] = (int)Team.Thief;
             }
 
-            Debug.Log("We load the " + levelName);
+            Debug.Log("We load the " + roomLevelName);
             //Load the game level. Use LoadLevel to synchronize(automaticallySyncScene is true)
-            PhotonNetwork.LoadLevel(levelName);
+            PhotonNetwork.LoadLevel(roomLevelName);
 
             roomCp[sceneLoadedKey] = true;
             PhotonNetwork.room.SetCustomProperties(roomCp);
+        }
+
+        #endregion
+
+        #region Game Initialization(After Loading Room, Including Object Generation) 
+
+        private Team myTeam;
+        public Team MyTeam
+        {
+            get
+            {
+                return myTeam;
+            }
         }
 
         List<PhotonPlayer> detectives = new List<PhotonPlayer>();
@@ -175,18 +177,13 @@ namespace com.MJT.FindTheTheif
         List<int> masterPriority = new List<int>();
         private void OnGameSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            if (scene != SceneManager.GetSceneByName(levelName))
+            if (scene != SceneManager.GetSceneByName(roomLevelName))
             {
                 Debug.LogError("A wrong scene is loaded. Scene name: " + SceneManager.GetActiveScene().name);
                 return;
             }
 
             mapDataManager = MapDataManager.Instance;
-
-            //Initialize variables related to items
-            itemNum = itemPrefabs.Length;
-            itemGenPointNum = mapDataManager.ItemGenPoints.Count;
-            isItemStolen = new bool[itemGenPointNum];
 
             //Initilaize team information and set UI informations
             myTeam = (Team)PhotonNetwork.room.CustomProperties[TeamKey(PhotonNetwork.player.ID)];
@@ -225,8 +222,7 @@ namespace com.MJT.FindTheTheif
                 GameInitByMaster();
             }
         }
-
-        public int numberOfNPC;
+        
         /// <summary>
         /// Generate NPCs and Items for current game. Should be called by the master client.
         /// </summary>
@@ -255,6 +251,7 @@ namespace com.MJT.FindTheTheif
             photonView.RPC("SetPlayerReady", PhotonTargets.All);
         }
 
+        public int numberOfNPC;
         public GameObject NPCPrefab;
         public Transform NPCParent;
         /// <summary>
@@ -279,84 +276,133 @@ namespace com.MJT.FindTheTheif
 
         public GameObject[] itemPrefabs;
         public Transform itemParent;
-        [SerializeField]
-        private int itemNum;                    // The number of item prefabs = The number of kind of items which can be generated
-
-        [SerializeField]
-        List<ItemController> itemInGenPoint = new List<ItemController>();
-        [SerializeField]
-        private int itemGenPointNum;            // The number of item generation points = The number of items generated in a game room
-        bool[] isItemStolen;                    // 아이템이 훔쳐졌는가 여부
-
-        [SerializeField]
-        private int targetItemNum;                // 훔쳐야 할 아이템의 개수
-        [SerializeField]
-        private List<ItemController> targetItems = new List<ItemController>();     // 훔쳐야 할 아이템의 리스트
-        public List<ItemController> TargetItems
-        {
-            get
-            {
-                return targetItems;
-            }
-        }
-
+        public int numOfTargetItem; 
+        private List<ItemController> targetItems = new List<ItemController>();
         /// <summary>
         /// Generate items at generation points randomly. 
         /// </summary>
         private void GenerateItems()
         {
-            if (itemGenPointNum > itemNum)
+            // Initialize variables related to items.
+            int numOfItems = itemPrefabs.Length;
+            int numOfItemGenPoint = mapDataManager.ItemGenPoints.Count;
+            if (numOfItemGenPoint > numOfItems)
             {
                 Debug.LogError("There are fewer items than generation points.");
                 return;
             }
-            if (itemNum < targetItemNum)
+            if (numOfItemGenPoint < numOfTargetItem)
             {
-                Debug.LogError("The number of items to steal can't exceed the number of all items.");
+                Debug.LogError("The number of items to steal can't exceed the number of all items in the level.");
                 return;
             }
 
-            // Select item for each generation point randomly.
-            int[] itemNumInGenPoint = new int[itemNum];
-            for (int i = 0; i < itemNum; i++)
-                itemNumInGenPoint[i] = i;
+            // Select the target item property and divide the item prefab list 
+            // to the group which has that property and the group which doesn't have.
+            // issue: 카테고리 및 속성 번호를 수동으로 지정, 이후 enum 활용식 혹은 다른 방법 고안 필요.
+            int category = Random.Range(0, 3);
+            int selectedProp = Random.Range(0, 3);
 
-            Globals.RandomizeArray<int>(itemNumInGenPoint);
+            switch (category)
+            {
+                case 0:
+                    Debug.Log("Selected property: " + (ItemColor)selectedProp);
+                    break;
+                case 1:
+                    Debug.Log("Selected property: " + (ItemAge)selectedProp);
+                    break;
+                case 2:
+                    Debug.Log("Selected property: " + (ItemUsage)selectedProp);
+                    break;
+            }
 
-            // Select items that theives should steal.
-            int[] targetItemPointSelector = new int[itemGenPointNum];
-            for (int i = 0; i < itemGenPointNum; i++)
+            List<GameObject> ItemsHaveProp = new List<GameObject>();
+            foreach (GameObject item in itemPrefabs)
+            {
+                ItemController itemController = item.GetComponent<ItemController>();
+                //issue: Error
+                if (itemController == null)
+                {
+                    Debug.LogError("The prefab name " + item.name + " in item list doesn't have ItemContorller.");
+                    return;
+                }
+
+                switch (category)
+                {
+                    case 0:
+                        if (itemController.Color == (ItemColor)selectedProp)
+                            ItemsHaveProp.Add(item);
+                        break;
+                    case 1:
+                        if (itemController.Age == (ItemAge)selectedProp)
+                            ItemsHaveProp.Add(item);
+                        break;
+                    case 2:
+                        if (itemController.Usage == (ItemUsage)selectedProp)
+                            ItemsHaveProp.Add(item);
+                        break;
+                }
+            }
+
+            // Select steal target/non-target items to generate; 
+            List<GameObject> targetItems = new List<GameObject>();
+            for (int i = 0; i < numOfTargetItem; i++)
+                targetItems.Add(ItemsHaveProp[i]);  // issue: 범위 에러
+            Globals.RandomizeList<GameObject>(targetItems);
+
+            List<GameObject> nonTargetItems = new List<GameObject>();
+            for (int i = 0; i < numOfItems; i++)
+            {
+                if (!targetItems.Contains(itemPrefabs[i]))
+                    nonTargetItems.Add(itemPrefabs[i]);
+            }
+            Globals.RandomizeList<GameObject>(nonTargetItems);
+
+            // Select generation points where the target items are generated.
+            int[] targetItemPointSelector = new int[numOfItemGenPoint];
+            for (int i = 0; i < numOfItemGenPoint; i++)
                 targetItemPointSelector[i] = i;
-
             Globals.RandomizeArray<int>(targetItemPointSelector);
 
-            int[] targetPoints = new int[targetItemNum];
+            List<int> targetItemPoints = new List<int>();
             int count = 0;
             List<ExhibitRoom> roomContainTargetItem = new List<ExhibitRoom>();
-            for (int i = 0; i < itemGenPointNum; i++)
+            for (int i = 0; i < numOfItemGenPoint; i++)
             {
                 //Not allow the case in which multiple items in a same room.
                 ExhibitRoom roomOfPoint = mapDataManager.ItemGenPoints[targetItemPointSelector[i]].GetComponentInParent<ExhibitRoom>();
                 if (!roomContainTargetItem.Contains(roomOfPoint))
                 {
-                    targetPoints[count++] = targetItemPointSelector[i];
+                    targetItemPoints.Add(targetItemPointSelector[i]);
                     roomContainTargetItem.Add(roomOfPoint);
-                    if (count == targetItemNum)
+                    if (count == numOfTargetItem)
                         break;
                 }
             }
-
-            if (count != targetItemNum)
+            if (count != numOfTargetItem)
             {
+                //issue: Error
                 Debug.LogError("There are not enough rooms for item generation.");
                 return;
             }
 
-            for (int i = 0; i < itemGenPointNum; i++)
+            // Generate items using setting.
+            for (int i = 0; i < numOfItemGenPoint; i++)
             {
-                GameObject newItem = PhotonNetwork.InstantiateSceneObject("Items\\" + itemPrefabs[itemNumInGenPoint[i]].name, 
-                                                                    mapDataManager.ItemGenPoints[i].transform.position, Quaternion.identity, 0, null);
+                GameObject newItemPrefab;
+                if (targetItemPoints.Contains(i))
+                {
+                    newItemPrefab = targetItems[0];
+                    targetItems.RemoveAt(0);
+                }
+                else
+                {
+                    newItemPrefab = nonTargetItems[0];
+                    nonTargetItems.RemoveAt(0);
+                }
 
+                GameObject newItem = PhotonNetwork.InstantiateSceneObject("Items\\" + newItemPrefab.name, 
+                                        mapDataManager.ItemGenPoints[i].transform.position, Quaternion.identity, 0, null);
                 ExhibitRoom roomOfItem = mapDataManager.ItemGenPoints[i].GetComponentInParent<ExhibitRoom>();
                 PhotonView.Get(newItem).RPC("Init", PhotonTargets.All, roomOfItem.Floor, mapDataManager.Rooms.FindIndex(room => room == roomOfItem), i);
                 newItem.transform.parent = itemParent;
@@ -365,25 +411,25 @@ namespace com.MJT.FindTheTheif
             foreach (PhotonPlayer player in PhotonNetwork.playerList)
             {
                 if ((Team)PhotonNetwork.room.CustomProperties[TeamKey(player.ID)] == Team.Thief)
-                    photonView.RPC("SetTargetItemList", player, targetPoints);
+                    photonView.RPC("SetTargetItemList", player, targetItemPoints);
             }
         }
 
         /// <summary>
         /// Set target items which the player should be steal(For a thief player).
         /// </summary>
-        /// <param name="targetPoints">Indices of item generation points which have target items.</param>
+        /// <param name="targetItemPoints">Indices of item generation points which have target items.</param>
         [PunRPC]
-        private void SetTargetItemList(int[] targetPoints)
+        private void SetTargetItemList(List<int> targetItemPoints)
         {
-            for (int i = 0; i < targetPoints.Length; i++)
+            for (int i = 0; i < targetItemPoints.Count; i++)
             {
-                print(targetPoints[i]);
-                Debug.Log(mapDataManager.ItemGenPoints[targetPoints[i]]);
+                print(targetItemPoints[i]);
+                Debug.Log(mapDataManager.ItemGenPoints[targetItemPoints[i]]);
             }
 
-            for (int i = 0; i < targetPoints.Length; i++)
-                targetItems.Add(mapDataManager.ItemGenPoints[targetPoints[i]].Item);
+            for (int i = 0; i < targetItemPoints.Count; i++)
+                targetItems.Add(mapDataManager.ItemGenPoints[targetItemPoints[i]].Item);
             UIManager.Instance.RenewTargetItemList(targetItems, targetItems.Count, null);
         }
 
@@ -401,6 +447,16 @@ namespace com.MJT.FindTheTheif
             inReady = true;
         }
 
+        //issue: 룸은 game start상태인데 나는 아니면 회복해주는 기능이 필요함
+        [PunRPC]
+        private void LetGameStart()
+        {
+            inReady = false;
+            gameStarted = true;
+        }
+
+        #endregion
+
         [SerializeField]
         bool gameStarted = false;
         int prevTimeStamp;
@@ -414,8 +470,9 @@ namespace com.MJT.FindTheTheif
         {
             int curTimeStamp = PhotonNetwork.ServerTimestamp;
             int deltaTimeStamp = curTimeStamp - prevTimeStamp;
+            prevTimeStamp = curTimeStamp;
 
-            if (inReady)
+            if (inReady && PhotonNetwork.isMasterClient)
             {
                 bool areAllPlayersReady = true;
                 foreach (PhotonPlayer player in PhotonNetwork.playerList)
@@ -428,15 +485,13 @@ namespace com.MJT.FindTheTheif
                     }
                 }
 
+                //if all player is in ready, fire game start signal to other players(via server in order to reduce delay).
                 if (areAllPlayersReady)
                 {
-                    Debug.Log("Game Start!");
-                    inReady = false;
-                    gameStarted = true;
+                    PhotonExtends.SetRoomCustomPropsByElem(startKey, true);
+                    photonView.RPC("LetGameStart", PhotonTargets.AllViaServer);
                 }
             }
-
-            prevTimeStamp = curTimeStamp;
 
             if (!gameStarted)
                 return;
@@ -494,61 +549,6 @@ namespace com.MJT.FindTheTheif
             if (!PhotonNetwork.isMasterClient && PhotonNetwork.ServerTimestamp - sentTimestamp < 5000)
                 PhotonNetwork.SetMasterClient(PhotonNetwork.player);
         }
-
-        /*
-        /// <summary>
-        /// Change master client when the local client is the master.
-        /// </summary>
-        /// <returns>The player of the master client. null when failed to change.</returns>
-        private void TryToChangeMaster(bool thiefOnly)
-        {
-            UIManager.Instance.RenewErrorLabel("Try change master");
-
-            if (!PhotonNetwork.isMasterClient)
-            {
-                Debug.LogError("TryToChangeMasterClient must be called by the master client.");
-                return;
-            }
-            if (!gameStarted)
-            {
-                Debug.LogError("TryToChangeMasterClient must be called after game start.");
-                return;
-            }
-
-            bool switched = false;
-            PhotonPlayer newMaster = null;
-            foreach (PhotonPlayer thiefPlayer in theives)
-            {
-                if (thiefPlayer != null && PhotonNetwork.player != thiefPlayer 
-                        && (bool)thiefPlayer.CustomProperties[pauseKey] == false)
-                {
-                    switched = true;
-                    PhotonNetwork.SetMasterClient(thiefPlayer);
-                    newMaster = thiefPlayer;
-                    break;
-                }
-            }
-
-            if (thiefOnly)
-                return;
-
-            if (!switched && PhotonNetwork.playerList.Length > 1)
-            {
-                foreach (PhotonPlayer player in PhotonNetwork.playerList)
-                {
-                    if (PhotonNetwork.player != player 
-                        && (bool)player.CustomProperties[pauseKey] == false)
-                    {
-                        PhotonNetwork.SetMasterClient(player);
-                        newMaster = player;
-                        break;
-                    }
-                }
-            }
-
-            return;
-        }
-        */
 
         //issue point
         // 현재 게임 도중에 나가도 실행되는 버그가 있음
@@ -620,12 +620,6 @@ namespace com.MJT.FindTheTheif
 
             PhotonExtends.SetLocalPlayerPropsByElem(pauseKey, pauseStatus);
             PhotonNetwork.networkingPeer.SendOutgoingCommands();
-        }
-
-        [PunRPC]
-        void TestEcho(int playerID)
-        {
-            Debug.Log("Player " + playerID + "\'s echo.");
         }
     }
 }

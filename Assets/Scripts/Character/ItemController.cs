@@ -14,9 +14,35 @@ namespace com.MJT.FindTheTheif
         protected Sprite transparentSprite;
 
         // This item's attributes.
-        public ItemColor myColor;
-        public ItemAge myAge;
-        public ItemUsage myUsage;
+        [SerializeField]
+        private ItemColor myColor;
+        public ItemColor Color
+        {
+            get
+            {
+                return myColor;
+            }
+        }
+
+        [SerializeField]
+        private ItemAge myAge;
+        public ItemAge Age
+        {
+            get
+            {
+                return Age;
+            }
+        }
+
+        [SerializeField]
+        private ItemUsage myUsage;
+        public ItemUsage Usage
+        {
+            get
+            {
+                return myUsage;
+            }
+        }
 
         #region Properties after generation in game
 

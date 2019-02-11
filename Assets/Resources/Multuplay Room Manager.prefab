@@ -46,8 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48c015cf811cc27449a9690a978a61e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  thievesNum: 0
-  levelName: Demo Room
+  roomLevelName: Demo Room
   numberOfNPC: 15
   NPCPrefab: {fileID: 1900755372417909919, guid: 135b5b3a8b693284ab93667c9b37cdc8,
     type: 3}
@@ -64,11 +63,7 @@ MonoBehaviour:
   - {fileID: 1192389104986055057, guid: 107ca69f092fa554f81e1a8e289a7b06, type: 3}
   - {fileID: 5420556545269972260, guid: 232e1af998a7314449ff6f03eddeecbe, type: 3}
   itemParent: {fileID: 7749476486381312228}
-  itemNum: 10
-  itemInGenPoint: []
-  itemGenPointNum: 0
-  targetItemNum: 3
-  targetItems: []
+  numOfTargetItem: 3
   leftTimeStamp: 60000
   inReady: 0
   gameStarted: 0
