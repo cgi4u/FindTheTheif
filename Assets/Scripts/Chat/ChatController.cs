@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace com.MJT.FindTheTheif
+namespace com.MJT.FindTheThief
 {
     public class ChatController : MonoBehaviour
     {

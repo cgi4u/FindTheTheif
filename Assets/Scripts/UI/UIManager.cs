@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace com.MJT.FindTheTheif
+namespace com.MJT.FindTheThief
 {
     public class UIManager : MonoBehaviour
     {
@@ -30,6 +30,7 @@ namespace com.MJT.FindTheTheif
 
             charPopUp.SetActive(false);
             itemPopUp.gameObject.SetActive(false);
+            stealPopUp.gameObject.SetActive(false);
             targetItemList.gameObject.SetActive(false);
         }
 
@@ -66,19 +67,44 @@ namespace com.MJT.FindTheTheif
         }
 
         public ItemPopUp itemPopUp;
-        public void SetItemPopUp(ItemColor itemColor, ItemAge itemAge, ItemUsage itemUsage, Vector3 objPos)
+        public void SetItemPopUp(ItemController item)
         {
-            Vector3 screenPoint = Camera.main.WorldToScreenPoint(objPos);
-            //itemPopUp.gameObject.
+            itemPopUp.SetAttributes(item);
+
+            Vector3 screenPoint = Camera.main.WorldToScreenPoint(item.transform.position);
             itemPopUp.transform.position = screenPoint;
-            itemPopUp.SetAttributes(itemColor, itemAge, itemUsage);
+            
             itemPopUp.gameObject.SetActive(true);
         }
 
+        public StealPopUp stealPopUp;
+        public void SetStealPopUp(ItemGenPoint curGenPoint)
+        {
+            stealPopUp.CurGenPoint = curGenPoint;
+
+            Vector3 screenPoint = Camera.main.WorldToScreenPoint(curGenPoint.transform.position);
+            stealPopUp.transform.position = screenPoint;
+
+            stealPopUp.gameObject.SetActive(true);
+        }
+
+        public void RemoveStealPopUp()
+        {
+            stealPopUp.CurGenPoint = null;
+            stealPopUp.gameObject.SetActive(false);
+        }
+         
+
         Rect screentRect = new Rect(0, 0, Screen.width, Screen.height);
+        /// <summary>
+        /// Move pop-up screens following the character's move.
+        /// </summary>
+        /// <param name="move"></param>
         public void MovePopUpsOnCameraMoving(Vector3 move)
         {
             Vector3 oldWorldPoint;
+
+            // Move character Pop-up.
             if (charPopUp.GetActive())
             {
                 oldWorldPoint = Camera.main.ScreenToWorldPoint(charPopUp.transform.position);
@@ -91,11 +117,21 @@ namespace com.MJT.FindTheTheif
                     charPopUp.SetActive(false);
                 }
             }
+
+            // Move item Pop-up.
             if (itemPopUp.gameObject.GetActive())
             {
                 oldWorldPoint = Camera.main.ScreenToWorldPoint(itemPopUp.transform.position);
                 oldWorldPoint -= move;
                 itemPopUp.transform.position = Camera.main.WorldToScreenPoint(oldWorldPoint);
+            }
+
+            // Move Item Steal Pop-up
+            if (stealPopUp.gameObject.GetActive())
+            {
+                oldWorldPoint = Camera.main.ScreenToWorldPoint(stealPopUp.transform.position);
+                oldWorldPoint -= move;
+                stealPopUp.transform.position = Camera.main.WorldToScreenPoint(oldWorldPoint);
             }
         }
 
@@ -175,7 +211,7 @@ namespace com.MJT.FindTheTheif
                     itemInfo += "파 ";
                     break;
                 case ItemColor.Yellow:
-                    itemInfo += "노";
+                    itemInfo += "노 ";
                     break;
             }
 
@@ -207,7 +243,7 @@ namespace com.MJT.FindTheTheif
                     break;
             }
 
-            itemInfo += item.FloorNum + "층 " + item.RoomNum + "번 방";
+            itemInfo += item.GenPoint.Room.Floor + "층 " + item.GenPoint.Room.Num + "번 방";
 
             return itemInfo;
         }

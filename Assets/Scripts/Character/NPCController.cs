@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace com.MJT.FindTheTheif
+namespace com.MJT.FindTheThief
 {
     /// <summary>
     /// Control a NPC's behavior, especially routing

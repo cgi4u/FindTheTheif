@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace com.MJT.FindTheTheif
+namespace com.MJT.FindTheThief
 {
     // 각 전시실의 번호와 층을 저장
     // NPC가 이동시 계단을 경유해야 하는지 판단하기 위해 사용
@@ -20,6 +20,20 @@ namespace com.MJT.FindTheTheif
                 return floor;
             }
         }
+
+        [SerializeField]
+        private int num;
+        /// <summary>
+        /// Room number used in game. Separated from the index of this room in the room list of MapDataManager.
+        /// </summary>
+        public int Num
+        {
+            get
+            {
+                return num;
+            }
+        }
+
         [SerializeField]
         private StairSide adjStairSide;
         public StairSide AdjStairSide

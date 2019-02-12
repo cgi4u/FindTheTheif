@@ -2,10 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace com.MJT.FindTheTheif
+namespace com.MJT.FindTheThief
 {
     public class ItemGenPoint : Photon.PunBehaviour
     {
+        public GameObject itemStealPopup;
+
+        private ExhibitRoom room;
+        public ExhibitRoom Room
+        {
+            get
+            {
+                return room;
+            }
+        }
+
         [SerializeField]
         private bool isItemExist;
         [SerializeField]
@@ -15,6 +26,17 @@ namespace com.MJT.FindTheTheif
             get
             {
                 return item;
+            }
+        }
+
+        private void Awake()
+        {
+            room = GetComponentInParent<ExhibitRoom>();
+            if (room == null)
+            {
+                Debug.LogError("Error in ItemGenPoint " + gameObject.GetInstanceID());
+                Debug.LogError("An Item generation point should be a child of an exhibit room.");
+                return;
             }
         }
 
@@ -44,7 +66,7 @@ namespace com.MJT.FindTheTheif
             PlayerController player = collision.gameObject.GetComponent<PlayerController>();
             if (player != null && player == PlayerController.LocalPlayer)
             {
-                Debug.Log("Player On");
+                UIManager.Instance.SetStealPopUp(this);
             }
         }
 
@@ -57,7 +79,7 @@ namespace com.MJT.FindTheTheif
             PlayerController player = collision.gameObject.GetComponent<PlayerController>();
             if (player != null && player == PlayerController.LocalPlayer)
             {
-                Debug.Log("Player Off");
+                UIManager.Instance.RemoveStealPopUp();
             }
         }
     }

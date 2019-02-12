@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace com.MJT.FindTheTheif
+namespace com.MJT.FindTheThief
 {
     /// <summary>
     /// Container for routes realted to stair(to/from Stair, Stair to Stair)

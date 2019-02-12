@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
-namespace com.MJT.FindTheTheif
+namespace com.MJT.FindTheThief
 {
     public class Lobby : Photon.PunBehaviour
     {

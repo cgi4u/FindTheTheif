@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace com.MJT.FindTheTheif
+namespace com.MJT.FindTheThief
 {
     /// <summary>
     /// Store datas for NPC moving route.

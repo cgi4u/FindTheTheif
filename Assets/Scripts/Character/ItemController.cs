@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace com.MJT.FindTheTheif
+namespace com.MJT.FindTheThief
 {
     public class ItemController : Photon.PunBehaviour
     {
@@ -13,7 +13,8 @@ namespace com.MJT.FindTheTheif
         [SerializeField]
         protected Sprite transparentSprite;
 
-        // This item's attributes.
+        #region Intrinsic Item Properties
+
         [SerializeField]
         private ItemColor myColor;
         public ItemColor Color
@@ -30,7 +31,7 @@ namespace com.MJT.FindTheTheif
         {
             get
             {
-                return Age;
+                return myAge;
             }
         }
 
@@ -44,33 +45,21 @@ namespace com.MJT.FindTheTheif
             }
         }
 
-        #region Properties after generation in game
+        #endregion
 
-        [SerializeField]
-        private int floorNum;
-        public int FloorNum
+        #region Properties After Generation
+
+        private ItemGenPoint genPoint;
+        /// <summary>
+        /// The item generation point in which this item is generated.
+        /// </summary>
+        public ItemGenPoint GenPoint
         {
             get
             {
-                return floorNum;
+                return genPoint;
             }
         }
-        [SerializeField]
-        private int roomNum;
-        public int RoomNum
-        {
-            get
-            {
-                return roomNum;
-            }
-        }
-
-        /*
-        [SerializeField]
-        private bool isStolen = false;
-        [SerializeField]
-        private bool isTarget = false;
-        */
 
         #endregion
 
@@ -81,16 +70,14 @@ namespace com.MJT.FindTheTheif
 
         private void OnMouseUp()
         {
-            UIManager.Instance.SetItemPopUp(myColor, myAge, myUsage, transform.position);
+            UIManager.Instance.SetItemPopUp(this);
         }
 
         [PunRPC]
-        public void Init(int _floorNum, int _roomNum, int itemGenPoint)
+        public void Init(int itemGenPointIdx)
         {
-            floorNum = _floorNum;
-            roomNum = _roomNum;
-
-            MapDataManager.Instance.ItemGenPoints[itemGenPoint].SetItem(this);
+            genPoint = MapDataManager.Instance.ItemGenPoints[itemGenPointIdx];
+            MapDataManager.Instance.ItemGenPoints[itemGenPointIdx].SetItem(this);
         }
 
         private void OnBecameVisible()

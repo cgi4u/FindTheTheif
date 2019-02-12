@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
-namespace com.MJT.FindTheTheif
+namespace com.MJT.FindTheThief
 {
     public class MultiplayRoomManager : Photon.PunBehaviour, IPunObservable
     {
@@ -120,6 +120,15 @@ namespace com.MJT.FindTheTheif
                 return;
             }
 
+            // Set player status in room(pause, ready)
+            foreach (PhotonPlayer player in PhotonNetwork.playerList)
+            {
+                Hashtable playerCp = player.CustomProperties;
+                playerCp[pauseKey] = false;
+                playerCp[readyKey] = false;
+                player.SetCustomProperties(playerCp);
+            }
+
             // Set each player's team
             Hashtable roomCp = PhotonNetwork.room.CustomProperties;
 
@@ -164,6 +173,9 @@ namespace com.MJT.FindTheTheif
         #region Game Initialization(After Loading Room, Including Object Generation) 
 
         private Team myTeam;
+        /// <summary>
+        /// Team of the local player.
+        /// </summary>
         public Team MyTeam
         {
             get
@@ -231,15 +243,6 @@ namespace com.MJT.FindTheTheif
             if (!PhotonNetwork.isMasterClient) {
                 Debug.LogError("Object generation must be oprated by the master client.");
                 return;
-            }
-
-            // Set player status in room(pause, ready)
-            foreach (PhotonPlayer player in PhotonNetwork.playerList)
-            {
-                Hashtable playerCp = player.CustomProperties;
-                playerCp[pauseKey] = false;
-                playerCp[readyKey] = false;
-                player.SetCustomProperties(playerCp);
             }
 
             // Generate Scene Objects(NPCs, Items).
@@ -345,10 +348,10 @@ namespace com.MJT.FindTheTheif
             }
 
             // Select steal target/non-target items to generate; 
+            Globals.RandomizeList<GameObject>(ItemsHaveProp);
             List<GameObject> targetItems = new List<GameObject>();
             for (int i = 0; i < numOfTargetItem; i++)
                 targetItems.Add(ItemsHaveProp[i]);  // issue: 범위 에러
-            Globals.RandomizeList<GameObject>(targetItems);
 
             List<GameObject> nonTargetItems = new List<GameObject>();
             for (int i = 0; i < numOfItems; i++)
@@ -365,7 +368,6 @@ namespace com.MJT.FindTheTheif
             Globals.RandomizeArray<int>(targetItemPointSelector);
 
             List<int> targetItemPoints = new List<int>();
-            int count = 0;
             List<ExhibitRoom> roomContainTargetItem = new List<ExhibitRoom>();
             for (int i = 0; i < numOfItemGenPoint; i++)
             {
@@ -375,11 +377,11 @@ namespace com.MJT.FindTheTheif
                 {
                     targetItemPoints.Add(targetItemPointSelector[i]);
                     roomContainTargetItem.Add(roomOfPoint);
-                    if (count == numOfTargetItem)
+                    if (targetItemPoints.Count == numOfTargetItem)
                         break;
                 }
             }
-            if (count != numOfTargetItem)
+            if (targetItemPoints.Count != numOfTargetItem)
             {
                 //issue: Error
                 Debug.LogError("There are not enough rooms for item generation.");
@@ -403,8 +405,7 @@ namespace com.MJT.FindTheTheif
 
                 GameObject newItem = PhotonNetwork.InstantiateSceneObject("Items\\" + newItemPrefab.name, 
                                         mapDataManager.ItemGenPoints[i].transform.position, Quaternion.identity, 0, null);
-                ExhibitRoom roomOfItem = mapDataManager.ItemGenPoints[i].GetComponentInParent<ExhibitRoom>();
-                PhotonView.Get(newItem).RPC("Init", PhotonTargets.All, roomOfItem.Floor, mapDataManager.Rooms.FindIndex(room => room == roomOfItem), i);
+                PhotonView.Get(newItem).RPC("Init", PhotonTargets.All, i);
                 newItem.transform.parent = itemParent;
             }
 

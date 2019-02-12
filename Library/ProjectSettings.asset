@@ -148,7 +148,7 @@ PlayerSettings:
   androidSupportedAspectRatio: 1
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
-    Android: com.MJT.FindTheTheif
+    Android: com.MJT.FindTheThief
     iOS: com.MJT.FindTheTheif
   buildNumber: {}
   AndroidBundleVersionCode: 1

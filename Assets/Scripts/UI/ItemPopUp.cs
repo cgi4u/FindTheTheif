@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace com.MJT.FindTheTheif
+namespace com.MJT.FindTheThief
 { 
     public class ItemPopUp : MonoBehaviour
     {
@@ -11,10 +11,10 @@ namespace com.MJT.FindTheTheif
         public Text ageText;
         public Text usageText;
 
-        public void SetAttributes(ItemColor color, ItemAge age, ItemUsage usage)
+        public void SetAttributes(ItemController item)
         {
             //Modify color text in pop-up.
-            switch (color)
+            switch (item.Color)
             {
                 case ItemColor.Red:
                     colorText.text = "빨강";
@@ -28,7 +28,7 @@ namespace com.MJT.FindTheTheif
             }
             
             //Modify age text in pop-up.
-            switch (age)
+            switch (item.Age)
             {
                 case ItemAge.Ancient:
                     ageText.text = "고대";
@@ -42,7 +42,7 @@ namespace com.MJT.FindTheTheif
             }
 
             //Modify age text in pop-up.
-            switch (usage)
+            switch (item.Usage)
             {
                 case ItemUsage.Art:
                     usageText.text = "예술";

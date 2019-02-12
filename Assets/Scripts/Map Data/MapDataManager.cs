@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace com.MJT.FindTheTheif
+namespace com.MJT.FindTheThief
 {   
     /// <summary>
     /// Serialize constant datas of a map, and make other classes be able to get them by using singleton object.

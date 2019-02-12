@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 
 using Facebook.Unity;
 
-namespace com.MJT.FindTheTheif
+namespace com.MJT.FindTheThief
 {
     public class Launcher : Photon.PunBehaviour
     {

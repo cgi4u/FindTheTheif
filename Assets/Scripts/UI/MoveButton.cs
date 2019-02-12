@@ -4,7 +4,7 @@ using UnityEngine;
 
 using UnityEngine.EventSystems;
 
-namespace com.MJT.FindTheTheif
+namespace com.MJT.FindTheThief
 {
     public class MoveButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
