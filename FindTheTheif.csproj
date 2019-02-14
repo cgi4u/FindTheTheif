@@ -739,7 +739,6 @@
     <Compile Include="Assets\Scripts\Character\NPCController.cs" />
     <Compile Include="Assets\Scripts\Character\PlayerController.cs" />
     <Compile Include="Assets\Scripts\Character\TouchEvent.cs" />
-    <Compile Include="Assets\Scripts\CharTouchButton.cs" />
     <Compile Include="Assets\Scripts\Chat\ChatController.cs" />
     <Compile Include="Assets\Scripts\Chat\ChatSyncPort.cs" />
     <Compile Include="Assets\Scripts\Global.cs" />
@@ -748,19 +747,21 @@
     <Compile Include="Assets\Scripts\LocalRoomManager.cs" />
     <Compile Include="Assets\Scripts\Map Data\ExhibitRoom.cs" />
     <Compile Include="Assets\Scripts\Map Data\ItemGenPoint.cs" />
+    <Compile Include="Assets\Scripts\Map Data\ItemPutPoint.cs" />
     <Compile Include="Assets\Scripts\Map Data\MapDataManager.cs" />
     <Compile Include="Assets\Scripts\Map Data\Route.cs" />
     <Compile Include="Assets\Scripts\Map Data\RouteNode.cs" />
     <Compile Include="Assets\Scripts\Map Data\StairRouteContainer.cs" />
-    <Compile Include="Assets\Scripts\Map Data\StealButton.cs" />
     <Compile Include="Assets\Scripts\MultiplayRoomManager.cs" />
     <Compile Include="Assets\Scripts\Test\ChangeMaster.cs" />
     <Compile Include="Assets\Scripts\Test\MoveTestManager.cs" />
     <Compile Include="Assets\Scripts\Test\TestItemGenerator.cs" />
     <Compile Include="Assets\Scripts\Test\TestNPCGenerator.cs" />
     <Compile Include="Assets\Scripts\Test\TestObjects.cs" />
+    <Compile Include="Assets\Scripts\UI\ArrestPopUp.cs" />
     <Compile Include="Assets\Scripts\UI\ItemPopUp.cs" />
     <Compile Include="Assets\Scripts\UI\MoveButton.cs" />
+    <Compile Include="Assets\Scripts\UI\StealPopUp.cs" />
     <Compile Include="Assets\Scripts\UI\UIManager.cs" />
   </ItemGroup>
   <ItemGroup>

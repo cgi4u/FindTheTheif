@@ -4,12 +4,27 @@ using UnityEngine;
 using UnityEngine.UI;
 
 namespace com.MJT.FindTheThief
-{ 
+{
+    [RequireComponent(typeof(RectTransform))]
     public class ItemPopUp : MonoBehaviour
     {
         public Text colorText;
         public Text ageText;
         public Text usageText;
+
+        private Vector3 orgAnchorPos;
+        public Vector3 OrgAnchorPos
+        {
+            get
+            {
+                return orgAnchorPos;
+            }
+        }
+
+        private void Awake()
+        {
+            orgAnchorPos = GetComponent<RectTransform>().anchoredPosition;
+        }
 
         public void SetAttributes(ItemController item)
         {

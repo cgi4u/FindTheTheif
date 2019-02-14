@@ -1,6 +1,6 @@
 Android
 PlayerPath?
-C:/Users/CGI/Desktop/FindTheThief.apk
+C:/Users/MJT/Desktop/FindTheThief.apk
 SceneListBegin?
 Assets/Scenes/Launcher.unity
 Assets/Scenes/Lobby.unity
@@ -149,8 +149,9 @@ e7aa62e1f291228958626e122c23c8f0 Assembly-CSharp.dll:.ConnectAndJoinRandom
 4484d49e8891a99690bafe3ec7f3056a Assembly-CSharp.dll:com.MJT.FindTheThief.TestItemGenerator
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:Facebook.Unity.Example.AppLinks
 94017dcc9f00fe671ea7dc427b4da011 Unity.TextMeshPro.dll:TMPro.TMP_SpriteAsset
+71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:com.MJT.FindTheThief.ArrestPopUp
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:Facebook.Unity.Example.DialogShare
-eb1997d7104a1652756d742a804fc65d Assembly-CSharp.dll:com.MJT.FindTheThief.UIManager
+7b8a5f3b86e4fc9c180f25a64b657bcc Assembly-CSharp.dll:com.MJT.FindTheThief.UIManager
 7c3c528d577a18fd22064b5a610c44fe Assembly-CSharp.dll:com.MJT.FindTheThief.Route
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:Facebook.Unity.Example.GraphRequest
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:Facebook.Unity.Example.LogView
@@ -183,11 +184,11 @@ a4f3c734001032b108489445c9c333ed Assembly-CSharp.dll:com.MJT.FindTheThief.TouchE
 71bb6a6b6c8f052f948db64c7dd3ca4f Facebook.Unity.dll:Facebook.Unity.Editor.Dialogs.MockShareDialog
 17c6b61ef664ddb751d783bf4c747c64 Assembly-CSharp.dll:.OnClickDestroy
 4fd8bf02e3089425d3502e26c44ba31a Unity.TextMeshPro.dll:TMPro.TextContainer
+71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:com.MJT.FindTheThief.StealPopUp
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:Facebook.Unity.Example.MainMenu
 d4dacc6750ca362eb286d08d4a339689 Assembly-CSharp.dll:.PickupItem
 8578df108be9457cf3d3d5da362d8b06 Assembly-CSharp.dll:.ServerSettings
 cac0a3358ed65b1e2f3cb1ef6a7a29e6 Assembly-CSharp.dll:ExitGames.UtilityScripts.TextButtonTransition
-71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:.CharTouchButton
 e6ae40841db498b6e673877ac45ad208 UnityEngine.Networking.dll:UnityEngine.Networking.NetworkAnimator
 71bb6a6b6c8f052f948db64c7dd3ca4f UnityEngine.Networking.dll:UnityEngine.Networking.NetworkBehaviour
 1dcb82730d983b77cec736c6ef19f814 UnityEngine.Networking.dll:UnityEngine.Networking.NetworkDiscovery
@@ -202,7 +203,6 @@ e0ee4b3d4e27318934cc940a969d3d96 UnityEngine.Networking.dll:UnityEngine.Networki
 ad9173d3a69d99153f38ed4b62226129 UnityEngine.Networking.dll:UnityEngine.Networking.NetworkTransform
 9b895dcabbc1faf095c000c32d471fd0 UnityEngine.Networking.dll:UnityEngine.Networking.NetworkTransformChild
 5887ef1bc706b22b773d253fd443ceef UnityEngine.Networking.dll:UnityEngine.Networking.NetworkTransformVisualizer
-bf5b0bcdf0d604b753f717d5e7c3cadc Assembly-CSharp.dll:com.MJT.FindTheThief.StealButton
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:.PointedAtGameObjectInfo
 459b50185a167c1d210a783633c72823 Assembly-CSharp.dll:com.MJT.FindTheThief.PlayerController
 510fefd6a544e16a3ffefa557ddcba39 Unity.TextMeshPro.dll:TMPro.PackageResourceImporterWindow
@@ -223,7 +223,7 @@ e1e615eaf73e560828f53edc8952e615 Assembly-CSharp.dll:.PunTurnManager
 fb6a1ea36b4f6ef5948d283d93760765 UnityEngine.GoogleAudioSpatializer.dll:UnityEngine.Experimental.Audio.Google.GvrAudioRoom
 5b0391b7e3d9ea9db6c0a8fbd0ca23f6 UnityEngine.GoogleAudioSpatializer.dll:UnityEngine.Experimental.Audio.Google.GvrAudioSoundfieldExtension
 5b0391b7e3d9ea9db6c0a8fbd0ca23f6 UnityEngine.GoogleAudioSpatializer.dll:UnityEngine.Experimental.Audio.Google.GvrAudioSourceExtension
-f197c768b57e89572d8ad01d895e7246 Assembly-CSharp.dll:com.MJT.FindTheThief.ItemGenPoint
+dd4686db68706109ddbf2c3c1a9da236 Assembly-CSharp.dll:com.MJT.FindTheThief.ItemGenPoint
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:com.MJT.FindTheThief.MoveTestManager
 9db963832ef7feebd35f44e6ad6f646c Assembly-CSharp.dll:.OnJoinedInstantiate
 a4f0a4f62100f1a4fb5cbe0e00dde83f Unity.TextMeshPro.dll:TMPro.TextMeshProUGUI
@@ -234,6 +234,7 @@ d251bf88db6c95a6b1aa0b69298da9ef UnityEngine.SpatialTracking.dll:UnityEngine.Spa
 ce0ff9f22b12f02dfe70d8def53c5cc0 Assembly-CSharp.dll:com.MJT.FindTheThief.Lobby
 17f7c4e46293cf9193b0f5464cae45dd Assembly-CSharp.dll:com.MJT.FindTheThief.LocalRoomManager
 c5fd97cc10b89deaf7c60af66a6b0d5a Assembly-CSharp.dll:.SupportLogger
+71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:com.MJT.FindTheThief.ItemPutPoint
 8ab0ead9d804df80cba7ea8aed88b956 Assembly-CSharp.dll:com.MJT.FindTheThief.ItemController
 a7fdc7565fb5d0a515ff7026dc6e7a36 Assembly-CSharp.dll:.ShowStatusWhenConnecting
 b33aece3d81f0dcd0cee9ba2f0fb53fa Assembly-CSharp.dll:.PickupItemSimple
@@ -250,5 +251,4 @@ e1b8eaae6a90f88343f8be6d517488f6 Assembly-CSharp.dll:.PhotonView
 a01528258fe67fa484658e5b5d14c189 Facebook.Unity.Settings.dll:Facebook.Unity.Settings.FacebookSettings
 8649814970b42d345b89944b862453cc Unity.TextMeshPro.dll:TMPro.TMP_SubMesh
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:Facebook.Unity.Example.AppRequests
-7439198bb26dbc757f479b6ed635d048 Assembly-CSharp.dll:com.MJT.FindTheThief.MultiplayRoomManager
-71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:com.MJT.FindTheThief.StealPopUp
+04ab252d91a842daf76ebe25dbc95afd Assembly-CSharp.dll:com.MJT.FindTheThief.MultiplayRoomManager

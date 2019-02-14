@@ -184,8 +184,11 @@ namespace com.MJT.FindTheThief
             }
         }
 
+        public GameObject theifPrefab;
+        public GameObject detectivePrefab;
+
         List<PhotonPlayer> detectives = new List<PhotonPlayer>();
-        List<PhotonPlayer> theives = new List<PhotonPlayer>();
+        List<PhotonPlayer> thieves = new List<PhotonPlayer>();
         List<int> masterPriority = new List<int>();
         private void OnGameSceneLoaded(Scene scene, LoadSceneMode mode)
         {
@@ -197,7 +200,7 @@ namespace com.MJT.FindTheThief
 
             mapDataManager = MapDataManager.Instance;
 
-            //Initilaize team information and set UI informations
+            //Initilaize team information and instantiate the local player.
             myTeam = (Team)PhotonNetwork.room.CustomProperties[TeamKey(PhotonNetwork.player.ID)];
             UIManager.Instance.SetTeamLabel(myTeam);
             UIManager.Instance.RenewThievesNum(thievesNum);
@@ -211,17 +214,24 @@ namespace com.MJT.FindTheThief
                 }
                 else if (teamOfPlayer == Team.Thief)
                 {
-                    theives.Add(player);
+                    thieves.Add(player);
                 }
             }
 
+            Debug.Log("We are Instantiating LocalPlayer from " + SceneManager.GetActiveScene().name);
+            // we're in a room. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate
+            if (myTeam == Team.Detective)
+                PhotonNetwork.Instantiate(detectivePrefab.name, new Vector3(0f + PhotonNetwork.player.ID, -5f, 0f), Quaternion.identity, 0);
+            else if (myTeam == Team.Thief)
+                PhotonNetwork.Instantiate(theifPrefab.name, new Vector3(0f + PhotonNetwork.player.ID, -5f, 0f), Quaternion.identity, 0);
+
             // Set master client priority  
-            foreach (PhotonPlayer theifPlayer in theives)
+            foreach (PhotonPlayer theifPlayer in thieves)
                 masterPriority.Add(theifPlayer.ID);
             masterPriority.Sort();
 
             List<int> detectivePriority = new List<int>();
-            foreach (PhotonPlayer detectivePlayer in theives)
+            foreach (PhotonPlayer detectivePlayer in thieves)
                 detectivePriority.Add(detectivePlayer.ID);
             detectivePriority.Sort();
 
@@ -234,7 +244,17 @@ namespace com.MJT.FindTheThief
                 GameInitByMaster();
             }
         }
-        
+
+        [SerializeField]
+        private Transform sceneObjParent;
+        public Transform SceneObjParent
+        {
+            get
+            {
+                return sceneObjParent;
+            }
+        }
+
         /// <summary>
         /// Generate NPCs and Items for current game. Should be called by the master client.
         /// </summary>
@@ -256,7 +276,6 @@ namespace com.MJT.FindTheThief
 
         public int numberOfNPC;
         public GameObject NPCPrefab;
-        public Transform NPCParent;
         /// <summary>
         /// Generate NPCs at random nodes.
         /// </summary>
@@ -273,12 +292,10 @@ namespace com.MJT.FindTheThief
 
                 GameObject newNPC = PhotonNetwork.InstantiateSceneObject(NPCPrefab.name, new Vector3(0, 0, 0), Quaternion.identity, 0, null);
                 PhotonView.Get(newNPC).RPC("Init", PhotonTargets.All, randomPoint);
-                newNPC.transform.parent = NPCParent;
             }
         }
 
         public GameObject[] itemPrefabs;
-        public Transform itemParent;
         public int numOfTargetItem; 
         private List<ItemController> targetItems = new List<ItemController>();
         /// <summary>
@@ -406,7 +423,6 @@ namespace com.MJT.FindTheThief
                 GameObject newItem = PhotonNetwork.InstantiateSceneObject("Items\\" + newItemPrefab.name, 
                                         mapDataManager.ItemGenPoints[i].transform.position, Quaternion.identity, 0, null);
                 PhotonView.Get(newItem).RPC("Init", PhotonTargets.All, i);
-                newItem.transform.parent = itemParent;
             }
 
             foreach (PhotonPlayer player in PhotonNetwork.playerList)
@@ -425,7 +441,6 @@ namespace com.MJT.FindTheThief
         {
             for (int i = 0; i < targetItemPoints.Count; i++)
             {
-                print(targetItemPoints[i]);
                 Debug.Log(mapDataManager.ItemGenPoints[targetItemPoints[i]]);
             }
 
@@ -511,7 +526,7 @@ namespace com.MJT.FindTheThief
             // If the local player is the master and in detective team, change the master client to be a theif if it is possible.
             if (PhotonNetwork.isMasterClient && myTeam == Team.Detective)
             {
-                foreach (PhotonPlayer thiefPlayer in theives)
+                foreach (PhotonPlayer thiefPlayer in thieves)
                 {
                     if ((bool)thiefPlayer.CustomProperties[pauseKey] == false)
                     {
@@ -551,6 +566,27 @@ namespace com.MJT.FindTheThief
                 PhotonNetwork.SetMasterClient(PhotonNetwork.player);
         }
 
+        [PunRPC]
+        public void ArrestThief(int thiefID)
+        {
+            UIManager.Instance.RenewErrorLabel("Theif " + PhotonPlayer.Find(thiefID).NickName + " is arrested.");
+            thievesNum -= 1;
+            UIManager.Instance.RenewThievesNum(thievesNum);
+            CheckIfGameSet();
+
+            if (PhotonNetwork.player.ID == thiefID)
+            {
+                PhotonNetwork.Destroy(PlayerController.LocalPlayer.gameObject);
+                UIManager.Instance.SetObserverModeUI();
+            }
+        } 
+
+        [PunRPC]
+        public void ArrestFailed(int detectiveID)
+        {
+            UIManager.Instance.RenewErrorLabel("Detective " + PhotonPlayer.Find(detectiveID).NickName + " failed to arrest.");
+        }
+
         //issue point
         // 현재 게임 도중에 나가도 실행되는 버그가 있음
         // 정확히는 처음에 마스터 클라이언트를 바꾸었을 경우 InitRoomAndLoadScene()를 실행하는 과정에서 ifGameInited가 싱크가 안됨
@@ -566,13 +602,9 @@ namespace com.MJT.FindTheThief
             else if (PhotonNetwork.room.CustomProperties[gameInitKey] == null)
             {
                 //Destroy NPCs/Items generated by previous mastet client.
-                int GenNPCNum = NPCParent.childCount;
-                for (int i = GenNPCNum - 1; i >= 0; i--)
-                    PhotonNetwork.Destroy(NPCParent.GetChild(i).gameObject);
-
-                int GenItemNum = itemParent.childCount;
-                for (int i = GenItemNum - 1; i >= 0; i--)
-                    PhotonNetwork.Destroy(itemParent.GetChild(i).gameObject);
+                int sceneObjNum = sceneObjParent.childCount;
+                for (int i = sceneObjNum - 1; i >= 0; i--)
+                    PhotonNetwork.Destroy(sceneObjParent.GetChild(i).gameObject);
 
                 GameInitByMaster();
             }
@@ -581,9 +613,9 @@ namespace com.MJT.FindTheThief
 
         public override void OnPhotonPlayerDisconnected(PhotonPlayer otherPlayer)
         {
-            if (theives.Contains(otherPlayer))
+            if (thieves.Contains(otherPlayer))
             {
-                theives.Remove(otherPlayer);
+                thieves.Remove(otherPlayer);
                 thievesNum -= 1;
                 UIManager.Instance.RenewThievesNum(thievesNum);
             }
@@ -591,10 +623,10 @@ namespace com.MJT.FindTheThief
                 detectives.Remove(otherPlayer);
             masterPriority.Remove(otherPlayer.ID);
             
-            CheckIfGameEnds();
+            CheckIfGameSet();
         }
 
-        public void CheckIfGameEnds()
+        public void CheckIfGameSet()
         {
             if (thievesNum == 0)
                 Debug.Log("Game Set. Detectives win.");

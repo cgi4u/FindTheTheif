@@ -15,7 +15,8 @@ namespace com.MJT.FindTheThief
         private Vector2 raycastBox; // Collider of a characters
         private void Awake()
         {
-            raycastBox = GetComponent<BoxCollider2D>().size;   // To ignore collisions on edges
+            raycastBox = GetComponent<BoxCollider2D>().size;   // To ignore collisions on edge
+            transform.parent = MultiplayRoomManager.Instance.SceneObjParent;
         }
 
         private bool ifStarted = false;     //ManualStart를 통해 초기화되었는지에 대한 변수

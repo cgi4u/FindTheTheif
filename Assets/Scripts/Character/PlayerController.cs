@@ -7,6 +7,7 @@ using UnityEngine.EventSystems;
 
 namespace com.MJT.FindTheThief
 {
+    [RequireComponent(typeof(PhotonTransformView))]
     public class PlayerController : Photon.PunBehaviour, IPunObservable
     {
         private static PlayerController localPlayer; // Singleton of the local player
@@ -22,9 +23,6 @@ namespace com.MJT.FindTheThief
         private int[] buttons = new int[4];         // The state of each button(Pushed or not pushed, pushed order)
                                                     // Up = 0, Down = 1, Left = 2, Right = 3
         private int btnCount = 0;                   // The number of buttons pushed now.
-
-        
-        public Team TeamOfPlayer { get; set; }
 
         private Vector2 raycastBox; // Collider of a characters
 
@@ -93,11 +91,6 @@ namespace com.MJT.FindTheThief
             transform.position = startPoint;
 
             isMoving = false;
-        }
-
-        public void SetTeam(Team team)
-        {
-            TeamOfPlayer = team;
         }
 
         #region Player Moving
@@ -227,7 +220,6 @@ namespace com.MJT.FindTheThief
         }
 
         #endregion
-
 
         #region Photon Synchronization
 

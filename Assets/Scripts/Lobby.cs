@@ -144,6 +144,7 @@ namespace com.MJT.FindTheThief
             // Load scene when the local player is the master client
             if (PhotonNetwork.room.PlayerCount == playersPerRoom && PhotonNetwork.isMasterClient)
             {
+                PhotonNetwork.room.IsOpen = false;
                 PhotonNetwork.InstantiateSceneObject(multiplayRoomManager.name, new Vector3(0f, 0f, 0f), Quaternion.identity, 0, null);
             }
         }

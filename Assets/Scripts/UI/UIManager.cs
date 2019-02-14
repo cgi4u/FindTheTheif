@@ -18,62 +18,97 @@ namespace com.MJT.FindTheThief
             }
         }
 
+        public int refWidth;
+        private float uiScale;
+
         /// <summary>
-        /// A panel that has movement buttons
+        /// That panel that contains move buttons.
         /// </summary>
         public RectTransform moveButtonPanel;
+        private Rect moveButtonPanelRect;
 
         private void Awake()
         {
             if (instance == null)
                 instance = this;
 
-            charPopUp.SetActive(false);
-            itemPopUp.gameObject.SetActive(false);
-            stealPopUp.gameObject.SetActive(false);
-            targetItemList.gameObject.SetActive(false);
-        }
+            int curWidth = Screen.width;
+            uiScale = (float)curWidth / refWidth;
 
-        private void Start()
-        {
-            
+            moveButtonPanelRect = ConvertToScreenRect(moveButtonPanel);
+
+            arrestPopUp.gameObject.SetActive(false);
+            arrestPopUpPanel = arrestPopUp.GetComponent<RectTransform>();
+
+            itemPopUp.gameObject.SetActive(false);
+            itemPopUpPanel = itemPopUp.GetComponent<RectTransform>();
+
+            stealPopUp.gameObject.SetActive(false);
+
+            targetItemList.gameObject.SetActive(false);
+
+            //Debug.Log(moveButtonPanelRect);
+            //Debug.Log(ConvertToScreenRect(arrestPopUpPanel));
         }
 
         private void Update()
         {
-            if (Input.GetMouseButtonDown(0)
-                && (Input.mousePosition.x < moveButtonPanel.rect.xMin || Input.mousePosition.x > moveButtonPanel.rect.xMax)
-                && (Input.mousePosition.y < moveButtonPanel.rect.yMin || Input.mousePosition.y > moveButtonPanel.rect.yMax))
+            if (Input.GetMouseButtonDown(0))
             {
-                if (charPopUp.GetActive())
+                Debug.Log(Input.mousePosition);
+                //if (moveButtonPanelRect.Contains(Input.mousePosition))
+                    //Debug.Log("Contained in the mouse panel.");
+
+                if (arrestPopUp.gameObject.GetActive() && IsTouchPointValid(Input.mousePosition, ConvertToScreenRect(arrestPopUpPanel)))
                 {
-                    charPopUp.SetActive(false);
+                    arrestPopUp.gameObject.SetActive(false);
+                    arrestPopUpPanel.anchoredPosition = arrestPopUp.OrgAnchorPos;
                 }
-                if (itemPopUp.gameObject.GetActive())
+
+                if (itemPopUp.gameObject.GetActive() && IsTouchPointValid(Input.mousePosition, Rect.zero))
                 {
                     itemPopUp.gameObject.SetActive(false);
+                    itemPopUpPanel.anchoredPosition = itemPopUp.OrgAnchorPos;
                 }
             }
         }
 
-        #region Pop-up(for NPC/Thieves and for items)
+        #region Pop-up(for NPC/Thieves and for items, Vector3 point)
 
-        public GameObject charPopUp;
-        public void SetCharPopUp(int playerID, Vector3 objPos)
+        public ArrestPopUp arrestPopUp;
+        private RectTransform arrestPopUpPanel;
+        public void SetArrestPopUp(GameObject unknown, Vector3 point)
         {
-            Vector3 screenPoint = Camera.main.WorldToScreenPoint(objPos);
-            charPopUp.transform.position = screenPoint;
-            charPopUp.SetActive(true);
+            if (gameObject == null || !IsTouchPointValid(point, ConvertToScreenRect(arrestPopUpPanel)))
+                return;
+
+            PlayerController maybeTheif = unknown.GetComponent<PlayerController>();
+
+            bool isThief = false;
+            int thiefID = -1;
+            if (maybeTheif != null)
+            {
+                isThief = true;
+                thiefID = maybeTheif.GetComponent<PhotonView>().ownerId;
+            }
+            arrestPopUp.Set(isThief, thiefID);
+
+            arrestPopUp.transform.position = point;
+            arrestPopUp.gameObject.SetActive(true);
+
+            //Debug.Log("Arrest Pop-up Rect: " + ConvertToScreenRect(arrestPopUpPanel));
         }
 
         public ItemPopUp itemPopUp;
-        public void SetItemPopUp(ItemController item)
+        private RectTransform itemPopUpPanel;
+        public void SetItemPopUp(ItemController item, Vector3 point)
         {
+            if (!IsTouchPointValid(point, Rect.zero))
+                return;
+
             itemPopUp.SetAttributes(item);
 
-            Vector3 screenPoint = Camera.main.WorldToScreenPoint(item.transform.position);
-            itemPopUp.transform.position = screenPoint;
-            
+            itemPopUp.transform.position = point;
             itemPopUp.gameObject.SetActive(true);
         }
 
@@ -84,7 +119,6 @@ namespace com.MJT.FindTheThief
 
             Vector3 screenPoint = Camera.main.WorldToScreenPoint(curGenPoint.transform.position);
             stealPopUp.transform.position = screenPoint;
-
             stealPopUp.gameObject.SetActive(true);
         }
 
@@ -105,16 +139,16 @@ namespace com.MJT.FindTheThief
             Vector3 oldWorldPoint;
 
             // Move character Pop-up.
-            if (charPopUp.GetActive())
+            if (arrestPopUp.gameObject.GetActive())
             {
-                oldWorldPoint = Camera.main.ScreenToWorldPoint(charPopUp.transform.position);
+                oldWorldPoint = Camera.main.ScreenToWorldPoint(arrestPopUp.transform.position);
                 oldWorldPoint -= move;
-                charPopUp.transform.position = Camera.main.WorldToScreenPoint(oldWorldPoint);
+                arrestPopUp.transform.position = Camera.main.WorldToScreenPoint(oldWorldPoint);
 
 
-                if (!screentRect.Contains(charPopUp.transform.position))
+                if (!screentRect.Contains(arrestPopUp.transform.position))
                 {
-                    charPopUp.SetActive(false);
+                    arrestPopUp.gameObject.SetActive(false);
                 }
             }
 
@@ -133,6 +167,36 @@ namespace com.MJT.FindTheThief
                 oldWorldPoint -= move;
                 stealPopUp.transform.position = Camera.main.WorldToScreenPoint(oldWorldPoint);
             }
+        }
+
+        /// <summary>
+        /// Used to check the touched point is valid for activation/deactivation of a pop-up.
+        /// If the touched point is in the area of other UI windows(ex) Item information) or pop-up itself, returns false(not valid).
+        /// </summary>
+        /// <param name="touchPoint">The point touched by the user.</param>
+        /// <param name="popUpRect">The screen area of the caller pop-up itself.</param>
+        /// <returns></returns>
+        private bool IsTouchPointValid(Vector3 touchPoint, Rect popUpRect)
+        {
+            Debug.Log("Touched point: " + touchPoint);
+
+            // Check the touched point is in the area of the pop-up itself.
+            Debug.Log("Pop-up Rect: " + popUpRect);
+            if (popUpRect.Contains(touchPoint))
+            {
+                Debug.Log("Touched point is in the pop-up area.");
+                return false;
+            }
+
+            // Check the touched point is in the area of the other UI windows.
+            Debug.Log("Move Button Panel Rect: " + moveButtonPanelRect);
+            if (moveButtonPanelRect.Contains(touchPoint))
+            {
+                Debug.Log("Touched point is in the move button area.");
+                return false;
+            }
+
+            return true;
         }
 
         #endregion
@@ -255,6 +319,22 @@ namespace com.MJT.FindTheThief
         public void RenewTimeLabel(int time)
         {
             timeLabel.text = "남은 시간: " + time;
+        }
+
+        //issue 고해상도에 대응하려면 anchor 값들을 사용해서 rectTransform의 실제 position값을 구해줘야함.
+        private Rect ConvertToScreenRect(RectTransform rectTransform)
+        {
+            Vector2 size = rectTransform.rect.size;
+            return new Rect((Vector2)rectTransform.position - (size * 0.5f), size);
+        }
+
+        /// <summary>
+        /// Set UI for the arrested theif user.
+        /// </summary>
+        public void SetObserverModeUI()
+        {
+            stealPopUp.gameObject.SetActive(false);
+            moveButtonPanel.gameObject.SetActive(false);
         }
 
         /// <summary>

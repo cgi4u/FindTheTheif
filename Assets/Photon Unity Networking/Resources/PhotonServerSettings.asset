@@ -58,4 +58,6 @@ MonoBehaviour:
   - TakeOverMaster
   - ChangeCurRoute
   - LetGameStart
+  - ArrestThief
+  - ArrestFailed
   DisableAutoOpenWizard: 1

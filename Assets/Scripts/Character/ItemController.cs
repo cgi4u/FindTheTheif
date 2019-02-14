@@ -63,14 +63,14 @@ namespace com.MJT.FindTheThief
 
         #endregion
 
+        private void Awake()
+        {
+            transform.parent = MultiplayRoomManager.Instance.SceneObjParent;
+        }
+
         private void Start()
         {
             GetComponent<SpriteRenderer>().sortingOrder = -(int)(transform.position.y * 100f);
-        }
-
-        private void OnMouseUp()
-        {
-            UIManager.Instance.SetItemPopUp(this);
         }
 
         [PunRPC]
@@ -84,6 +84,11 @@ namespace com.MJT.FindTheThief
         {
             Debug.Log(gameObject.name + "is visible.");
             UIManager.Instance.AddCheckedItem(this);
+        }
+
+        private void OnMouseUp()
+        {
+            UIManager.Instance.SetItemPopUp(this, Input.mousePosition);
         }
     }
 }

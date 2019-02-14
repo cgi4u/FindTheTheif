@@ -29,8 +29,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 7749476486381312228}
-  - {fileID: 4606024246049365801}
+  - {fileID: 9062036302235804974}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -47,10 +46,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   roomLevelName: Demo Room
-  numberOfNPC: 15
+  theifPrefab: {fileID: 4203696217380748978, guid: 525f72b978b9e7941acdcbf8b1145f7b,
+    type: 3}
+  detectivePrefab: {fileID: 1536311355630938, guid: 4a2bb6044e24a974eb687461314d3ef0,
+    type: 3}
+  sceneObjParent: {fileID: 9062036302235804974}
+  numberOfNPC: 5
   NPCPrefab: {fileID: 1900755372417909919, guid: 135b5b3a8b693284ab93667c9b37cdc8,
     type: 3}
-  NPCParent: {fileID: 4606024246049365801}
   itemPrefabs:
   - {fileID: 6619406176001590459, guid: ee79df95f46524b4bbafdaa667c84828, type: 3}
   - {fileID: 7114427026344995535, guid: 4160d91361942b74982963fc63af1e05, type: 3}
@@ -79,7 +82,6 @@ MonoBehaviour:
   - {fileID: 6791036397188444402, guid: d495022b1f82d1c4ba92d895c8b68edd, type: 3}
   - {fileID: 3971122904755379744, guid: fbd4e3a680cc46747a828a21f2586362, type: 3}
   - {fileID: 418247004385567571, guid: a10d59b3ede3d3e44aa97c70ad0c5d15, type: 3}
-  itemParent: {fileID: 7749476486381312228}
   numOfTargetItem: 3
   leftTimeStamp: 60000
   inReady: 0
@@ -111,7 +113,7 @@ MonoBehaviour:
   instantiationId: -1
   currentMasterID: -1
   isRuntimeInstantiated: 0
---- !u!1 &1370759349632718388
+--- !u!1 &2327307628297896997
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -119,55 +121,25 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 7749476486381312228}
+  - component: {fileID: 9062036302235804974}
   m_Layer: 8
-  m_Name: Items
+  m_Name: Scene Objects
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &7749476486381312228
+--- !u!4 &9062036302235804974
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1370759349632718388}
+  m_GameObject: {fileID: 2327307628297896997}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4834313836575612}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &8232648872893052668
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4606024246049365801}
-  m_Layer: 8
-  m_Name: NPCs
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &4606024246049365801
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8232648872893052668}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 4834313836575612}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

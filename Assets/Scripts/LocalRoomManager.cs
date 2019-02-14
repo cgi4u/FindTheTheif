@@ -13,16 +13,10 @@ namespace com.MJT.FindTheThief
     {
         [Tooltip("The prefab to use for representing the player")]
         public GameObject playerPrefab;
-        /*
-        [Tooltip("The singleton of the game controller")]
-        public static GameController gameController;
-        */
         public Text teamLabel;
 
         [Tooltip("The prefab of the room controller")]
         public GameObject multiplayRoomManagerPrefab;
-
-        Team MyTeam;
 
         void Start()
         {
@@ -59,11 +53,6 @@ namespace com.MJT.FindTheThief
                     case Team.Detective: teamLabel.text = "탐정"; break;
                     default: teamLabel.text = "오류"; break;
                 }*/
-
-                Debug.Log("We are Instantiating LocalPlayer from " + SceneManager.GetActiveScene().name);
-                // we're in a room. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate
-                GameObject localPlayer = PhotonNetwork.Instantiate(playerPrefab.name, new Vector3(0f + PhotonNetwork.player.ID, -5f, 0f), Quaternion.identity, 0);
-                localPlayer.GetComponent<PlayerController>().SetTeam(MyTeam);
 
             }
         }

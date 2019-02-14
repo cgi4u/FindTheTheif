@@ -4,10 +4,8 @@ using UnityEngine;
 
 namespace com.MJT.FindTheThief
 {
-    public class ItemGenPoint : Photon.PunBehaviour
+    public class ItemGenPoint : MonoBehaviour
     {
-        public GameObject itemStealPopup;
-
         private ExhibitRoom room;
         public ExhibitRoom Room
         {
@@ -46,12 +44,6 @@ namespace com.MJT.FindTheThief
             isItemExist = true;
         }
 
-        public void StealItem()
-        {
-            Debug.Log("Steal Item");
-            isItemExist = false;
-        }
-
         public void ItemReturned()
         {
             Debug.Log("Item Returned");
@@ -59,7 +51,7 @@ namespace com.MJT.FindTheThief
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            if (!isItemExist)
+            if (!isItemExist || MultiplayRoomManager.Instance.MyTeam != Team.Thief)
                 return;
 
             //Only works when local player walks in front of this point
@@ -72,7 +64,7 @@ namespace com.MJT.FindTheThief
 
         private void OnTriggerExit2D(Collider2D collision)
         {
-            if (!isItemExist)
+            if (!isItemExist || MultiplayRoomManager.Instance.MyTeam != Team.Thief)
                 return;
 
             //Only works when local player walks out front of this point

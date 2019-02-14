@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace com.MJT.FindTheThief
 {
+    [RequireComponent(typeof(RectTransform))]
     public class StealPopUp : MonoBehaviour
     {
         public ItemGenPoint CurGenPoint { get; set; }

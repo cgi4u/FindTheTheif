@@ -8,7 +8,10 @@ namespace com.MJT.FindTheThief
     {
         protected void OnMouseUp()
         {
-            UIManager.Instance.SetCharPopUp(0, transform.position);
+            if (MultiplayRoomManager.Instance.MyTeam != Team.Detective)
+                return;
+            
+            UIManager.Instance.SetArrestPopUp(gameObject, Input.mousePosition);
         }
     }
 }
