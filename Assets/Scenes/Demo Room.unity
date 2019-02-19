@@ -9679,7 +9679,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 111806128}
-        m_MethodName: Steal
+        m_MethodName: OnStealButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -11823,7 +11823,7 @@ PrefabInstance:
     - target: {fileID: 1483871676697404370, guid: 740bb71e75d695745981ea374bf83e9b,
         type: 3}
       propertyPath: m_Name
-      value: Checked item List
+      value: Discovered item List
       objectReference: {fileID: 0}
     - target: {fileID: 1483871676697404368, guid: 740bb71e75d695745981ea374bf83e9b,
         type: 3}
@@ -15210,7 +15210,7 @@ MonoBehaviour:
   arrestPopUp: {fileID: 482486934}
   itemPopUp: {fileID: 1680750664}
   stealPopUp: {fileID: 111806128}
-  checkedItemListText: {fileID: 625540816}
+  discoverdItemList: {fileID: 625540816}
   targetItemList: {fileID: 390587406}
   TeamLabel: {fileID: 1326772355}
   thievesNumLabel: {fileID: 1711496417}

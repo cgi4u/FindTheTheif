@@ -81,6 +81,7 @@ namespace com.MJT.FindTheThief
             List<Route> NPCGenRoutes = new List<Route>();
             nPCGenPoints = new List<RouteNode>();
 
+            int genPointCnt = 0;
             foreach (ExhibitRoom room in rooms)
             {
                 //Find all NPC-generatable routes
@@ -96,7 +97,11 @@ namespace com.MJT.FindTheThief
                     NPCGenRoutes.Add(room.FromStairRoutes.RightUpRoute);
 
                 //Find all Item Generation Points
-                itemGenPoints.AddRange(room.ItemGenPoints);
+                foreach (ItemGenPoint itemGenPoint in room.ItemGenPoints)
+                {
+                    itemGenPoint.Index = genPointCnt++;
+                    itemGenPoints.Add(itemGenPoint);
+                }
             }
 
             List<Vector3> assignedLoc = new List<Vector3>();

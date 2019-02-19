@@ -9,9 +9,13 @@ namespace com.MJT.FindTheThief
     {
         public ItemGenPoint CurGenPoint { get; set; }
             
-        public void Steal()
+        public void OnStealButton()
         {
-            Debug.Log(CurGenPoint.Item.name + " 훔치자!");
+            ThiefController.LocalThief.GetComponent<PhotonView>().
+                RPC("StealItemInPoint", PhotonTargets.AllViaServer, CurGenPoint.Index);
+            CurGenPoint.Item.GetComponent<PhotonView>().RPC("Stolen", PhotonTargets.AllViaServer);
+
+            gameObject.SetActive(false);
         }
     }
 }

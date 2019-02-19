@@ -237,6 +237,8 @@ namespace com.MJT.FindTheThief
 
             masterPriority.AddRange(detectivePriority);
 
+            // Other initialization for this game.
+            ItemController.ResetItemLists();
 
             // Game initiation by the master client.
             if (PhotonNetwork.isMasterClient)
@@ -247,6 +249,9 @@ namespace com.MJT.FindTheThief
 
         [SerializeField]
         private Transform sceneObjParent;
+        /// <summary>
+        /// The parent of all scene objects(NPCs, Items) in Unity object hierarchy.
+        /// </summary>
         public Transform SceneObjParent
         {
             get
@@ -569,14 +574,13 @@ namespace com.MJT.FindTheThief
         [PunRPC]
         public void ArrestThief(int thiefID)
         {
-            UIManager.Instance.RenewErrorLabel("Theif " + PhotonPlayer.Find(thiefID).NickName + " is arrested.");
+            UIManager.Instance.RenewErrorLabel("Theif " + thiefID + " is arrested.");
             thievesNum -= 1;
             UIManager.Instance.RenewThievesNum(thievesNum);
             CheckIfGameSet();
 
             if (PhotonNetwork.player.ID == thiefID)
             {
-                PhotonNetwork.Destroy(PlayerController.LocalPlayer.gameObject);
                 UIManager.Instance.SetObserverModeUI();
             }
         } 

@@ -7,8 +7,7 @@ namespace com.MJT.FindTheThief
     [RequireComponent(typeof(RectTransform))]
     public class ArrestPopUp : MonoBehaviour
     {
-        private bool isThief;
-        private int thiefID;
+        private ThiefController selectedThief;
 
         private Vector3 orgAnchorPos;
         public Vector3 OrgAnchorPos
@@ -24,18 +23,19 @@ namespace com.MJT.FindTheThief
             orgAnchorPos = GetComponent<RectTransform>().anchoredPosition;
         }
 
-        public void Set(bool _isTheif, int _thiefID)
+        public void Set(ThiefController _selectedThief)
         {
-            isThief = _isTheif;
-            if (isThief)
-                thiefID = _thiefID;
+            selectedThief = _selectedThief;
         }
         
         public void TryArrest()
         {
             Debug.Log("Try to arrest.");
-            if (isThief)
-                MultiplayRoomManager.Instance.photonView.RPC("ArrestThief", PhotonTargets.All, thiefID);
+            if (selectedThief != null)
+            {
+                MultiplayRoomManager.Instance.photonView.RPC("ArrestThief", PhotonTargets.AllViaServer, selectedThief.GetComponent<PhotonView>().ownerId);
+                selectedThief.GetComponent<PhotonView>().RequestOwnership();
+            }
             else
                 MultiplayRoomManager.Instance.photonView.RPC("ArrestFailed", PhotonTargets.All, PhotonNetwork.player.ID);
 

@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 114720633930178312}
   - component: {fileID: 1483860373}
   m_Layer: 8
-  m_Name: Demo Player
+  m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -158,7 +158,7 @@ MonoBehaviour:
   synchronization: 3
   onSerializeTransformOption: 3
   onSerializeRigidBodyOption: 2
-  ownershipTransfer: 0
+  ownershipTransfer: 1
   ObservedComponents:
   - {fileID: 114720633930178312}
   - {fileID: 114045429315781568}

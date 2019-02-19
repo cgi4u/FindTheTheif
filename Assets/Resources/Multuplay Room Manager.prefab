@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   roomLevelName: Demo Room
-  theifPrefab: {fileID: 4203696217380748978, guid: 525f72b978b9e7941acdcbf8b1145f7b,
+  theifPrefab: {fileID: 4202969183899360233, guid: 525f72b978b9e7941acdcbf8b1145f7b,
     type: 3}
   detectivePrefab: {fileID: 1536311355630938, guid: 4a2bb6044e24a974eb687461314d3ef0,
     type: 3}

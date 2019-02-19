@@ -27,6 +27,8 @@ namespace com.MJT.FindTheThief
         public RectTransform moveButtonPanel;
         private Rect moveButtonPanelRect;
 
+        private Transform cameraTransform;
+
         private void Awake()
         {
             if (instance == null)
@@ -51,24 +53,50 @@ namespace com.MJT.FindTheThief
             //Debug.Log(ConvertToScreenRect(arrestPopUpPanel));
         }
 
+        private bool observerMode = false;
+        private bool touching = false;
+        private Vector3 prevTouchPoint;
         private void Update()
         {
-            if (Input.GetMouseButtonDown(0))
+            if (!observerMode)
             {
-                Debug.Log(Input.mousePosition);
-                //if (moveButtonPanelRect.Contains(Input.mousePosition))
+                if (Input.GetMouseButtonDown(0))
+                {
+                    //Debug.Log(Input.mousePosition);
+                    //if (moveButtonPanelRect.Contains(Input.mousePosition))
                     //Debug.Log("Contained in the mouse panel.");
 
-                if (arrestPopUp.gameObject.GetActive() && IsTouchPointValid(Input.mousePosition, ConvertToScreenRect(arrestPopUpPanel)))
+                    if (arrestPopUp.gameObject.GetActive() && IsTouchPointValid(Input.mousePosition, ConvertToScreenRect(arrestPopUpPanel)))
+                    {
+                        arrestPopUp.gameObject.SetActive(false);
+                        arrestPopUpPanel.anchoredPosition = arrestPopUp.OrgAnchorPos;
+                    }
+
+                    if (itemPopUp.gameObject.GetActive() && IsTouchPointValid(Input.mousePosition, Rect.zero))
+                    {
+                        itemPopUp.gameObject.SetActive(false);
+                        itemPopUpPanel.anchoredPosition = itemPopUp.OrgAnchorPos;
+                    }
+                }
+            }
+            else
+            {
+                if (Input.GetMouseButtonDown(0))
                 {
-                    arrestPopUp.gameObject.SetActive(false);
-                    arrestPopUpPanel.anchoredPosition = arrestPopUp.OrgAnchorPos;
+                    Debug.Log("Touch Start");
+                    touching = true;
+                    prevTouchPoint = Input.mousePosition;
+                }
+                else if (Input.GetMouseButtonUp(0))
+                {
+                    Debug.Log("Touch End");
+                    touching = false;
                 }
 
-                if (itemPopUp.gameObject.GetActive() && IsTouchPointValid(Input.mousePosition, Rect.zero))
+                if (touching == true)
                 {
-                    itemPopUp.gameObject.SetActive(false);
-                    itemPopUpPanel.anchoredPosition = itemPopUp.OrgAnchorPos;
+                    cameraTransform.position += 0.1f * (prevTouchPoint - Input.mousePosition);
+                    prevTouchPoint = Input.mousePosition;
                 }
             }
         }
@@ -77,21 +105,13 @@ namespace com.MJT.FindTheThief
 
         public ArrestPopUp arrestPopUp;
         private RectTransform arrestPopUpPanel;
-        public void SetArrestPopUp(GameObject unknown, Vector3 point)
+        public void SetArrestPopUp(GameObject selectedChar, Vector3 point)
         {
             if (gameObject == null || !IsTouchPointValid(point, ConvertToScreenRect(arrestPopUpPanel)))
                 return;
 
-            PlayerController maybeTheif = unknown.GetComponent<PlayerController>();
-
-            bool isThief = false;
-            int thiefID = -1;
-            if (maybeTheif != null)
-            {
-                isThief = true;
-                thiefID = maybeTheif.GetComponent<PhotonView>().ownerId;
-            }
-            arrestPopUp.Set(isThief, thiefID);
+            ThiefController maybeTheif = selectedChar.GetComponent<ThiefController>();
+            arrestPopUp.Set(maybeTheif);
 
             arrestPopUp.transform.position = point;
             arrestPopUp.gameObject.SetActive(true);
@@ -203,17 +223,17 @@ namespace com.MJT.FindTheThief
 
         #region Item Information Panel
 
-        public Text checkedItemListText;
-        List<ItemController> checkedItemList = new List<ItemController>();
-        public void AddCheckedItem(ItemController newItem)
+        public Text discoverdItemList;
+        public void RenewCheckedList(List<ItemController> discoveredItems)
         {
-            if (!checkedItemList.Contains(newItem))
-                checkedItemList.Add(newItem);
-
-            checkedItemListText.text =  "확인한 아이템: ";
-            foreach (ItemController item in checkedItemList)
+            discoverdItemList.text =  "확인한 아이템: ";
+            foreach (ItemController item in discoveredItems)
             {
-                checkedItemListText.text += "\n" + ItemInfoToString(item);
+                discoverdItemList.text += "\n" + ItemInfoToString(item);
+                if (item.IsStolenChecked)
+                {
+                    discoverdItemList.text += " 훔";
+                }
             }
         }
 
@@ -333,8 +353,13 @@ namespace com.MJT.FindTheThief
         /// </summary>
         public void SetObserverModeUI()
         {
-            stealPopUp.gameObject.SetActive(false);
+            Debug.Log("Start Observer Mode.");
+
+            targetItemList.gameObject.SetActive(false);
             moveButtonPanel.gameObject.SetActive(false);
+
+            observerMode = true;
+            cameraTransform = Camera.main.transform;
         }
 
         /// <summary>

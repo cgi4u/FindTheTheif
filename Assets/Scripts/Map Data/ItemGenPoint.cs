@@ -16,8 +16,6 @@ namespace com.MJT.FindTheThief
         }
 
         [SerializeField]
-        private bool isItemExist;
-        [SerializeField]
         private ItemController item;
         public ItemController Item
         {
@@ -26,6 +24,11 @@ namespace com.MJT.FindTheThief
                 return item;
             }
         }
+
+        /// <summary>
+        /// Index of this point in the item generation point list of MapDataManager.
+        /// </summary>
+        public int Index { get; set; }
 
         private void Awake()
         {
@@ -41,7 +44,6 @@ namespace com.MJT.FindTheThief
         public void SetItem(ItemController _item)
         {
             item = _item;
-            isItemExist = true;
         }
 
         public void ItemReturned()
@@ -51,12 +53,12 @@ namespace com.MJT.FindTheThief
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            if (!isItemExist || MultiplayRoomManager.Instance.MyTeam != Team.Thief)
+            if (item.IsStolen || MultiplayRoomManager.Instance.MyTeam != Team.Thief)
                 return;
 
-            //Only works when local player walks in front of this point
-            PlayerController player = collision.gameObject.GetComponent<PlayerController>();
-            if (player != null && player == PlayerController.LocalPlayer)
+            //Only works when local thief player walks in front of this point
+            ThiefController theifPlayer = collision.gameObject.GetComponent<ThiefController>();
+            if (theifPlayer != null && theifPlayer == ThiefController.LocalThief && !theifPlayer.HasItem)
             {
                 UIManager.Instance.SetStealPopUp(this);
             }
@@ -64,14 +66,14 @@ namespace com.MJT.FindTheThief
 
         private void OnTriggerExit2D(Collider2D collision)
         {
-            if (!isItemExist || MultiplayRoomManager.Instance.MyTeam != Team.Thief)
+            if (item.IsStolen || MultiplayRoomManager.Instance.MyTeam != Team.Thief)
                 return;
 
             //Only works when local player walks out front of this point
-            PlayerController player = collision.gameObject.GetComponent<PlayerController>();
-            if (player != null && player == PlayerController.LocalPlayer)
+            ThiefController theifPlayer = collision.gameObject.GetComponent<ThiefController>();
+            if (theifPlayer != null && theifPlayer == ThiefController.LocalThief && !theifPlayer.HasItem)
             {
-                UIManager.Instance.RemoveStealPopUp();
+                UIManager.Instance.SetStealPopUp(this);
             }
         }
     }

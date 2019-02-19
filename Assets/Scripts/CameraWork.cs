@@ -6,26 +6,13 @@ namespace com.MJT.FindTheThief
 {
     public class CameraWork : MonoBehaviour
     {
-        #region Public Properties
-
         public Vector3 centerOffset = Vector3.zero; //Offset of the main camera's location from a player
 
         public bool followOnStart = false;          //In test, set true. In published game, set false
         public float cameraHeight;                  //The height of the camera. 
 
-        #endregion
-
-        #region Private Properties
-
         Transform cameraTransform;  //Transform of the main camera.
         bool isFollowing;           //Maintain a flag internally to reconnect if the target is lost or the camera is switched
-
-
-        #endregion
-
-
-
-        #region Unity Callbacks
 
         // Use this for initialization
         void Start()
@@ -55,11 +42,6 @@ namespace com.MJT.FindTheThief
             }
         }
 
-        #endregion
-
-
-        #region Public Methods
-
         public void OnStartFollowing()
         {
             cameraTransform = Camera.main.transform;
@@ -67,11 +49,6 @@ namespace com.MJT.FindTheThief
             // we don't smooth anything, we go straight to the right camera shot
             Follow();
         }
-
-        #endregion
-
-
-        #region Private Methods
 
         private void Follow()
         {
@@ -82,7 +59,5 @@ namespace com.MJT.FindTheThief
 
             UIManager.Instance.MovePopUpsOnCameraMoving(cameraTransform.position - oldCameraPos);
         }
-
-        #endregion
     }
 }
