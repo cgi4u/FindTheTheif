@@ -21,12 +21,12 @@ namespace com.MJT.FindTheThief
         }
 
         [SerializeField]
-        private bool ifItemPoint;
-        public bool IfItemPoint
+        private bool isItemPoint;
+        public bool IsItemPoint
         {
             get
             {
-                return ifItemPoint;
+                return isItemPoint;
             }
         }
         [SerializeField]

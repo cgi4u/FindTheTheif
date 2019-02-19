@@ -201,7 +201,7 @@ namespace com.MJT.FindTheThief
             blockedTime = Random.Range(0f, 0.5f);   // Set delay at each node for thief user control easily
 
             curNodeNum += 1;
-            if (curRoute.NodeSet[curNodeNum].IfItemPoint)   // Set item watching time.
+            if (curRoute.NodeSet[curNodeNum].IsItemPoint)   // Set item watching time.
                 blockedTime = Random.Range(1f, 3f);
 
             if (curNodeNum == curRoute.NodeSet.Length - 1)       // Route ends, get next route.
