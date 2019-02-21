@@ -63,4 +63,9 @@ MonoBehaviour:
   - Restored
   - StealItemInPoint
   - Stolen
+  - PutItemInPoint
+  - SuccessToSteal
+  - Activate
+  - ItemStolen
+  - ActivatePutItemPointInRoom
   DisableAutoOpenWizard: 1

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 namespace com.MJT.FindTheThief
 {
     [RequireComponent(typeof(RectTransform))]
-    public class ItemPopUp : MonoBehaviour
+    public class ItemInfoPopUp : MonoBehaviour
     {
         public Text colorText;
         public Text ageText;

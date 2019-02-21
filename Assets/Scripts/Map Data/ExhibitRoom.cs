@@ -55,6 +55,16 @@ namespace com.MJT.FindTheThief
             }
         }
 
+        [SerializeField]
+        private PutItemPoint putItemPoint;
+        public PutItemPoint PutItemPoint
+        {
+            get
+            {
+                return putItemPoint;
+            }
+        }
+
         //방과 관련한 경로들
         [SerializeField]
         private Route inRoomRoute;
