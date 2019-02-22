@@ -25,6 +25,7 @@ namespace com.MJT.FindTheThief
 
                 GameObject newNPC = Instantiate(NPCPrefab);
                 newNPC.GetComponent<NPCController>().Init(randomPointIdx);
+                newNPC.GetComponent<NPCController>().Activated = true;
             }
         }
     }

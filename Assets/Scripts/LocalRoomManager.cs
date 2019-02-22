@@ -59,6 +59,7 @@ namespace com.MJT.FindTheThief
 
         public void ExitRoom()
         {
+            Time.timeScale = 1;
             PhotonNetwork.LeaveRoom();
             SceneManager.LoadScene("Lobby");
         }

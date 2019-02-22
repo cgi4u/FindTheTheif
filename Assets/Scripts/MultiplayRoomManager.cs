@@ -85,6 +85,8 @@ namespace com.MJT.FindTheThief
                 return;
             }
 
+            PhotonExtends.SetLocalPlayerPropsByElem(pauseKey, false);
+
             if (PhotonNetwork.isMasterClient) {
                 //Randomly switch the master client. It prevents that the player who made room always be picked as a thief.
                 int[] randomPlayerSelector = new int[PhotonNetwork.playerList.Length];
@@ -102,7 +104,8 @@ namespace com.MJT.FindTheThief
                     for (int i = 0; i < randomPlayerSelector.Length; i++)
                     {
                         PhotonPlayer newMaster = PhotonPlayer.Find(randomPlayerSelector[i]);
-                        if (newMaster != null)
+                        if (newMaster != null 
+                            && newMaster.CustomProperties[pauseKey] != null && !(bool)newMaster.CustomProperties[pauseKey])
                         {
                             PhotonNetwork.SetMasterClient(newMaster);
                             break;
@@ -125,15 +128,6 @@ namespace com.MJT.FindTheThief
             {
                 Debug.LogError("Not enough player for game(Should be more than " + thievesNum + " players(number of thieves).");
                 return;
-            }
-
-            // Set player status in room(pause, ready)
-            foreach (PhotonPlayer player in PhotonNetwork.playerList)
-            {
-                Hashtable playerCp = player.CustomProperties;
-                playerCp[pauseKey] = false;
-                playerCp[readyKey] = false;
-                player.SetCustomProperties(playerCp);
             }
 
             // Set each player's team
@@ -282,21 +276,6 @@ namespace com.MJT.FindTheThief
 
             // Generate Scene Objects(NPCs, Items).
             NPCGeneration();
-
-            if (PhotonNetwork.playerList.Length != 1)
-            {
-                for (int i = 0; i < PhotonNetwork.playerList.Length; i++)
-                {
-                    if (PhotonNetwork.playerList[i].ID != PhotonNetwork.player.ID
-                        && PhotonNetwork.room.CustomProperties["Changed"] == null)
-                    {
-                        PhotonNetwork.SetMasterClient(PhotonNetwork.playerList[i]);
-                        PhotonExtends.SetRoomCustomPropsByElem("Changed", true);
-                        return;
-                    }
-                }
-            }
-
             GenerateItems();
 
             // Game initiation ends, send ready signal to other players. 
@@ -530,19 +509,20 @@ namespace com.MJT.FindTheThief
 
             if (inReady && PhotonNetwork.isMasterClient && PhotonNetwork.room.CustomProperties[gameInitKey] != null)
             {
-                bool areAllPlayersReady = true;
+                bool allPlayersReady = true;
                 foreach (PhotonPlayer player in PhotonNetwork.playerList)
                 {
-                    areAllPlayersReady = (bool)player.CustomProperties[readyKey];
-                    if (!areAllPlayersReady)
+                    object readyState = player.CustomProperties[readyKey];
+                    if (readyState == null)
                     {
+                        allPlayersReady = false;
                         readyWaitTimeStamp += deltaTimeStamp;
                         break;
                     }
                 }
 
                 //if all player is in ready, fire game start signal to other players(via server in order to reduce delay).
-                if (areAllPlayersReady)
+                if (allPlayersReady)
                 {
                     PhotonExtends.SetRoomCustomPropsByElem(startKey, true);
                 }
@@ -676,7 +656,7 @@ namespace com.MJT.FindTheThief
 
         public override void OnMasterClientSwitched(PhotonPlayer newMasterClient)
         {
-            Debug.Log("Master Client switched.");
+            Debug.Log("Master client switched. New Master ID: " + newMasterClient.ID);
             if (newMasterClient != PhotonNetwork.player)
                 return;
 
@@ -717,6 +697,16 @@ namespace com.MJT.FindTheThief
             {
                 inReady = false;
                 gameStarted = true;
+                SceneManager.sceneLoaded -= OnGameSceneLoaded;
+
+                if (PhotonNetwork.isMasterClient)
+                {
+                    foreach(NPCController npc in sceneObjParent.GetComponentsInChildren<NPCController>())
+                    {
+                        npc.Activated = true;
+                    }
+                }
+
                 return;
             }
 

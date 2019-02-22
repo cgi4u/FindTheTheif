@@ -16,10 +16,12 @@ namespace com.MJT.FindTheThief
         private void Awake()
         {
             raycastBox = GetComponent<BoxCollider2D>().size;   // To ignore collisions on edge
-            transform.parent = MultiplayRoomManager.Instance.SceneObjParent;
+            if (PhotonNetwork.connected)
+                transform.parent = MultiplayRoomManager.Instance.SceneObjParent;
         }
 
-        private bool ifStarted = false;     //ManualStart를 통해 초기화되었는지에 대한 변수
+        public bool Activated { get; set; } = false;
+
         MapDataManager mapDataManager;      //Routing Manager Instance에 대한 참조
         // Use this for initialization
         void Start()
@@ -62,14 +64,13 @@ namespace com.MJT.FindTheThief
             }
             
             targetPoint = startPoint = transform.position = (Vector2)curRoute.NodeSet[curNodeNum].transform.position;
-            ifStarted = true;
         }
 
         #endregion
 
         private void Update()
         {
-            if (!ifStarted || (PhotonNetwork.connected && !photonView.isMine))
+            if (!Activated || (PhotonNetwork.connected && !photonView.isMine))
                 return;
 
             //내가 블록상태든, 충돌방지 대기상태든 내 위치는 가장 최근의 정지 포인트여야 한다.
@@ -150,45 +151,79 @@ namespace com.MJT.FindTheThief
             }
         }
 
+        [SerializeField]
         private Vector2 startPoint;
+        [SerializeField]
         private Vector2 targetPoint;
-        Vector2 direction = new Vector2(0, 0);
+        private List<Vector2> directions = new List<Vector2>(new Vector2[] { Vector2.up, Vector2.down, Vector2.left, Vector2.right } );
+        private Vector2 direction = new Vector2(0, 0);
         private void SetNewTargetPoint()
         {
             startPoint = targetPoint;
-            direction = ((Vector2)curRoute.NodeSet[curNodeNum + 1].transform.position - startPoint).normalized;
-            targetPoint = startPoint + direction;
 
-            //움직이는 과정에서 플레이어와 충돌하는 물체가 있을지를 판단.
-            //자기자신의 콜라이더와 무조건 충돌하므로 다른 콜라이더가 있는지 판단하기 위해 BoxCast가 아닌 BoxCastAll을 쓴다.
-            RaycastHit2D[] hits = Physics2D.BoxCastAll(startPoint, raycastBox, 0, targetPoint - startPoint, Vector2.Distance(startPoint, targetPoint));
+            // prevent location error can be caused by master client change.
+            startPoint.x = Mathf.Round(startPoint.x);
+            startPoint.y = Mathf.Round(startPoint.y);
 
-            //자기 자신 이외에 충돌 물체가 있다면 이동하지 않는다.
-            bool ifHit = false;
-            foreach (RaycastHit2D hit in hits)
+            // Set the prioirty of direction used to set this npc's new tartget point.
+            Vector2 nextNodePos = (Vector2)curRoute.NodeSet[curNodeNum + 1].transform.position;
+            directions.Sort((x, y)
+                => Vector2.Distance(startPoint + x, nextNodePos).CompareTo(Vector2.Distance(startPoint + y, nextNodePos)));
+
+            for (int i = 0; i < directions.Count; i++)
             {
-                if (hit.collider.gameObject != gameObject && !hit.collider.isTrigger)
+                if (-direction == directions[i])
                 {
-                    //자신의 오브젝트와 충돌체의 오브젝트가 같지 않는 상황, 즉 콜라이더를 갖는 다른 오브젝트에 부딫힌 상황
-                    ifHit = true;
+                    Vector2 temp = directions[directions.Count - 1];
+                    directions[directions.Count - 1] = directions[i];
+                    directions[i] = temp;
                     break;
                 }
             }
 
-            if (ifHit)
+            Vector2 newDirection = new Vector2();
+            for (int i = 0; i < directions.Count; i++)
             {
-                //GetComponent<PhotonTransformView>().SetSynchronizedValues(new Vector3(0f, 0f), 0f);
+                // Check if there is a collider in the travel path of this object.
+                RaycastHit2D[] hits = Physics2D.BoxCastAll(startPoint, raycastBox, 0, directions[i], directions[i].magnitude);
+
+                bool ifHit = false;
+                foreach (RaycastHit2D hit in hits)
+                {
+                    if (hit.collider.gameObject != gameObject && !hit.collider.isTrigger)
+                    {
+                        //자신의 오브젝트와 충돌체의 오브젝트가 같지 않는 상황, 즉 콜라이더를 갖는 다른 오브젝트에 부딫힌 상황
+                        ifHit = true;
+                        break;
+                    }
+                }
+
+                if (!ifHit)
+                {
+                    newDirection = directions[i];
+                    break;
+                }
+
+                // Check only one main direction in In-Room Route.
+                if (curRoute.RouteType == RouteType.In_Room)
+                    break;
+            }
+
+            if (newDirection == new Vector2())
+            {
                 isMoving = false;
-                targetPoint = startPoint;
             }
             else
             {
-                //GetComponent<PhotonTransformView>().SetSynchronizedValues(moveSpeed * direction, 0f);
+                direction = newDirection;
+                targetPoint = startPoint + newDirection;
                 isMoving = true;
             }
         }
 
+        [SerializeField]
         private Route curRoute;
+        [SerializeField]
         private int curNodeNum;
         /// <summary>
         /// Check if this NPC arrived at next node or route end. If did, change target node or current route. 

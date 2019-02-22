@@ -16,7 +16,7 @@ namespace com.MJT.FindTheThief
             // PhotonNetwork.LoadLevel()가 마스터 클라이언트에서 호출되면 타 플레이어들도 자동으로 싱크됨
             PhotonNetwork.automaticallySyncScene = true;
             // 마스터 서버에 접속했을 때 자동으로 로비에 접속한다.
-            PhotonNetwork.autoJoinLobby = true;
+            PhotonNetwork.autoJoinLobby = false;
 
             if (!FB.IsInitialized)
             {
@@ -95,6 +95,7 @@ namespace com.MJT.FindTheThief
         public override void OnConnectedToMaster()
         {
             Debug.Log("Successfully connected to Photon!");
+            SceneManager.LoadScene("Lobby");
         }
 
         // if AutoJoinLobby is true
