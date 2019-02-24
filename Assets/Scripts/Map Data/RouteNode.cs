@@ -41,5 +41,7 @@ namespace com.MJT.FindTheThief
             }
         }
 
+        [SerializeField]
+        private Vector2[] points;
     }
 }

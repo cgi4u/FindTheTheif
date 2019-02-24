@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48c015cf811cc27449a9690a978a61e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  roomLevelName: Demo Room
+  roomLevelName: Default Game Room
   thiefPrefab: {fileID: 4203696217380748978, guid: 525f72b978b9e7941acdcbf8b1145f7b,
     type: 3}
   detectivePrefab: {fileID: 1536311355630938, guid: 4a2bb6044e24a974eb687461314d3ef0,
@@ -82,11 +82,12 @@ MonoBehaviour:
   - {fileID: 6791036397188444402, guid: d495022b1f82d1c4ba92d895c8b68edd, type: 3}
   - {fileID: 3971122904755379744, guid: fbd4e3a680cc46747a828a21f2586362, type: 3}
   - {fileID: 418247004385567571, guid: a10d59b3ede3d3e44aa97c70ad0c5d15, type: 3}
-  targetItemNum: 3
+  targetItemNum: 2
   targetItems: []
   leftTimeStamp: 60000
   inReady: 0
   gameStarted: 0
+  gameSet: 0
 --- !u!114 &114986182949599362
 MonoBehaviour:
   m_ObjectHideFlags: 0

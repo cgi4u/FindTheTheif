@@ -41,6 +41,11 @@ namespace com.MJT.FindTheThief
             }
         }
 
+        private void Start()
+        {
+            GetComponent<SpriteRenderer>().sortingOrder = -(int)(transform.position.y * 100f);
+        }
+
         public void SetItem(ItemController _item)
         {
             item = _item;

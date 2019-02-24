@@ -293,8 +293,11 @@ namespace com.MJT.FindTheThief
         {
             //GetComponent<PhotonTransformView>().SetSynchronizedValues(new Vector3(0f, 0f), 0f);
             curNodeNum += 1;
-            if (curRoute.NodeSet[curNodeNum].IsItemPoint)   // Set item watching time.
+            if (curRoute.NodeSet[curNodeNum].IsItemPoint)       // Set item watching time.
+            {
+                isMoving = false;
                 blockedTime = Random.Range(1f, 3f);
+            }
 
             if (curNodeNum == curRoute.NodeSet.Length - 1)       // Route ends, get next route.
             {

@@ -128,5 +128,10 @@ namespace com.MJT.FindTheThief
         }
 
         #endregion
+
+        private void Awake()
+        {
+            nodeSet = GetComponentsInChildren<RouteNode>();
+        }
     }
 }

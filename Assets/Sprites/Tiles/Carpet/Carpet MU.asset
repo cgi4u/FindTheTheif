@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 13312, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: "\uC911 \uBC11"
+  m_Name: Carpet MU
   m_EditorClassIdentifier: 
-  m_Sprite: {fileID: 21300000, guid: e5bb7464755c8e64dabfe2e23670ab50, type: 3}
+  m_Sprite: {fileID: 21300000, guid: f2e08dd3747ff114c977a5c704c83ba9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Transform:
     e00: 1

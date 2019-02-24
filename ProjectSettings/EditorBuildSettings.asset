@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Demo Room.unity
     guid: 78db542cdf728fc45b737c1ef9283c5f
+  - enabled: 1
+    path: Assets/Scenes/Default Game Room.unity
+    guid: 1444b43770511b0429dc3aef5da803a1
   m_configObjects: {}
