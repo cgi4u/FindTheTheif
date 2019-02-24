@@ -7,6 +7,7 @@ namespace com.MJT.FindTheThief
     /// <summary>
     /// Store datas for item(If it is an item watching point or not, item direction)
     /// </summary>
+    [RequireComponent(typeof(BoxCollider2D))]
     public class RouteNode : MonoBehaviour
     {
         /// <summary>
@@ -29,6 +30,7 @@ namespace com.MJT.FindTheThief
                 return isItemPoint;
             }
         }
+
         [SerializeField]
         private Direction itemDir;
         public Direction ItemDir
@@ -38,5 +40,6 @@ namespace com.MJT.FindTheThief
                 return itemDir;
             }
         }
+
     }
 }
