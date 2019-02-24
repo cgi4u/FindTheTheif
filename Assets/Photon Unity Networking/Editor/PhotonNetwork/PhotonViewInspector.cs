@@ -18,7 +18,7 @@ using UnityEditor;
 using UnityEngine;
 
 using Photon.Pun;
-
+using ExitGames.Client.Photon;
 
 [CustomEditor(typeof (PhotonView))]
 public class PhotonViewInspector : Editor
@@ -28,7 +28,7 @@ public class PhotonViewInspector : Editor
     public override void OnInspectorGUI()
     {
         this.m_Target = (PhotonView)target;
-        bool isProjectPrefab = EditorUtility.IsPersistent(this.m_Target.gameObject);
+		bool isProjectPrefab = PhotonEditorUtils.IsPrefab(this.m_Target.gameObject);
 
         if (this.m_Target.ObservedComponents == null)
         {
@@ -270,7 +270,7 @@ public class PhotonViewInspector : Editor
         return (EditorUtility.GetPrefabParent(mp) as GameObject);
         #else
         // Unity 3.5 uses PrefabUtility
-        return PrefabUtility.GetCorrespondingObjectFromSource(mp) as GameObject;
+        return PrefabUtility.GetPrefabParent(mp) as GameObject;
         #endif
     }
 }

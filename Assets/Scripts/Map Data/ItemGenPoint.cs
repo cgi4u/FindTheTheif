@@ -53,12 +53,12 @@ namespace com.MJT.FindTheThief
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            if (item.IsStolen || MultiplayRoomManager.Instance.MyTeam != Team.Thief)
+            if (item == null || item.IsStolen)
                 return;
 
             //Only works when local thief player walks in front of this point
-            ThiefController theifPlayer = collision.gameObject.GetComponent<ThiefController>();
-            if (theifPlayer != null && theifPlayer == ThiefController.LocalThief && !theifPlayer.HasItem)
+            ThiefController thiefPlayer = collision.gameObject.GetComponent<ThiefController>();
+            if (thiefPlayer != null && thiefPlayer == ThiefController.LocalThief && thiefPlayer.StoleItem == null)
             {
                 UIManager.Instance.SetStealPopUp(this);
             }
@@ -66,14 +66,14 @@ namespace com.MJT.FindTheThief
 
         private void OnTriggerExit2D(Collider2D collision)
         {
-            if (item.IsStolen || MultiplayRoomManager.Instance.MyTeam != Team.Thief)
+            if (item == null || item.IsStolen)
                 return;
 
             //Only works when local player walks out front of this point
-            ThiefController theifPlayer = collision.gameObject.GetComponent<ThiefController>();
-            if (theifPlayer != null && theifPlayer == ThiefController.LocalThief && !theifPlayer.HasItem)
+            ThiefController thiefPlayer = collision.gameObject.GetComponent<ThiefController>();
+            if (thiefPlayer != null && thiefPlayer == ThiefController.LocalThief && thiefPlayer.StoleItem == null)
             {
-                UIManager.Instance.SetStealPopUp(this);
+                UIManager.Instance.RemoveStealPopUp();
             }
         }
     }

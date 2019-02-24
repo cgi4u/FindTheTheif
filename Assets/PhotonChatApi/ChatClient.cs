@@ -4,7 +4,7 @@
 // <copyright company="Exit Games GmbH">Photon Chat Api - Copyright (C) 2014 Exit Games GmbH</copyright>
 // ----------------------------------------------------------------------------------------------------------------------
 
-#if UNITY_4_7 || UNITY_5 || UNITY_5_0 || UNITY_5_1 || UNITY_5_3_OR_NEWER
+#if UNITY_4_7 || UNITY_5 || UNITY_5_3_OR_NEWER
 #define UNITY
 #endif
 
@@ -40,6 +40,8 @@ namespace ExitGames.Client.Photon.Chat
     public class ChatClient : IPhotonPeerListener
     {
         const int FriendRequestListMax = 1024;
+
+        public const int DefaultMaxSubscribers = 100;
 
         /// <summary>The address of last connected Name Server.</summary>
         public string NameServerAddress { get; private set; }
@@ -137,10 +139,10 @@ namespace ExitGames.Client.Photon.Chat
         /// The benefit of using a background thread to call SendOutgoingCommands is this:
         ///
         /// Even if your game logic is being paused, the background thread will keep the connection to the server up.
-        /// On a lower level, acknowledgements and pings will prevent a server-side timeout while (e.g.) Unity loads assets.
+        /// On a lower level, acknowledgments and pings will prevent a server-side timeout while (e.g.) Unity loads assets.
         ///
         /// Your game logic still has to call Service regularly, or else incoming messages are not dispatched.
-        /// As this typicalls triggers UI updates, it's easier to call Service from the main/UI thread.
+        /// As this typically triggers UI updates, it's easier to call Service from the main/UI thread.
         /// </remarks>
         public bool UseBackgroundWorkerForSending { get; set; }
 
@@ -250,7 +252,11 @@ namespace ExitGames.Client.Photon.Chat
 
             if (this.UseBackgroundWorkerForSending)
             {
+                #if UNITY_SWITCH
+                SupportClass.StartBackgroundCalls(this.SendOutgoingInBackground, this.msDeltaForServiceCalls);  // as workaround, we don't name the Thread.
+                #else
                 SupportClass.StartBackgroundCalls(this.SendOutgoingInBackground, this.msDeltaForServiceCalls, "ChatClient Service Thread");
+                #endif
             }
 
             return isConnecting;
@@ -367,6 +373,63 @@ namespace ExitGames.Client.Photon.Chat
 
             return this.SendChannelOperation(channels, (byte)ChatOperationCode.Subscribe, messagesFromHistory);
         }
+        
+        /// <summary>
+        /// Sends operation to subscribe to a list of channels by name and possibly retrieve messages we did not receive while unsubscribed.
+        /// </summary>
+        /// <param name="channels">List of channels to subscribe to. Avoid null or empty values.</param>
+        /// <param name="lastMsgIds">ID of last message received per channel. Useful when re subscribing to receive only messages we missed.</param>
+        /// <returns>If the operation could be sent at all (Example: Fails if not connected to Chat Server).</returns>
+        public bool Subscribe(string[] channels, int[] lastMsgIds)
+        {
+            if (!this.CanChat)
+            {
+                if (this.DebugOut >= DebugLevel.ERROR)
+                {
+                    this.listener.DebugReturn(DebugLevel.ERROR, "Subscribe called while not connected to front end server.");
+                }
+                return false;
+            }
+
+            if (channels == null || channels.Length == 0)
+            {
+                if (this.DebugOut >= DebugLevel.WARNING)
+                {
+                    this.listener.DebugReturn(DebugLevel.WARNING, "Subscribe can't be called for empty or null channels-list.");
+                }
+                return false;
+            }
+
+            for (int i = 0; i < channels.Length; i++)
+            {
+                if (string.IsNullOrEmpty(channels[i]))
+                {
+                    if (this.DebugOut >= DebugLevel.ERROR)
+                    {
+                        this.listener.DebugReturn(DebugLevel.ERROR, string.Format("Subscribe can't be called with a null or empty channel name at index {0}.", i));
+                    }
+                    return false;
+                }
+            }
+
+            if (lastMsgIds == null || lastMsgIds.Length != channels.Length)
+            {
+                if (this.DebugOut >= DebugLevel.ERROR)
+                {
+                    this.listener.DebugReturn(DebugLevel.ERROR, "Subscribe can't be called when \"lastMsgIds\" array is null or does not have the same length as \"channels\" array.");
+                }
+                return false;
+            }
+
+            Dictionary<byte, object> opParameters = new Dictionary<byte, object>
+            {
+                { ChatParameterCode.Channels, channels },
+                { ChatParameterCode.MsgIds,  lastMsgIds},
+                { ChatParameterCode.HistoryLength, -1 } // server will decide how many messages to send to client
+            };
+
+            return this.chatPeer.SendOperation(ChatOperationCode.Subscribe, opParameters, SendOptions.SendReliable);
+        }
 
         /// <summary>Unsubscribes from a list of channels, which stops getting messages from those.</summary>
         /// <remarks>
@@ -454,7 +517,7 @@ namespace ExitGames.Client.Photon.Chat
             {
                 parameters.Add(ChatParameterCode.WebFlags, (byte)0x1);
             }
-            return this.chatPeer.OpCustom((byte)ChatOperationCode.Publish, parameters, reliable);
+            return this.chatPeer.SendOperation(ChatOperationCode.Publish, parameters, new SendOptions { Reliability = reliable });
         }
 
         /// <summary>
@@ -516,7 +579,15 @@ namespace ExitGames.Client.Photon.Chat
             {
                 parameters.Add(ChatParameterCode.WebFlags, (byte)0x1);
             }
-            return this.chatPeer.OpCustom((byte)ChatOperationCode.SendPrivate, parameters, reliable, 0, encrypt);
+
+            SendOptions sendOptions = new SendOptions
+            {
+                Reliability = reliable,
+                Channel = 0,
+                Encrypt = encrypt
+            };
+
+            return this.chatPeer.SendOperation(ChatOperationCode.SendPrivate, parameters, sendOptions);
         }
 
         /// <summary>Sets the user's status (pre-defined or custom) and an optional message.</summary>
@@ -558,7 +629,7 @@ namespace ExitGames.Client.Photon.Chat
             {
                 parameters[ChatParameterCode.Message] = message;
             }
-            return this.chatPeer.OpCustom(ChatOperationCode.UpdateStatus, parameters, true);
+            return this.chatPeer.SendOperation(ChatOperationCode.UpdateStatus, parameters, SendOptions.SendReliable);
         }
 
         /// <summary>Sets the user's status without changing your status-message.</summary>
@@ -605,7 +676,7 @@ namespace ExitGames.Client.Photon.Chat
         /// in the Photon Chat server. Having users on your friends list gives you access
         /// to their current online status (and whatever info your client sets in it).
         ///
-        /// Each user can set an online status consisting of an integer and an arbitratry
+        /// Each user can set an online status consisting of an integer and an arbitrary
         /// (serializable) object. The object can be null, Hashtable, object[] or anything
         /// else Photon can serialize.
         ///
@@ -653,45 +724,28 @@ namespace ExitGames.Client.Photon.Chat
                 {
                     { ChatParameterCode.Friends, friends },
                 };
-            return this.chatPeer.OpCustom(ChatOperationCode.AddFriends, parameters, true);
+            return this.chatPeer.SendOperation(ChatOperationCode.AddFriends, parameters, SendOptions.SendReliable);
         }
 
         /// <summary>
         /// Removes the provided entries from the list on the Chat Server and stops their status updates.
         /// </summary>
         /// <remarks>
-        /// Photon flushes friends-list when a chat client disconnects. Unless you want to
+        /// Photon flushes friends-list when a chat client disconnects, so it has to be
+        /// set each time. If your community API gives you access to online status already,
+        /// you could filter and set online friends in AddFriends. Unless you want to
         /// remove individual entries, you don't have to RemoveFriends.
         ///
         /// AddFriends and RemoveFriends enable clients to handle their friend list
         /// in the Photon Chat server. Having users on your friends list gives you access
         /// to their current online status (and whatever info your client sets in it).
         ///
-        /// Each user can set an online status consisting of an integer and an arbitratry
+        /// Each user can set an online status consisting of an integer and an arbitrary
         /// (serializable) object. The object can be null, Hashtable, object[] or anything
         /// else Photon can serialize.
         ///
         /// The status is published automatically to friends (anyone who set your user ID
         /// with AddFriends).
-        ///
-        /// Photon flushes friends-list when a chat client disconnects, so it has to be
-        /// set each time. If your community API gives you access to online status already,
-        /// you could filter and set online friends in AddFriends.
-        ///
-        /// Actual friend relations are not persistent and have to be stored outside
-        /// of Photon.
-        ///
-        /// AddFriends and RemoveFriends enable clients to handle their friend list
-        /// in the Photon Chat server. Having users on your friends list gives you access
-        /// to their current online status (and whatever info your client sets in it).
-        ///
-        /// Each user can set an online status consisting of an integer and an arbitratry
-        /// (serializable) object. The object can be null, Hashtable, object[] or anything
-        /// else Photon can serialize.
-        ///
-        /// The status is published automatically to friends (anyone who set your user ID
-        /// with AddFriends).
-        ///
         ///
         /// Actual friend relations are not persistent and have to be stored outside
         /// of Photon.
@@ -730,7 +784,7 @@ namespace ExitGames.Client.Photon.Chat
                 {
                     { ChatParameterCode.Friends, friends },
                 };
-            return this.chatPeer.OpCustom(ChatOperationCode.RemoveFriends, parameters, true);
+            return this.chatPeer.SendOperation(ChatOperationCode.RemoveFriends, parameters, SendOptions.SendReliable);
         }
 
         /// <summary>
@@ -819,6 +873,12 @@ namespace ExitGames.Client.Photon.Chat
                 case ChatEventCode.Unsubscribe:
                     this.HandleUnsubscribeEvent(eventData);
                     break;
+                case ChatEventCode.UserSubscribed:
+                    this.HandleUserSubscribedEvent(eventData);
+                    break;
+                case ChatEventCode.UserUnsubscribed:
+                    this.HandleUserUnsubscribedEvent(eventData);
+                    break;
             }
         }
 
@@ -886,7 +946,7 @@ namespace ExitGames.Client.Photon.Chat
                     }
                     break;
                 case StatusCode.EncryptionEstablished:
-                    // once encryption is availble, the client should send one (secure) authenticate. it includes the AppId (which identifies your app on the Photon Cloud)
+                    // once encryption is available, the client should send one (secure) authenticate. it includes the AppId (which identifies your app on the Photon Cloud)
                     if (!this.didAuthenticate)
                     {
                         this.didAuthenticate = this.chatPeer.AuthenticateOnNameServer(this.AppId, this.AppVersion, this.chatRegion, this.AuthValues);
@@ -937,7 +997,7 @@ namespace ExitGames.Client.Photon.Chat
                 opParameters.Add((byte)ChatParameterCode.HistoryLength, historyLength);
             }
 
-            return this.chatPeer.OpCustom(operation, opParameters, true);
+            return this.chatPeer.SendOperation(operation, opParameters, SendOptions.SendReliable);
         }
 
         private void HandlePrivateMessageEvent(EventData eventData)
@@ -946,6 +1006,7 @@ namespace ExitGames.Client.Photon.Chat
 
             object message = (object)eventData.Parameters[(byte)ChatParameterCode.Message];
             string sender = (string)eventData.Parameters[(byte)ChatParameterCode.Sender];
+            int msgId = (int)eventData.Parameters[ChatParameterCode.MsgId];
 
             string channelName;
             if (this.UserId != null && this.UserId.Equals(sender))
@@ -967,7 +1028,7 @@ namespace ExitGames.Client.Photon.Chat
                 this.PrivateChannels.Add(channel.Name, channel);
             }
 
-            channel.Add(sender, message);
+            channel.Add(sender, message, msgId);
             this.listener.OnPrivateMessage(sender, message, channelName);
         }
 
@@ -976,6 +1037,7 @@ namespace ExitGames.Client.Photon.Chat
             object[] messages = (object[])eventData.Parameters[(byte)ChatParameterCode.Messages];
             string[] senders = (string[])eventData.Parameters[(byte)ChatParameterCode.Senders];
             string channelName = (string)eventData.Parameters[(byte)ChatParameterCode.Channel];
+            int lastMsgId = (int)eventData.Parameters[ChatParameterCode.MsgId];
 
             ChatChannel channel;
             if (!this.PublicChannels.TryGetValue(channelName, out channel))
@@ -987,7 +1049,7 @@ namespace ExitGames.Client.Photon.Chat
                 return;
             }
 
-            channel.Add(senders, messages);
+            channel.Add(senders, messages, lastMsgId);
             this.listener.OnGetMessages(channelName, senders, messages);
         }
 
@@ -995,17 +1057,33 @@ namespace ExitGames.Client.Photon.Chat
         {
             string[] channelsInResponse = (string[])eventData.Parameters[ChatParameterCode.Channels];
             bool[] results = (bool[])eventData.Parameters[ChatParameterCode.SubscribeResults];
-
             for (int i = 0; i < channelsInResponse.Length; i++)
             {
                 if (results[i])
                 {
                     string channelName = channelsInResponse[i];
+                    ChatChannel channel;
                     if (!this.PublicChannels.ContainsKey(channelName))
                     {
-                        ChatChannel channel = new ChatChannel(channelName);
+                        channel = new ChatChannel(channelName);
                         channel.MessageLimit = this.MessageLimit;
                         this.PublicChannels.Add(channel.Name, channel);
+                    }
+                    else
+                    {
+                        channel = this.PublicChannels[channelName];
+                    }
+                    if (eventData.Parameters.ContainsKey(ChatParameterCode.Properties))
+                    {
+                        Dictionary<object, object> channelProperties =
+                            eventData.Parameters[ChatParameterCode.Properties] as Dictionary<object, object>;
+                        channel.ReadProperties(channelProperties);
+                    }
+                    if (eventData.Parameters.ContainsKey(ChatParameterCode.ChannelSubscribers))
+                    {
+                        string[] subscribers = eventData.Parameters[ChatParameterCode.ChannelSubscribers] as string[];
+                        channel.TryAddSubscriber(this.UserId);
+                        channel.AddSubscribers(subscribers);
                     }
                 }
             }
@@ -1140,7 +1218,7 @@ namespace ExitGames.Client.Photon.Chat
         {
             if (this.AuthValues != null)
             {
-                if (this.AuthValues.Token == null || this.AuthValues.Token == "")
+                if (string.IsNullOrEmpty(this.AuthValues.Token))
                 {
                     if (this.DebugOut >= DebugLevel.ERROR)
                     {
@@ -1151,7 +1229,7 @@ namespace ExitGames.Client.Photon.Chat
                 else
                 {
                     Dictionary<byte, object> opParameters = new Dictionary<byte, object> { { (byte)ChatParameterCode.Secret, this.AuthValues.Token } };
-                    return this.chatPeer.OpCustom((byte)ChatOperationCode.Authenticate, opParameters, true);
+                    return this.chatPeer.SendOperation(ChatOperationCode.Authenticate, opParameters, SendOptions.SendReliable);
                 }
             }
             else
@@ -1164,6 +1242,139 @@ namespace ExitGames.Client.Photon.Chat
             }
         }
 
+        private void HandleUserUnsubscribedEvent(EventData eventData)
+        {
+            var channelName = eventData.Parameters[ChatParameterCode.Channel] as string;
+            var userId = eventData.Parameters[ChatParameterCode.UserId] as string;
+            ChatChannel channel;
+            if (!this.PublicChannels.TryGetValue(channelName, out channel))
+            {
+                this.listener.DebugReturn(DebugLevel.WARNING, string.Format("Channel {0} for incoming UserUnsubscribed ({1}) event not found.", channelName, userId));
+                return;
+            }
+            if (!channel.Subscribers.Contains(userId)) // user not found!
+            {
+                this.listener.DebugReturn(DebugLevel.WARNING, string.Format("Channel {0} does not contain unsubscribed user {1}.", channelName, userId));
+                return;
+            }
+            channel.Subscribers.Remove(userId);
+            this.listener.OnUserUnsubscribed(channelName, userId);
+        }
+
+        private void HandleUserSubscribedEvent(EventData eventData)
+        {
+            var channelName = eventData.Parameters[ChatParameterCode.Channel] as string;
+            var userId = eventData.Parameters[ChatParameterCode.UserId] as string;
+            ChatChannel channel;
+            if (!this.PublicChannels.TryGetValue(channelName, out channel))
+            {
+                this.listener.DebugReturn(DebugLevel.WARNING, string.Format("Channel {0} for incoming UserSubscribed ({1}) event not found.", channelName, userId));
+                channel = new ChatChannel(channelName);
+                PublicChannels.Add(channelName, channel);
+            }
+            if (channel.Subscribers.Contains(userId)) // user came back from the dead ?
+            {
+                this.listener.DebugReturn(DebugLevel.WARNING, string.Format("Channel {0} already contains newly subscribed user {1}.", channelName, userId));
+                return;
+            }
+            channel.Subscribers.Add(userId);
+            if (channel.Subscribers.Count > channel.MaxSubscribers)
+            {
+                this.listener.DebugReturn(DebugLevel.WARNING, 
+                    string.Format("Channel {0} max subscribers exceeded? count={1} > MaxSubscribers={2}.", 
+                    channelName, channel.Subscribers.Count, channel.MaxSubscribers));
+            }
+            this.listener.OnUserSubscribed(channelName, userId);
+        }
+
         #endregion
+
+        /// <summary>
+        /// Subscribe to a single channel and optionally sets its well-know channel properties in case the channel is created 
+        /// </summary>
+        /// <param name="channel">name of the channel to subscribe to</param>
+        /// <param name="lastMsgId">ID of the last received message from this channel when re subscribing to receive only missed messages, default is 0</param>
+        /// <param name="messagesFromHistory">how many missed messages to receive from history, default is none/-1</param>
+        /// <param name="creationOptions">options to be used in case the channel to subscribe to will be created.</param>
+        /// <returns></returns>
+        public bool Subscribe(string channel, int lastMsgId = 0, int messagesFromHistory = -1, ChannelCreationOptions creationOptions = null)
+        {
+            if (creationOptions == null)
+            {
+                creationOptions = ChannelCreationOptions.Default;
+            }
+            int maxSubscribers = creationOptions.MaxSubscribers;
+            bool publishSubscribers = creationOptions.PublishSubscribers;
+            if (maxSubscribers < 0)
+            {
+                if (this.DebugOut >= DebugLevel.ERROR)
+                {
+                    this.listener.DebugReturn(DebugLevel.ERROR, "Cannot set MaxSubscribers < 0.");
+                }
+                return false;
+            }
+            if (lastMsgId < 0)
+            {
+                if (this.DebugOut >= DebugLevel.ERROR)
+                {
+                    this.listener.DebugReturn(DebugLevel.ERROR, "lastMsgId cannot be < 0.");
+                }
+                return false;
+            }
+            if (messagesFromHistory < -1)
+            {
+                if (this.DebugOut >= DebugLevel.WARNING)
+                {
+                    this.listener.DebugReturn(DebugLevel.WARNING, "messagesFromHistory < -1, setting it to -1");
+                }
+                messagesFromHistory = -1;
+            }
+            if (lastMsgId > 0 && messagesFromHistory == 0)
+            {
+                if (this.DebugOut >= DebugLevel.WARNING)
+                {
+                    this.listener.DebugReturn(DebugLevel.WARNING, "lastMsgId will be ignored because messagesFromHistory == 0");
+                }
+                lastMsgId = 0;
+            }
+            Dictionary<object, object> properties = null;
+            if (publishSubscribers)
+            {
+                if (maxSubscribers > DefaultMaxSubscribers)
+                {
+                    if (this.DebugOut >= DebugLevel.ERROR)
+                    {
+                        this.listener.DebugReturn(DebugLevel.ERROR,
+                            string.Format("Cannot set MaxSubscribers > {0} when PublishSubscribers == true.", DefaultMaxSubscribers));
+                    }
+                    return false;
+                }
+                properties = new Dictionary<object, object>();
+                properties[ChannelWellKnownProperties.PublishSubscribers] = true;
+            }
+            if (maxSubscribers > 0)
+            {
+                if (properties == null)
+                {
+                    properties = new Dictionary<object, object>();
+                }
+                properties[ChannelWellKnownProperties.MaxSubscribers] = maxSubscribers;
+            }
+            Dictionary<byte, object> opParameters = new Dictionary<byte, object> { { ChatParameterCode.Channels, new[] { channel } } };
+            if (messagesFromHistory != 0)
+            {
+                opParameters.Add(ChatParameterCode.HistoryLength, messagesFromHistory);
+            }
+            if (lastMsgId > 0)
+            {
+                opParameters.Add(ChatParameterCode.MsgIds, new[] { lastMsgId });
+            }
+            if (properties != null && properties.Count > 0)
+            {
+                opParameters.Add(ChatParameterCode.Properties, properties);
+            }
+
+            return this.chatPeer.SendOperation(ChatOperationCode.Subscribe, opParameters, SendOptions.SendReliable);
+        }
     }
 }

@@ -6,18 +6,74 @@ namespace com.MJT.FindTheThief
 {
     public class ItemController : Photon.PunBehaviour
     {
-        public readonly int ItemAttrNum = 3;
-        public readonly int ItemAttrTypeNum = 3;
+        #region Item Properties
+
+        public static readonly int ItemPropTypeNum = 3;
+        public static readonly int ItemPropNumPerType = 3;
+
+        /*
+        public static string GetItemPropName(int type, int num, bool shortMode)
+        {
+            switch (type)
+            {
+                case 0:
+                    switch (num)
+                    {
+                        case 0:
+                            if (shortMode)
+                                return "빨";
+                            else
+                                return "빨강";
+                        case 1:
+                            if (shortMode)
+                                return "파";
+                            else
+                                return "파랑";
+                        case 2:
+                            if (shortMode)
+                                return "노";
+                            else
+                                return "노랑";
+                        default:
+                            Debug.LogError("Invalid item property value.");
+                            return null;
+                    }
+                case 1:
+                    switch (num)
+                    {
+                        case 0:
+                            if (shortMode)
+                                return "고";
+                            else
+                                return "고대";
+                        case 1:
+                            if (shortMode)
+                                return "";
+                            else
+                                return "파랑";
+                        case 2:
+                            if (shortMode)
+                                return "노";
+                            else
+                                return "노랑";
+                        default:
+                            Debug.LogError("Invalid item property value.");
+                            return null;
+                    }
+                    break;
+                case 2:
+                    break;
+            }
+        }
+        */
+
+        #endregion
+
 
         /// <summary>
         /// The list  of items that the local player discovered in game.
         /// </summary>
-        static List<ItemController> discoveredItems;
-
-        /// <summary>
-        /// The list of items stolen(not just carried by theif, but put into the destination point.
-        /// </summary>
-        static List<ItemController> stolenItems;
+        static List<ItemController> discoveredItems = new List<ItemController>();
 
         [SerializeField]
         private Sprite orgSprite;
@@ -74,15 +130,42 @@ namespace com.MJT.FindTheThief
             }
         }
 
+        /// <summary>
+        /// Prioirty in the discovered item list. Be changed when the stolen item has a same item property with this item.
+        /// </summary>
+        public int Prioirty = 0;
+
         #endregion
 
         /// <summary>
         /// Reset discovered / stolen item list for each game.
         /// </summary>
-        public static void ResetItemLists()
+        public static void ResetDescoverdItems()
         {
-            discoveredItems = new List<ItemController>();
-            stolenItems = new List<ItemController>();
+            discoveredItems.Clear();
+        }
+
+        /// <summary>
+        /// Renew the print prioirty of the discoverd item list(when an item is stolen)
+        /// </summary>
+        /// <param name="stolen"></param>
+        public static void RenewDiscoveredItemPrioirty(ItemController stolen)
+        {
+            if (discoveredItems.Contains(stolen))
+                discoveredItems.Remove(stolen);
+
+            foreach (ItemController discovered in discoveredItems)
+            {
+                if (discovered.Color == stolen.Color)
+                    discovered.Prioirty += 1;
+                if (discovered.Age == stolen.Age)
+                    discovered.Prioirty += 1;
+                if (discovered.Usage == stolen.Usage)
+                    discovered.Prioirty += 1;
+            }
+
+            discoveredItems.Sort((x, y) => (y.Prioirty.CompareTo(x.Prioirty)));
+            UIManager.Instance.RenewDiscoverdItemList(discoveredItems);
         }
 
         private void Awake()
@@ -156,7 +239,7 @@ namespace com.MJT.FindTheThief
                 }
             }
 
-            UIManager.Instance.RenewCheckedList(discoveredItems);
+            UIManager.Instance.RenewDiscoverdItemList(discoveredItems);
         }
 
         private void OnMouseUp()

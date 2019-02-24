@@ -22,8 +22,11 @@ namespace com.MJT.FindTheThief
         //UI for game match wait screen
         public GameObject curPlayerNumPanel;
         public Text curPlayerNum;
+        public CanvasGroup interactableUIGroup;
+        public GameObject grayPanel;
 
         public GameObject multiplayRoomManager;
+        
 
         void Start()
         {
@@ -47,60 +50,18 @@ namespace com.MJT.FindTheThief
                 return;
             }
 
-            PhotonNetwork.playerName = nameInputField.text;
+            interactableUIGroup.interactable = false;
+            grayPanel.SetActive(true);
 
+            PhotonNetwork.playerName = nameInputField.text;
             PhotonNetwork.JoinRandomRoom();
         }
 
         public void ExitLobby()
         {
-            PhotonNetwork.LeaveLobby();
             PhotonNetwork.Disconnect();
             SceneManager.LoadScene("Launcher");
         }
-
-        /*void InitializeAndLoadScene()
-        {
-            //Choose theif players randomly
-            int[] theifSelector = new int[playersPerRoom];
-            for (int i = 0; i < playersPerRoom; i++)
-            {
-                theifSelector[i] = i + 1;
-            }
-
-            for (int i = 0; i < playersPerRoom * 3; i++)
-            {
-                int r1 = Random.Range(0, playersPerRoom);
-                int r2 = Random.Range(0, playersPerRoom);
-
-                int temp = theifSelector[r1];
-                theifSelector[r1] = theifSelector[r2];
-                theifSelector[r2] = temp;
-            }
-
-            PhotonPlayer[] users = PhotonNetwork.playerList;
-            bool[] isPlayerTheif = new bool[playersPerRoom];
-
-            //Save players' team in their custom property
-            foreach (PhotonPlayer player in PhotonNetwork.playerList)
-            {
-                Hashtable playerCp = new Hashtable();
-
-                if (isPlayerTheif[player.ID - 1] == true)
-                {
-                    playerCp["Team"] = Team.theif;
-                }
-                else
-                {
-                    playerCp["Team"] = Team.detective;
-                }
-                player.SetCustomProperties(playerCp);
-            }
-
-            Debug.Log("We load the 'Demo Room' ");
-            //Load the game level. Use LoadLevel to synchronize(automaticallySyncScene is true)
-            PhotonNetwork.LoadLevel("Demo Room");
-        }*/
 
         //랜덤 방참가(JoinRandomRoom)가 실패했을 때 콜백
         public override void OnPhotonRandomJoinFailed(object[] codeAndMsg)
@@ -108,7 +69,6 @@ namespace com.MJT.FindTheThief
             Debug.Log("DemoAnimator/Launcher:OnPhotonRandomJoinFailed() was called by PUN. No random room available, so we create one.");
             // #Critical: we failed to join a random room, maybe none exists or they are all full. No worries, we create a new room.
             PhotonNetwork.CreateRoom(null, new RoomOptions() { MaxPlayers = playersPerRoom }, null);
-            curPlayerNumPanel.SetActive(true);
         }
 
         public override void OnJoinedRoom()
@@ -128,6 +88,7 @@ namespace com.MJT.FindTheThief
                 //InitializeAndLoadScene();
             }
 
+            curPlayerNumPanel.SetActive(true);
             curPlayerNum.text = PhotonNetwork.room.PlayerCount.ToString();
 
             //Codes for test with 1 user
@@ -149,5 +110,12 @@ namespace com.MJT.FindTheThief
             }
         }
 
+        public void WaitCancel()
+        {
+            PhotonNetwork.LeaveRoom();
+            curPlayerNumPanel.SetActive(false);
+            grayPanel.SetActive(false);
+            interactableUIGroup.interactable = true;
+        }
     }
 }

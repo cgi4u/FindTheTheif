@@ -30,20 +30,25 @@ namespace com.MJT.FindTheThief
             localThief = this;
         }
 
-        private ItemController stoleItem = null;
-        private bool hasItem = false;
-        public bool HasItem
+        private ItemController stoleItem;
+        public ItemController StoleItem
         {
             get
             {
-                return hasItem;
+                return stoleItem;
             }
         }
+
         [PunRPC]
         public void StealItemInPoint(int itemPoint)
         {
             stoleItem = MapDataManager.Instance.ItemGenPoints[itemPoint].Item;
-            hasItem = true;
+        }
+
+        [PunRPC]
+        public void PutItemInPoint()
+        {
+            stoleItem = null;
         }
 
         public override void OnOwnershipTransfered(object[] viewAndPlayers)

@@ -9,6 +9,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using Photon.Realtime;
 using UnityEngine;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 using SupportClassPun = ExitGames.Client.Photon.SupportClass;
@@ -138,7 +139,7 @@ public enum DisconnectCause
     ExceptionOnConnect = StatusCode.ExceptionOnConnect,
 
     /// <summary>Timeout disconnect by server (which decided an ACK was missing for too long).</summary>
-    DisconnectByServerTimeout = StatusCode.DisconnectByServer,
+    DisconnectByServerTimeout = StatusCode.DisconnectByServerTimeout,
 
     /// <summary>Server actively disconnected this client.
     /// Possible cause: Server's send buffer full (too much data for client).</summary>
@@ -434,7 +435,7 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
 
     /// <summary>For automatic scene syncing, the loaded scene is put into a room property. This is the name of said prop.</summary>
     protected internal const string CurrentSceneProperty = "curScn";
-	protected internal const string CurrentScenePropertyLoadAsync = "curScnLa";
+    protected internal const string CurrentScenePropertyLoadAsync = "curScnLa";
 
     public static bool UsePrefabCache = true;
 
@@ -457,8 +458,12 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
 
     // TODO: CAS must be implemented for OfflineMode
 
-	// for asynchronous loading network synched loading.
-	private AsyncOperation _AsyncLevelLoadingOperation;
+    // for asynchronous loading network synched loading.
+    private AsyncOperation _AsyncLevelLoadingOperation;
+
+
+    // used for the reloading raised event.
+    private RaiseEventOptions _levelReloadEventOptions = new RaiseEventOptions (){Receivers = ReceiverGroup.Others};
 
 
     public NetworkingPeer(string playername, ConnectionProtocol connectionProtocol) : base(connectionProtocol)
@@ -729,7 +734,7 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
         if (this.AuthValues.AuthPostData == null)
         {
             UnityEngine.Debug.LogError("UNITY_XBOXONE builds must use Photon's XBox Authentication and set the XSTS token by calling: PhotonNetwork.AuthValues.SetAuthPostData(xstsToken). Refer to the online docs for guidance.");
-			throw new Exception("UNITY_XBOXONE builds must use Photon's XBox Authentication.");
+            throw new Exception("UNITY_XBOXONE builds must use Photon's XBox Authentication.");
         }
         if (this.AuthValues.AuthType != CustomAuthenticationType.Xbox)
         {
@@ -803,33 +808,45 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
         #endif
 
 
-        #pragma warning disable 0162    // the library variant defines if we should use PUN's SocketUdp variant (at all)
-        if (PhotonPeer.NoSocket)
+        //#pragma warning disable 0162    // the library variant defines if we should use PUN's SocketUdp variant (at all)
+        //if (PhotonPeer.NoSocket)
+        //{
+        //    #if !UNITY_EDITOR && (UNITY_PS3 || UNITY_ANDROID)
+        //    this.SocketImplementationConfig[ConnectionProtocol.Udp] = typeof(SocketUdpNativeDynamic);
+        //    PhotonHandler.PingImplementation = typeof(PingNativeDynamic);
+        //    #elif !UNITY_EDITOR && (UNITY_IPHONE || UNITY_SWITCH)
+        //    this.SocketImplementationConfig[ConnectionProtocol.Udp] = typeof(SocketUdpNativeStatic);
+        //    PhotonHandler.PingImplementation = typeof(PingNativeStatic);
+        //    #elif !UNITY_EDITOR && UNITY_WINRT
+        //    // this automatically uses a separate assembly-file with Win8-style Socket usage (not possible in Editor)
+        //    #else
+        //    this.SocketImplementationConfig[ConnectionProtocol.Udp] = typeof(SocketUdp);
+        //    PhotonHandler.PingImplementation = typeof(PingMonoEditor);
+        //    #endif
+
+        //    if (this.SocketImplementationConfig[ConnectionProtocol.Udp] == null)
+        //    {
+        //        Debug.Log("No socket implementation set for 'NoSocket' assembly. Please check your settings.");
+        //    }
+        //}
+        //#pragma warning restore 0162
+        #if NETFX_CORE
+        if (PhotonHandler.PingImplementation == null)
         {
-            #if !UNITY_EDITOR && (UNITY_PS3 || UNITY_ANDROID)
-            this.SocketImplementationConfig[ConnectionProtocol.Udp] = typeof(SocketUdpNativeDynamic);
-            PhotonHandler.PingImplementation = typeof(PingNativeDynamic);
-            #elif !UNITY_EDITOR && (UNITY_IPHONE || UNITY_SWITCH)
-            this.SocketImplementationConfig[ConnectionProtocol.Udp] = typeof(SocketUdpNativeStatic);
-            PhotonHandler.PingImplementation = typeof(PingNativeStatic);
-            #elif !UNITY_EDITOR && UNITY_WINRT
-            // this automatically uses a separate assembly-file with Win8-style Socket usage (not possible in Editor)
-            #else
-            this.SocketImplementationConfig[ConnectionProtocol.Udp] = typeof(SocketUdp);
-            PhotonHandler.PingImplementation = typeof(PingMonoEditor);
-            #endif
-
-            if (this.SocketImplementationConfig[ConnectionProtocol.Udp] == null)
-            {
-                Debug.Log("No socket implementation set for 'NoSocket' assembly. Please check your settings.");
-            }
+            PhotonHandler.PingImplementation = typeof(PingWindowsStore);
         }
-        #pragma warning restore 0162
-
+        #else
         if (PhotonHandler.PingImplementation == null)
         {
             PhotonHandler.PingImplementation = typeof(PingMono);
         }
+        #endif
+
+
+        #if NET_4_6 && (UNITY_EDITOR || !ENABLE_IL2CPP)
+        this.SocketImplementationConfig[ConnectionProtocol.Udp] = typeof(SocketUdpAsync);
+        this.SocketImplementationConfig[ConnectionProtocol.Tcp] = typeof(SocketTcpAsync);
+        #endif
 
 
         if (this.TransportProtocol == protocolOverride)
@@ -1247,7 +1264,7 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
             return;
         }
 
-        Room current = new Room(this.enterRoomParamsCache.RoomName, null);
+        Room current = new Room(this.enterRoomParamsCache.RoomName, this.enterRoomParamsCache.RoomOptions);
         current.IsLocalClientInside = true;
         this.CurrentRoom = current;
 
@@ -1842,21 +1859,21 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
                 // PUN assumes you fetch the name-server's list of regions to ping them
                 if (PhotonNetwork.PhotonServerSettings.HostType == ServerSettings.HostingOption.BestRegion)
                 {
-					
-			        CloudRegionCode bestFromPrefs = PhotonHandler.BestRegionCodeInPreferences;
-					if (bestFromPrefs != CloudRegionCode.none && 
-				    this.AvailableRegions.Exists(x => x.Code == bestFromPrefs) 
-				    )
-			        {
-						Debug.Log("Best region found in PlayerPrefs. Connecting to: " + bestFromPrefs);
-						if (!this.ConnectToRegionMaster(bestFromPrefs))
-						{
-							PhotonHandler.PingAvailableRegionsAndConnectToBest();
-						}
-			        }else{
 
-	                    PhotonHandler.PingAvailableRegionsAndConnectToBest();
-					}
+                    CloudRegionCode bestFromPrefs = PhotonHandler.BestRegionCodeInPreferences;
+                    if (bestFromPrefs != CloudRegionCode.none &&
+                    this.AvailableRegions.Exists(x => x.Code == bestFromPrefs)
+                    )
+                    {
+                        Debug.Log("Best region found in PlayerPrefs. Connecting to: " + bestFromPrefs);
+                        if (!this.ConnectToRegionMaster(bestFromPrefs))
+                        {
+                            PhotonHandler.PingAvailableRegionsAndConnectToBest();
+                        }
+                    }else{
+
+                        PhotonHandler.PingAvailableRegionsAndConnectToBest();
+                    }
                 }
                 break;
 
@@ -2306,7 +2323,7 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
                 break;
 
             case StatusCode.ExceptionOnReceive:
-            case StatusCode.DisconnectByServer:
+            case StatusCode.DisconnectByServerTimeout:
             case StatusCode.DisconnectByServerLogic:
             case StatusCode.DisconnectByServerUserLimit:
                 if (this.IsInitialConnect)
@@ -2568,12 +2585,12 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
                 break;
 
             case EventCode.Leave:
-				
-				// Clean up if we were loading asynchronously.
-				if (_AsyncLevelLoadingOperation!=null)
-				{
-					_AsyncLevelLoadingOperation = null;
-				}
+
+                // Clean up if we were loading asynchronously.
+                if (_AsyncLevelLoadingOperation!=null)
+                {
+                    _AsyncLevelLoadingOperation = null;
+                }
 
                 this.HandleEventLeave(actorNr, photonEvent);
                 break;
@@ -2628,7 +2645,7 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
 
             case PunEvent.CloseConnection:
 
-				
+
 
                 // MasterClient "requests" a disconnection from us
                 if (originatingPlayer == null || !originatingPlayer.IsMasterClient)
@@ -2637,11 +2654,11 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
                 }
                 else
                 {
-					// Clean up if we were loading asynchronously.
-					if (_AsyncLevelLoadingOperation!=null)
-					{
-						_AsyncLevelLoadingOperation = null;
-					}
+                    // Clean up if we were loading asynchronously.
+                    if (_AsyncLevelLoadingOperation!=null)
+                    {
+                        _AsyncLevelLoadingOperation = null;
+                    }
                     PhotonNetwork.LeaveRoom(false);
                 }
 
@@ -2708,12 +2725,12 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
                 SendMonoMessage(PhotonNetworkingMessage.OnLobbyStatisticsUpdate);
                 break;
 
-		case EventCode.ErrorInfo:
+        case EventCode.ErrorInfo:
 
-				if (!PhotonNetwork.CallEvent(photonEvent.Code, photonEvent [ParameterCode.Info], actorNr))
-				{
-					Debug.LogWarning("Warning: Unhandled Event ErrorInfo (251). Set PhotonNetwork.OnEventCall to the method PUN should call for this event.");
-				}
+                if (!PhotonNetwork.CallEvent(photonEvent.Code, photonEvent [ParameterCode.Info], actorNr))
+                {
+                    Debug.LogWarning("Warning: Unhandled Event ErrorInfo (251). Set PhotonNetwork.OnEventCall to the method PUN should call for this event.");
+                }
                 break;
 
             case EventCode.AuthEvent:
@@ -2726,16 +2743,25 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
                 this.tokenCache = this.AuthValues.Token;
                 break;
 
+        case PunEvent.levelReload:
 
-            default:
-                if (photonEvent.Code < 200)
+            if ((bool)photonEvent.Parameters[ParameterCode.Data])
+            {
+                PhotonNetwork.LoadLevelAsync(SceneManagerHelper.ActiveSceneName);
+            }else{
+                PhotonNetwork.LoadLevel(SceneManagerHelper.ActiveSceneName);
+            }
+            break;
+
+        default:
+            if (photonEvent.Code < 200)
+            {
+                if (!PhotonNetwork.CallEvent(photonEvent.Code, photonEvent [ParameterCode.Data], actorNr))
                 {
-					if (!PhotonNetwork.CallEvent(photonEvent.Code, photonEvent [ParameterCode.Data], actorNr))
-					{
-						Debug.LogWarning("Warning: Unhandled event " + photonEvent + ". Set PhotonNetwork.OnEventCall.");
-					}
+                    Debug.LogWarning("Warning: Unhandled event " + photonEvent + ". Set PhotonNetwork.OnEventCall.");
                 }
-                break;
+            }
+            break;
         }
 
         //this.externalListener.OnEvent(photonEvent);
@@ -3710,7 +3736,7 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
         opParameters[ParameterCode.Code] = (byte)0;		// any event
         opParameters[ParameterCode.Cache] = (byte)EventCaching.RemoveFromRoomCacheForActorsLeft;    // option to clear the room cache of all events of players who left
 
-        this.OpCustom((byte)OperationCode.RaiseEvent, opParameters, true, 0);
+        this.SendOperation(OperationCode.RaiseEvent, opParameters, SendOptions.SendReliable);
     }
 
     // Remove RPCs of view (if they are local player's RPCs)
@@ -3950,7 +3976,10 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
             }
         }
 
-        this.OpChangeGroups(disableGroups, enableGroups);
+        if (!PhotonNetwork.offlineMode)
+        {
+            this.OpChangeGroups(disableGroups, enableGroups);
+        }
     }
 
 
@@ -4041,16 +4070,16 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
             return;
         }
 
-		// we are currently loading asynchronously, so we need to check when it's done, we might have not been able to do so 
-		// when we joined the room
-		if (PhotonNetwork.inRoom && _AsyncLevelLoadingOperation != null)
-		{
-			if (_AsyncLevelLoadingOperation.isDone)
-			{
-				_AsyncLevelLoadingOperation = null;
-				LoadLevelIfSynced ();
-			}
-		}
+        // we are currently loading asynchronously, so we need to check when it's done, we might have not been able to do so
+        // when we joined the room
+        if (PhotonNetwork.inRoom && _AsyncLevelLoadingOperation != null)
+        {
+            if (_AsyncLevelLoadingOperation.isDone)
+            {
+                _AsyncLevelLoadingOperation = null;
+                LoadLevelIfSynced ();
+            }
+        }
 
         // no need to send OnSerialize messages while being alone (these are not buffered anyway)
         if (this.mActors.Count <= 1)
@@ -4607,20 +4636,20 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
     /// <summary>Internally used to detect the current scene and load it if PhotonNetwork.automaticallySyncScene is enabled.</summary>
     internal protected void LoadLevelIfSynced()
     {
-		if (!PhotonNetwork.automaticallySyncScene || PhotonNetwork.isMasterClient || PhotonNetwork.room == null)
+        if (!PhotonNetwork.automaticallySyncScene || PhotonNetwork.isMasterClient || PhotonNetwork.room == null)
         {
             return;
         }
 
-		// we only check if scene is not loading in the background.
-		if (_AsyncLevelLoadingOperation != null) {
-			if (_AsyncLevelLoadingOperation.isDone)
-			{
-				_AsyncLevelLoadingOperation = null;
-			}else{
-				return;
-			}
-		}
+        // we only check if scene is not loading in the background.
+        if (_AsyncLevelLoadingOperation != null) {
+            if (_AsyncLevelLoadingOperation.isDone)
+            {
+                _AsyncLevelLoadingOperation = null;
+            }else{
+                return;
+            }
+        }
 
         // check if "current level" is set in props
         if (!PhotonNetwork.room.CustomProperties.ContainsKey(NetworkingPeer.CurrentSceneProperty))
@@ -4628,38 +4657,41 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
             return;
         }
 
-		// check if we are loading asynchronously
-		bool LoadAsync = PhotonNetwork.room.CustomProperties.ContainsKey (NetworkingPeer.CurrentScenePropertyLoadAsync);
+        // check if we are loading asynchronously
+        bool LoadAsync = PhotonNetwork.room.CustomProperties.ContainsKey (NetworkingPeer.CurrentScenePropertyLoadAsync);
 
         // if loaded level is not the one defined my master in props, load that level
         object sceneId = PhotonNetwork.room.CustomProperties[NetworkingPeer.CurrentSceneProperty];
         if (sceneId is int)
         {
             if (SceneManagerHelper.ActiveSceneBuildIndex != (int)sceneId)
-			{
-				if (LoadAsync)
-				{
-					_AsyncLevelLoadingOperation = PhotonNetwork.LoadLevelAsync((int)sceneId);
-				}else{
-                	PhotonNetwork.LoadLevel((int)sceneId);
-				}
-			}
+            {
+                if (LoadAsync)
+                {
+                    _AsyncLevelLoadingOperation = PhotonNetwork.LoadLevelAsync((int)sceneId);
+                }else{
+                    PhotonNetwork.LoadLevel((int)sceneId);
+                }
+            }
         }
         else if (sceneId is string)
         {
             if (SceneManagerHelper.ActiveSceneName != (string)sceneId)
-			{
-				if (LoadAsync)
-				{
-					_AsyncLevelLoadingOperation = PhotonNetwork.LoadLevelAsync((string)sceneId);
-				}else{
-                	PhotonNetwork.LoadLevel((string)sceneId);
-				}
-			}
+            {
+                if (LoadAsync)
+                {
+                    _AsyncLevelLoadingOperation = PhotonNetwork.LoadLevelAsync((string)sceneId);
+                }else{
+                    PhotonNetwork.LoadLevel((string)sceneId);
+                }
+            }
         }
     }
-	
-	protected internal void SetLevelInPropsIfSynced(object levelId, bool asyncLoading = false)
+
+    public bool IsReloadingLevel;
+    public bool AsynchLevelLoadCall;
+
+    protected internal void SetLevelInPropsIfSynced(object levelId,bool initiatingCall, bool asyncLoading = false)
     {
         if (!PhotonNetwork.automaticallySyncScene || !PhotonNetwork.isMasterClient || PhotonNetwork.room == null)
         {
@@ -4672,18 +4704,40 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
         }
 
         // check if "current level" is already set in props
-		if (!asyncLoading && PhotonNetwork.room.CustomProperties.ContainsKey(NetworkingPeer.CurrentSceneProperty))
+        if (!asyncLoading && PhotonNetwork.room.CustomProperties.ContainsKey(NetworkingPeer.CurrentSceneProperty))
         {
             object levelIdInProps = PhotonNetwork.room.CustomProperties[NetworkingPeer.CurrentSceneProperty];
             if (levelIdInProps is int && SceneManagerHelper.ActiveSceneBuildIndex == (int)levelIdInProps)
             {
+
+                SendLevelReloadEvent();
                 return;
             }
             if (levelIdInProps is string && SceneManagerHelper.ActiveSceneName != null && SceneManagerHelper.ActiveSceneName.Equals((string)levelIdInProps))
             {
+
+                    bool _isreload = false;
+
+                    if (!IsReloadingLevel)
+                    {
+                        if (levelId is int) _isreload = (int)levelId == SceneManagerHelper.ActiveSceneBuildIndex;
+                        else if (levelId is string) _isreload = SceneManagerHelper.ActiveSceneName.Equals((string)levelId);
+                    }
+
+                    if (initiatingCall && IsReloadingLevel)
+                    {
+                        _isreload = false;
+                    }
+
+                    if (_isreload)
+                    {
+                        SendLevelReloadEvent();
+                    }
+
                 return;
             }
         }
+
 
         // current level is not yet in props, so this client has to set it
         Hashtable setScene = new Hashtable();
@@ -4692,13 +4746,28 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
         else Debug.LogError("Parameter levelId must be int or string!");
 
 
-		if (asyncLoading) {
-			setScene[NetworkingPeer.CurrentScenePropertyLoadAsync] = true;
-		}
+        if (asyncLoading) {
+            setScene[NetworkingPeer.CurrentScenePropertyLoadAsync] = true;
+        }
 
         PhotonNetwork.room.SetCustomProperties(setScene);
         this.SendOutgoingCommands();    // send immediately! because: in most cases the client will begin to load and not send for a while
     }
+
+
+    /// <summary>
+    /// Sends the level reload event when we detect that the scene has been reloaded and that we have automaticallySyncScene turned on.
+    /// </summary>
+    void SendLevelReloadEvent()
+    {
+        IsReloadingLevel = true;
+
+        if (PhotonNetwork.inRoom)
+        {
+            this.OpRaiseEvent (PunEvent.levelReload, AsynchLevelLoadCall, true, _levelReloadEventOptions);
+        }
+    }
+
 
 
 
@@ -4719,7 +4788,6 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
         opParameters.Add(ParameterCode.UriPath, uriPath);
         opParameters.Add(ParameterCode.WebRpcParameters, parameters);
 
-        return this.OpCustom(OperationCode.WebRpc, opParameters, true);
-
+        return this.SendOperation(OperationCode.WebRpc, opParameters, SendOptions.SendReliable);
     }
 }

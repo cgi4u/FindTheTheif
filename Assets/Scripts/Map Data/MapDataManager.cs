@@ -34,7 +34,6 @@ namespace com.MJT.FindTheThief
             }
         }
 
-        [SerializeField]
         private List<ItemGenPoint> itemGenPoints = new List<ItemGenPoint>();
         /// <summary>
         /// Points where items can be generated
@@ -135,32 +134,6 @@ namespace com.MJT.FindTheThief
             else
                 Debug.Log("Error: Multiple instantiation of the routing manager.");
         }
-
-        private void Start()
-        {
-            
-        }
-
-        /*
-        bool[] ifRouteAssigned;
-        int assignedRouteNum = 0;
-        public Route getRandomRoute()
-        {
-            if (assignedRouteNum >= allGenerationRoutes.Count)  //All available routes are assinged
-                return null;                
-
-            int r;
-            do
-            {
-                r = Random.Range(0, allGenerationRoutes.Count);
-            } while (ifRouteAssigned[r]);
-
-            ifRouteAssigned[r] = true;
-            assignedRouteNum += 1;
-
-            return allGenerationRoutes[r];
-        }
-        */
 
         int[] NPCGenPointSelector;
         /*/// <summary>

@@ -28,7 +28,7 @@ namespace com.MJT.FindTheThief
             selectedThief = _selectedThief;
         }
         
-        public void TryArrest()
+        public void OnArrestButton()
         {
             Debug.Log("Try to arrest.");
             if (selectedThief != null)

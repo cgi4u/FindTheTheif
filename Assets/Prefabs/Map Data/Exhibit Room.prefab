@@ -128,8 +128,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7b9512b30a872f43bafc89d0053df94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemStealPopup: {fileID: 0}
-  isItemExist: 0
   item: {fileID: 0}
 --- !u!1 &802253000
 GameObject:
@@ -260,8 +258,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7b9512b30a872f43bafc89d0053df94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemStealPopup: {fileID: 0}
-  isItemExist: 0
   item: {fileID: 0}
 --- !u!1 &1448941393
 GameObject:
@@ -408,6 +404,7 @@ MonoBehaviour:
   itemGenPoints:
   - {fileID: 8918017416323498607}
   - {fileID: 9103294238916921450}
+  putItemPoint: {fileID: 6952992085095808261}
   inRoomRoute: {fileID: 114932833379337023}
   toRoomRoutes: []
   fromStairRoutes:
@@ -430,8 +427,10 @@ GameObject:
   m_Component:
   - component: {fileID: 5118243859337112151}
   - component: {fileID: 2402806756563139648}
+  - component: {fileID: 6952992085095808261}
+  - component: {fileID: 6941606672857678676}
   m_Layer: 0
-  m_Name: 'Steal Item Put Point '
+  m_Name: 'Put Item Point '
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -477,6 +476,46 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &6952992085095808261
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4123655083076796120}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64c7d31d43056964ab9040af7195e365, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  activated: 0
+--- !u!114 &6941606672857678676
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4123655083076796120}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ownerId: 0
+  group: 0
+  OwnerShipWasTransfered: 0
+  prefixBackup: -1
+  synchronization: 0
+  onSerializeTransformOption: 3
+  onSerializeRigidBodyOption: 2
+  ownershipTransfer: 0
+  ObservedComponents:
+  - {fileID: 0}
+  ObservedComponentsFoldoutOpen: 1
+  viewIdField: 0
+  instantiationId: -1
+  currentMasterID: -1
+  isRuntimeInstantiated: 0
 --- !u!1001 &107305914
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1003,12 +1042,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2d9bf014119d46a4e8a50c7cc385a490, type: 3}
---- !u!4 &4633303845387385 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4633305178793480, guid: 2d9bf014119d46a4e8a50c7cc385a490,
-    type: 3}
-  m_PrefabInstance: {fileID: 1887853169}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &114932833379337023 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 114932834713246030, guid: 2d9bf014119d46a4e8a50c7cc385a490,
@@ -1021,6 +1054,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bfaf9e56a204394da5e68df65d0a672, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!4 &4633303845387385 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4633305178793480, guid: 2d9bf014119d46a4e8a50c7cc385a490,
+    type: 3}
+  m_PrefabInstance: {fileID: 1887853169}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2076996945
 PrefabInstance:
   m_ObjectHideFlags: 0

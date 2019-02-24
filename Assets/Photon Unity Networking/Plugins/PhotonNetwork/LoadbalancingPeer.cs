@@ -63,7 +63,14 @@ using ExitGames.Client.Photon;
             Dictionary<byte, object> parameters = new Dictionary<byte, object>();
             parameters[(byte)ParameterCode.ApplicationId] = appId;
 
-            return this.OpCustom(OperationCode.GetRegions, parameters, true, 0, true);
+            SendOptions sendOptions = new SendOptions
+            {
+                Reliability = true,
+                Channel = 0,
+                Encrypt = true
+            };
+
+            return this.SendOperation(OperationCode.GetRegions, parameters, sendOptions);
         }
 
         /// <summary>
@@ -87,7 +94,7 @@ using ExitGames.Client.Photon;
                 parameters[(byte)ParameterCode.LobbyType] = (byte)lobby.Type;
             }
 
-            return this.OpCustom(OperationCode.JoinLobby, parameters, true);
+            return this.SendOperation(OperationCode.JoinLobby, parameters, SendOptions.SendReliable);
         }
 
 
@@ -103,7 +110,7 @@ using ExitGames.Client.Photon;
                 this.Listener.DebugReturn(DebugLevel.INFO, "OpLeaveLobby()");
             }
 
-            return this.OpCustom(OperationCode.LeaveLobby, null, true);
+            return this.SendOperation(OperationCode.LeaveLobby, null, SendOptions.SendReliable);
         }
 
 
@@ -227,7 +234,7 @@ using ExitGames.Client.Photon;
             }
 
             //UnityEngine.Debug.Log("CreateRoom: " + SupportClassPun.DictionaryToString(op));
-            return this.OpCustom(OperationCode.CreateGame, op, true);
+            return this.SendOperation(OperationCode.CreateGame, op, SendOptions.SendReliable);
         }
 
         /// <summary>
@@ -290,7 +297,7 @@ using ExitGames.Client.Photon;
             }
 
             // UnityEngine.Debug.Log("JoinRoom: " + SupportClassPun.DictionaryToString(op));
-            return this.OpCustom(OperationCode.JoinGame, op, true);
+            return this.SendOperation(OperationCode.JoinGame, op, SendOptions.SendReliable);
         }
 
 
@@ -343,7 +350,7 @@ using ExitGames.Client.Photon;
             }
 
             // UnityEngine.Debug.LogWarning("OpJoinRandom: " + opParameters.ToStringFull());
-            return this.OpCustom(OperationCode.JoinRandomGame, opParameters, true);
+            return this.SendOperation(OperationCode.JoinRandomGame, opParameters, SendOptions.SendReliable);
         }
 
 
@@ -360,7 +367,7 @@ using ExitGames.Client.Photon;
                 parameters = new Dictionary<byte, object>();
                 parameters[ParameterCode.IsInactive] = becomeInactive;
             }
-            return this.OpCustom(OperationCode.Leave, parameters, true);
+            return this.SendOperation(OperationCode.Leave, parameters, SendOptions.SendReliable);
         }
 
         /// <summary>Gets a list of games matching a SQL-like where clause.</summary>
@@ -403,7 +410,7 @@ using ExitGames.Client.Photon;
             opParameters[(byte)ParameterCode.LobbyType] = (byte)lobby.Type;
             opParameters[(byte)ParameterCode.Data] = queryData;
 
-            return this.OpCustom(OperationCode.GetGameList, opParameters, true);
+            return this.SendOperation(OperationCode.GetGameList, opParameters, SendOptions.SendReliable);
         }
 
         /// <summary>
@@ -428,7 +435,7 @@ using ExitGames.Client.Photon;
                 opParameters[ParameterCode.FindFriendsRequestList] = friendsToFind;
             }
 
-            return this.OpCustom(OperationCode.FindFriends, opParameters, true);
+            return this.SendOperation(OperationCode.FindFriends, opParameters, SendOptions.SendReliable);
         }
 
         public bool OpSetCustomPropertiesOfActor(int actorNr, Hashtable actorProperties)
@@ -475,7 +482,14 @@ using ExitGames.Client.Photon;
                 opParameters[ParameterCode.EventForward] = true;
             }
 
-            return this.OpCustom((byte)OperationCode.SetProperties, opParameters, true, 0, false);
+            SendOptions sendOptions = new SendOptions
+            {
+                Reliability = true,
+                Channel = 0,
+                Encrypt = false
+            };
+
+            return this.SendOperation(OperationCode.SetProperties, opParameters, sendOptions);
         }
 
 
@@ -519,7 +533,14 @@ using ExitGames.Client.Photon;
                 opParameters[ParameterCode.EventForward] = true;
             }
 
-            return this.OpCustom((byte)OperationCode.SetProperties, opParameters, true, 0, false);
+            SendOptions sendOptions = new SendOptions
+            {
+                Reliability = true,
+                Channel = 0,
+                Encrypt = false
+            };
+
+            return this.SendOperation(OperationCode.SetProperties, opParameters, sendOptions);
         }
 
         /// <summary>
@@ -539,6 +560,8 @@ using ExitGames.Client.Photon;
         /// <returns>If the operation could be sent (has to be connected).</returns>
         public virtual bool OpAuthenticate(string appId, string appVersion, AuthenticationValues authValues, string regionCode, bool getLobbyStatistics)
         {
+            SendOptions sendOptions;
+
             if (this.DebugOut >= DebugLevel.INFO)
             {
                 this.Listener.DebugReturn(DebugLevel.INFO, "OpAuthenticate()");
@@ -555,7 +578,15 @@ using ExitGames.Client.Photon;
             if (authValues != null && authValues.Token != null)
             {
                 opParameters[ParameterCode.Secret] = authValues.Token;
-                return this.OpCustom(OperationCode.Authenticate, opParameters, true, (byte)0, false);   // we don't have to encrypt, when we have a token (which is encrypted)
+            
+                sendOptions = new SendOptions
+                {
+                    Reliability = true,
+                    Channel = 0,
+                    Encrypt = false // we don't have to encrypt, when we have a token (which is encrypted)
+                };
+
+                return this.SendOperation(OperationCode.Authenticate, opParameters, sendOptions);
             }
 
 
@@ -604,7 +635,14 @@ using ExitGames.Client.Photon;
                 }
             }
 
-            bool sent = this.OpCustom(OperationCode.Authenticate, opParameters, true, (byte) 0, this.IsEncryptionAvailable);
+            sendOptions = new SendOptions
+            {
+                Reliability = true,
+                Channel = 0,
+                Encrypt = this.IsEncryptionAvailable
+            };
+
+            bool sent = this.SendOperation(OperationCode.Authenticate, opParameters, sendOptions);
             if (!sent)
             {
                 this.Listener.DebugReturn(DebugLevel.ERROR, "Error calling OpAuthenticate! Did not work. Check log output, AuthValues and if you're connected.");
@@ -631,11 +669,12 @@ using ExitGames.Client.Photon;
         /// <returns>If the operation could be sent (has to be connected).</returns>
         public virtual bool OpAuthenticateOnce(string appId, string appVersion, AuthenticationValues authValues, string regionCode, EncryptionMode encryptionMode, ConnectionProtocol expectedProtocol)
         {
+            SendOptions sendOptions;
+
             if (this.DebugOut >= DebugLevel.INFO)
             {
                 this.Listener.DebugReturn(DebugLevel.INFO, "OpAuthenticate()");
             }
-
 
             var opParameters = new Dictionary<byte, object>();
 
@@ -643,7 +682,15 @@ using ExitGames.Client.Photon;
             if (authValues != null && authValues.Token != null)
             {
                 opParameters[ParameterCode.Secret] = authValues.Token;
-                return this.OpCustom(OperationCode.AuthenticateOnce, opParameters, true, (byte)0, false);   // we don't have to encrypt, when we have a token (which is encrypted)
+
+                sendOptions = new SendOptions
+                {
+                    Reliability = true,
+                    Channel = 0,
+                    Encrypt = false // we don't have to encrypt, when we have a token (which is encrypted)
+                };
+
+                return this.SendOperation(OperationCode.AuthenticateOnce, opParameters, sendOptions);
             }
 
             if (encryptionMode == EncryptionMode.DatagramEncryption && expectedProtocol != ConnectionProtocol.Udp)
@@ -692,7 +739,14 @@ using ExitGames.Client.Photon;
                 }
             }
 
-            return this.OpCustom(OperationCode.AuthenticateOnce, opParameters, true, (byte)0, this.IsEncryptionAvailable);
+            sendOptions = new SendOptions
+            {
+                Reliability = true,
+                Channel = 0,
+                Encrypt = this.IsEncryptionAvailable
+            };
+
+            return this.SendOperation(OperationCode.AuthenticateOnce, opParameters, sendOptions);
         }
 
         /// <summary>
@@ -726,7 +780,7 @@ using ExitGames.Client.Photon;
                 opParameters[(byte)ParameterCode.Add] = groupsToAdd;
             }
 
-            return this.OpCustom((byte)OperationCode.ChangeGroups, opParameters, true, 0);
+            return this.SendOperation(OperationCode.ChangeGroups, opParameters, SendOptions.SendReliable);
         }
 
 
@@ -776,7 +830,14 @@ using ExitGames.Client.Photon;
                 }
             }
 
-            return this.OpCustom((byte) OperationCode.RaiseEvent, this.opParameters, sendReliable, raiseEventOptions.SequenceChannel, raiseEventOptions.Encrypt);
+            SendOptions sendOptions = new SendOptions
+            {
+                Reliability = sendReliable,
+                Channel = raiseEventOptions.SequenceChannel,
+                Encrypt = raiseEventOptions.Encrypt
+            };
+
+            return this.SendOperation(OperationCode.RaiseEvent, this.opParameters, sendOptions);
         }
 
 
@@ -864,7 +925,7 @@ using ExitGames.Client.Photon;
                 // no need to send op in case we set the default values
                 return true;
             }
-            return this.OpCustom((byte)OperationCode.ServerSettings, this.opParameters, true);
+            return this.SendOperation(OperationCode.ServerSettings, this.opParameters, SendOptions.SendReliable);
         }
     }
 
