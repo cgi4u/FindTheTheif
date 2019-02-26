@@ -22,7 +22,6 @@ namespace com.MJT.FindTheThief
             }
         }
 
-        [SerializeField]
         private RouteNode[] nodeSet;
         /// <summary>
         /// The set of nodes which are contained in this route. NPC follows there positions.

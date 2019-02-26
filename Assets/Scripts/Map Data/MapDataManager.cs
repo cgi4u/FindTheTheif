@@ -85,7 +85,10 @@ namespace com.MJT.FindTheThief
             {
                 //Find all NPC-generatable routes
                 NPCGenRoutes.Add(room.InRoomRoute);
-                NPCGenRoutes.AddRange(room.ToRoomRoutes);
+                foreach (List<Route> routes in room.ToRoomRoutes.Values)
+                {
+                    NPCGenRoutes.AddRange(routes);
+                }
                 if (room.FromStairRoutes.LeftDownRoute != null)
                     NPCGenRoutes.Add(room.FromStairRoutes.LeftDownRoute);
                 if (room.FromStairRoutes.LeftUpRoute != null)
@@ -108,7 +111,7 @@ namespace com.MJT.FindTheThief
             {
                 for (int i = 1; i < route.NodeSet.Length - 1; i++)
                 {
-                    Vector3 nodeLoc = route.NodeSet[i].transform.position;
+                    Vector3 nodeLoc = route.NodeSet[i].DefaultPos;
                     if (!assignedLoc.Contains(nodeLoc))
                     {
                         nPCGenPoints.Add(route.NodeSet[i]);

@@ -65,7 +65,6 @@ namespace com.MJT.FindTheThief
             }
         }
 
-        //방과 관련한 경로들
         [SerializeField]
         private Route inRoomRoute;
         public Route InRoomRoute
@@ -75,15 +74,18 @@ namespace com.MJT.FindTheThief
                 return inRoomRoute;
             }
         }
+
         [SerializeField]
         private Route[] toRoomRoutes;
-        public Route[] ToRoomRoutes
+        private Dictionary<int, List<Route>> toRoomRoutes_dic = new Dictionary<int, List<Route>>();
+        public Dictionary<int, List<Route>> ToRoomRoutes
         {
             get
             {
-                return toRoomRoutes;
+                return toRoomRoutes_dic;
             }
         }
+
         [SerializeField]
         private StairRouteContainer fromStairRoutes;
         public StairRouteContainer FromStairRoutes
@@ -93,6 +95,7 @@ namespace com.MJT.FindTheThief
                 return fromStairRoutes;
             }
         }
+
         [SerializeField]
         private StairRouteContainer toStairRoutes;
         public StairRouteContainer ToStairRoutes
@@ -100,6 +103,22 @@ namespace com.MJT.FindTheThief
             get
             {
                 return toStairRoutes;
+            }
+        }
+
+        private void Awake()
+        {
+           foreach (Route route in toRoomRoutes)
+            {
+                if (route.EndRoom < 0)
+                {
+                    Debug.LogError("End room of " + route.name + " is not set properly.");
+                    return;
+                }
+
+                if (!toRoomRoutes_dic.ContainsKey(route.EndRoom))
+                    toRoomRoutes_dic[route.EndRoom] = new List<Route>();
+                toRoomRoutes_dic[route.EndRoom].Add(route);
             }
         }
     }

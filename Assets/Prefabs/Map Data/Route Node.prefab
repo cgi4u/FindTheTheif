@@ -46,7 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isItemPoint: 0
   itemDir: 0
-  points: []
+  defaultOffset: {x: -0.5, y: 0.5}
 --- !u!61 &1345774265088451216
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -71,5 +71,5 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 2, y: 2}
   m_EdgeRadius: 0

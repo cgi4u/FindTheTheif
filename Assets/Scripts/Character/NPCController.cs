@@ -63,8 +63,7 @@ namespace com.MJT.FindTheThief
                 }
             }
 
-            Vector2 nodePos = (Vector2)curRoute.NodeSet[curNodeNum].transform.position;
-            targetPoint = startPoint = transform.position = new Vector2(Mathf.Round(nodePos.x), Mathf.Round(nodePos.y));
+            targetPoint = startPoint = transform.position = (Vector2)curRoute.NodeSet[curNodeNum].DefaultPos;
         }
 
         #endregion
@@ -195,7 +194,7 @@ namespace com.MJT.FindTheThief
                 directions[2] = Vector2.left; directions[3] = Vector2.down;
             }
 
-            Vector2 nextNodePos = (Vector2)curRoute.NodeSet[curNodeNum + 1].transform.position;
+            Vector2 nextNodePos = (Vector2)curRoute.NodeSet[curNodeNum + 1].DefaultPos;
             for (int i = 1; i < directions.Length; i++)
             {
                 for (int j = i; j > 0; j--)
@@ -334,21 +333,14 @@ namespace com.MJT.FindTheThief
                     if (curFloor == mapDataManager.Rooms[nextRoom].Floor)       // The next room is in the same floor -> Room to Room route
                     {
                         //Debug.Log("Case: Room-to-Room");
-                        curRoute = null;
-                        foreach (Route roomToRoomRoute in mapDataManager.Rooms[prevRoom].ToRoomRoutes)
-                        {
-                            if (roomToRoomRoute.EndRoom == nextRoom)
-                            {
-                                curRoute = roomToRoomRoute;
-                                break;
-                            }
-                        }
-
-                        if (curRoute == null)
+                        List<Route> toNextRoomRoutes = mapDataManager.Rooms[prevRoom].ToRoomRoutes[nextRoom];
+                        if (toNextRoomRoutes == null)
                         {
                             Debug.LogError("Room " + prevRoom + " to Room " + nextRoom + " Route is not set.");
                             return;
                         }
+
+                        curRoute = toNextRoomRoutes[Random.Range(0, toNextRoomRoutes.Count)];
                     }
                     else        // The next room is in one of the other floors -> Room to Stair route
                     {

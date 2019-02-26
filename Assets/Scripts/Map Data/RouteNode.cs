@@ -10,17 +10,6 @@ namespace com.MJT.FindTheThief
     [RequireComponent(typeof(BoxCollider2D))]
     public class RouteNode : MonoBehaviour
     {
-        /// <summary>
-        /// Position of this node in 2D space.
-        /// </summary>
-        public Vector2 position
-        {
-            get
-            {
-                return (Vector2)transform.position;
-            }
-        }
-
         [SerializeField]
         private bool isItemPoint;
         public bool IsItemPoint
@@ -42,6 +31,13 @@ namespace com.MJT.FindTheThief
         }
 
         [SerializeField]
-        private Vector2[] points;
+        private Vector2 defaultOffset;
+        public Vector2 DefaultPos
+        {
+            get
+            {
+                return (Vector2)transform.position + defaultOffset;
+            }
+        }
     }
 }
