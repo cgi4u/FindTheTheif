@@ -13,10 +13,6 @@ namespace com.MJT.FindTheThief
     {
         [Tooltip("The prefab to use for representing the player")]
         public GameObject playerPrefab;
-        public Text teamLabel;
-
-        [Tooltip("The prefab of the room controller")]
-        public GameObject multiplayRoomManagerPrefab;
 
         void Start()
         {

@@ -276,7 +276,9 @@ namespace com.MJT.FindTheThief
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            Debug.Log("Trigger: " + collision.gameObject.name);
+            if (!photonView.isMine) return;
+
+            //Debug.Log("Trigger: " + collision.gameObject.name);
             if (collision.gameObject == curRoute.NodeSet[curNodeNum + 1].gameObject)
                 nodeChange = true;
         }
@@ -481,6 +483,7 @@ namespace com.MJT.FindTheThief
                 stream.SendNext(isMoving);
                 stream.SendNext(blockedTime);
 
+                stream.SendNext(nodeChange);
                 stream.SendNext(prevRoom);
                 stream.SendNext(nextRoom);
                 stream.SendNext(curNodeNum);
@@ -494,6 +497,7 @@ namespace com.MJT.FindTheThief
                 isMoving = (bool)stream.ReceiveNext();
                 blockedTime = (float)stream.ReceiveNext();
 
+                nodeChange = (bool)stream.ReceiveNext();
                 prevRoom = (int)stream.ReceiveNext();
                 nextRoom = (int)stream.ReceiveNext();
                 curNodeNum = (int)stream.ReceiveNext();

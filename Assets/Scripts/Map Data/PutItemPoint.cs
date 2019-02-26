@@ -4,7 +4,6 @@ using UnityEngine;
 
 namespace com.MJT.FindTheThief
 {
-    [RequireComponent(typeof(PhotonView))]
     public class PutItemPoint : Photon.PunBehaviour
     {
         public bool Activated = false;

@@ -748,7 +748,7 @@ namespace com.MJT.FindTheThief
                 return;
 
             PhotonExtends.SetLocalPlayerPropsByElem(pauseKey, pauseStatus);
-            PhotonNetwork.networkingPeer.SendOutgoingCommands();
+            //PhotonNetwork.networkingPeer.SendOutgoingCommands();
         }
     }
 }
