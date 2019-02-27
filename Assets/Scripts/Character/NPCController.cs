@@ -478,6 +478,8 @@ namespace com.MJT.FindTheThief
         {
             if (stream.isWriting)
             {
+                stream.SendNext(Activated);
+                
                 stream.SendNext(startPoint);
                 stream.SendNext(targetPoint);
                 stream.SendNext(isMoving);
@@ -492,6 +494,8 @@ namespace com.MJT.FindTheThief
             }
             else
             {
+                Activated = (bool)stream.ReceiveNext();
+
                 startPoint = (Vector2)stream.ReceiveNext();
                 targetPoint = (Vector2)stream.ReceiveNext();
                 isMoving = (bool)stream.ReceiveNext();

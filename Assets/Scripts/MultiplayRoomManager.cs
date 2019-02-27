@@ -433,7 +433,7 @@ namespace com.MJT.FindTheThief
                 }
 
                 GameObject newItem = PhotonNetwork.InstantiateSceneObject("Items\\" + newItemPrefab.name, 
-                                        mapDataManager.ItemGenPoints[i].transform.position, Quaternion.identity, 0, null);
+                                        mapDataManager.ItemGenPoints[i].ItemPos, Quaternion.identity, 0, null);
                 PhotonView.Get(newItem).RPC("Init", PhotonTargets.All, i);
             }
 
@@ -748,7 +748,7 @@ namespace com.MJT.FindTheThief
                 return;
 
             PhotonExtends.SetLocalPlayerPropsByElem(pauseKey, pauseStatus);
-            //PhotonNetwork.networkingPeer.SendOutgoingCommands();
+            PhotonNetwork.networkingPeer.SendOutgoingCommands();
         }
     }
 }

@@ -82,7 +82,7 @@ MonoBehaviour:
   - {fileID: 6791036397188444402, guid: d495022b1f82d1c4ba92d895c8b68edd, type: 3}
   - {fileID: 3971122904755379744, guid: fbd4e3a680cc46747a828a21f2586362, type: 3}
   - {fileID: 418247004385567571, guid: a10d59b3ede3d3e44aa97c70ad0c5d15, type: 3}
-  targetItemNum: 2
+  targetItemNum: 3
   targetItems: []
   leftTimeStamp: 60000
   inReady: 0

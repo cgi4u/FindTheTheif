@@ -25,6 +25,16 @@ namespace com.MJT.FindTheThief
             }
         }
 
+        [SerializeField]
+        private Vector2 itemOffset;
+        public Vector2 ItemPos
+        {
+            get
+            {
+                return (Vector2)transform.position + itemOffset;
+            }
+        }
+
         /// <summary>
         /// Index of this point in the item generation point list of MapDataManager.
         /// </summary>

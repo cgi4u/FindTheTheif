@@ -12871,7 +12871,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 928630983}
         m_MethodName: ExitRoom
         m_Mode: 1
         m_Arguments:
@@ -72549,6 +72549,36 @@ PrefabInstance:
       propertyPath: m_Name
       value: Exhibit Room 2
       objectReference: {fileID: 0}
+    - target: {fileID: 7130828360167650734, guid: c6e80544fa7edcf408564ad2549d8b5d,
+        type: 3}
+      propertyPath: toRoomRoutes.Array.data[0]
+      value: 
+      objectReference: {fileID: 1478814491}
+    - target: {fileID: 7130828360167650734, guid: c6e80544fa7edcf408564ad2549d8b5d,
+        type: 3}
+      propertyPath: toRoomRoutes.Array.data[1]
+      value: 
+      objectReference: {fileID: 38209580}
+    - target: {fileID: 7130828360167650734, guid: c6e80544fa7edcf408564ad2549d8b5d,
+        type: 3}
+      propertyPath: toRoomRoutes.Array.data[2]
+      value: 
+      objectReference: {fileID: 658422994}
+    - target: {fileID: 7130828360167650734, guid: c6e80544fa7edcf408564ad2549d8b5d,
+        type: 3}
+      propertyPath: toRoomRoutes.Array.data[3]
+      value: 
+      objectReference: {fileID: 113809822}
+    - target: {fileID: 7130828360167650734, guid: c6e80544fa7edcf408564ad2549d8b5d,
+        type: 3}
+      propertyPath: toRoomRoutes.Array.data[4]
+      value: 
+      objectReference: {fileID: 1420279061}
+    - target: {fileID: 7130828360167650734, guid: c6e80544fa7edcf408564ad2549d8b5d,
+        type: 3}
+      propertyPath: toRoomRoutes.Array.data[5]
+      value: 
+      objectReference: {fileID: 1998679237}
     - target: {fileID: 7164417403484072752, guid: c6e80544fa7edcf408564ad2549d8b5d,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -72604,36 +72634,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7130828360167650734, guid: c6e80544fa7edcf408564ad2549d8b5d,
-        type: 3}
-      propertyPath: toRoomRoutes.Array.data[0]
-      value: 
-      objectReference: {fileID: 1478814491}
-    - target: {fileID: 7130828360167650734, guid: c6e80544fa7edcf408564ad2549d8b5d,
-        type: 3}
-      propertyPath: toRoomRoutes.Array.data[1]
-      value: 
-      objectReference: {fileID: 38209580}
-    - target: {fileID: 7130828360167650734, guid: c6e80544fa7edcf408564ad2549d8b5d,
-        type: 3}
-      propertyPath: toRoomRoutes.Array.data[2]
-      value: 
-      objectReference: {fileID: 658422994}
-    - target: {fileID: 7130828360167650734, guid: c6e80544fa7edcf408564ad2549d8b5d,
-        type: 3}
-      propertyPath: toRoomRoutes.Array.data[3]
-      value: 
-      objectReference: {fileID: 113809822}
-    - target: {fileID: 7130828360167650734, guid: c6e80544fa7edcf408564ad2549d8b5d,
-        type: 3}
-      propertyPath: toRoomRoutes.Array.data[4]
-      value: 
-      objectReference: {fileID: 1420279061}
-    - target: {fileID: 7130828360167650734, guid: c6e80544fa7edcf408564ad2549d8b5d,
-        type: 3}
-      propertyPath: toRoomRoutes.Array.data[5]
-      value: 
-      objectReference: {fileID: 1998679237}
     - target: {fileID: 7161546159838514485, guid: c6e80544fa7edcf408564ad2549d8b5d,
         type: 3}
       propertyPath: m_Name
