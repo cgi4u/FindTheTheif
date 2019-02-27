@@ -7,7 +7,7 @@ namespace com.MJT.FindTheThief
     /// <summary>
     /// Control a NPC's behavior, especially routing
     /// </summary>
-    [RequireComponent(typeof(PhotonTransformView))]
+    [RequireComponent(typeof(PhotonTransformView), typeof(Animator))]
     public class NPCController : Photon.PunBehaviour, IPunObservable
     {
         #region Intialization
@@ -71,7 +71,8 @@ namespace com.MJT.FindTheThief
         /// <summary>
         /// True when this NPC reached the target route node, it means change the target node to next.
         /// </summary>
-        private bool nodeChange = false;
+        [SerializeField]
+        private bool nodeChangeFlag = false;
         private void Update()
         {
             if (!Activated || (PhotonNetwork.connected && !photonView.isMine))
@@ -91,7 +92,7 @@ namespace com.MJT.FindTheThief
                 Move();
                 if ((Vector2)transform.position == targetPoint)
                 {
-                    if (nodeChange)
+                    if (nodeChangeFlag)
                         ChangeNode();
                     else
                         SetNewTargetPoint();
@@ -157,12 +158,15 @@ namespace com.MJT.FindTheThief
             {
                 Debug.LogError("Collision with undefined object. Object name: " + collision.gameObject.name);
             }
+
+            SetAnimationProperty();
         }
 
         [SerializeField]
         private Vector2 startPoint;
         [SerializeField]
         private Vector2 targetPoint;
+        [SerializeField]
         private Vector2 direction = new Vector2(0, 0);
         private Vector2[] directions = new Vector2[4];
         private void SetNewTargetPoint()
@@ -272,15 +276,18 @@ namespace com.MJT.FindTheThief
 
                 direction = newDirection;
             }
+
+            SetAnimationProperty();
         }
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            if (!photonView.isMine) return;
+            if (PhotonNetwork.connected && !photonView.isMine)
+                return;
 
             //Debug.Log("Trigger: " + collision.gameObject.name);
             if (collision.gameObject == curRoute.NodeSet[curNodeNum + 1].gameObject)
-                nodeChange = true;
+                nodeChangeFlag = true;
         }
 
         [SerializeField]
@@ -298,6 +305,7 @@ namespace com.MJT.FindTheThief
             {
                 isMoving = false;
                 blockedTime = Random.Range(1f, 3f);
+                SetAnimationProperty();
             }
 
             if (curNodeNum == curRoute.NodeSet.Length - 1)       // Route ends, get next route.
@@ -317,7 +325,7 @@ namespace com.MJT.FindTheThief
                 else
                     ChangeCurRoute(randomNextRoom);
             }
-            nodeChange = false;
+            nodeChangeFlag = false;
         }
 
         private int prevRoom;
@@ -347,34 +355,37 @@ namespace com.MJT.FindTheThief
                     else        // The next room is in one of the other floors -> Room to Stair route
                     {
                         string sideAndType;
+                        Route[] candRouteSet;
 
                         //Debug.Log("Case: Room-to-Stair");
                         if (mapDataManager.Rooms[nextRoom].Floor < curFloor && mapDataManager.Rooms[prevRoom].AdjStairSide == StairSide.Left)
                         {
                             sideAndType = "Left Down";
-                            curRoute = mapDataManager.Rooms[prevRoom].ToStairRoutes.LeftDownRoute;
+                            candRouteSet = mapDataManager.Rooms[prevRoom].ToStairRoutes.LeftDownRoutes;
                         }
                         else if (mapDataManager.Rooms[nextRoom].Floor > curFloor && mapDataManager.Rooms[prevRoom].AdjStairSide == StairSide.Left)
                         {
                             sideAndType = "Left Up";
-                            curRoute = mapDataManager.Rooms[prevRoom].ToStairRoutes.LeftUpRoute;
+                            candRouteSet = mapDataManager.Rooms[prevRoom].ToStairRoutes.LeftUpRoutes;
                         }
                         else if (mapDataManager.Rooms[nextRoom].Floor < curFloor && mapDataManager.Rooms[prevRoom].AdjStairSide == StairSide.Right)
                         {
                             sideAndType = "Right Down";
-                            curRoute = mapDataManager.Rooms[prevRoom].ToStairRoutes.RightDownRoute;
+                            candRouteSet = mapDataManager.Rooms[prevRoom].ToStairRoutes.RightDownRoutes;
                         }
                         else
                         {
                             sideAndType = "Right Up";
-                            curRoute = mapDataManager.Rooms[prevRoom].ToStairRoutes.RightUpRoute;
+                            candRouteSet = mapDataManager.Rooms[prevRoom].ToStairRoutes.RightUpRoutes;
                         }
 
-                        if (curRoute == null)
+                        if (candRouteSet.Length == 0)
                         {
                             Debug.LogError("Room " + prevRoom + " to " + sideAndType + " Stair Route is not set.");
                             return;
                         }
+
+                        curRoute = candRouteSet[Random.Range(0, candRouteSet.Length)];
                     }
 
                     break;
@@ -389,64 +400,104 @@ namespace com.MJT.FindTheThief
                     {
                         //Debug.Log("Case: Stair-to-Room");
                         string sideAndType;
+                        List<Route> candRouteSet = new List<Route>();
 
                         if (curRoute.StairSide == StairSide.Left && curRoute.StairType == StairType.Down)   // From Stair Route starts in the side where previous route ends
                         {
                             sideAndType = "Left Up";
-                            curRoute = mapDataManager.Rooms[nextRoom].FromStairRoutes.LeftUpRoute;
+                            foreach (Route route in mapDataManager.Rooms[nextRoom].FromStairRoutes.LeftUpRoutes)
+                            {
+                                if (route.NodeSet[0].DefaultOffSet == curRoute.NodeSet[curRoute.NodeSet.Length - 1].DefaultOffSet)
+                                    candRouteSet.Add(route);
+                            }
                         }
                         else if (curRoute.StairSide == StairSide.Left && curRoute.StairType == StairType.Up)
                         {
                             sideAndType = "Left Down";
-                            curRoute = mapDataManager.Rooms[nextRoom].FromStairRoutes.LeftDownRoute;
+                            foreach (Route route in mapDataManager.Rooms[nextRoom].FromStairRoutes.LeftDownRoutes)
+                            {
+                                if (route.NodeSet[0].DefaultOffSet == curRoute.NodeSet[curRoute.NodeSet.Length - 1].DefaultOffSet)
+                                    candRouteSet.Add(route);
+                            }
                         }
                         else if (curRoute.StairSide == StairSide.Right && curRoute.StairType == StairType.Down)
                         {
                             sideAndType = "Right Up";
-                            curRoute = mapDataManager.Rooms[nextRoom].FromStairRoutes.RightUpRoute;
+                            foreach (Route route in mapDataManager.Rooms[nextRoom].FromStairRoutes.RightUpRoutes)
+                            {
+                                if (route.NodeSet[0].DefaultOffSet == curRoute.NodeSet[curRoute.NodeSet.Length - 1].DefaultOffSet)
+                                    candRouteSet.Add(route);
+                            }
                         }
                         else
                         {
                             sideAndType = "Right Down";
-                            curRoute = mapDataManager.Rooms[nextRoom].FromStairRoutes.RightDownRoute;
+                            foreach (Route route in mapDataManager.Rooms[nextRoom].FromStairRoutes.RightDownRoutes)
+                            {
+                                if (route.NodeSet[0].DefaultOffSet == curRoute.NodeSet[curRoute.NodeSet.Length - 1].DefaultOffSet)
+                                    candRouteSet.Add(route);
+                            }
                         }
 
-                        if (curRoute == null)
+                        if (candRouteSet.Count == 0)
                         {
                             Debug.LogError(sideAndType + " Stair to Room " + nextRoom + " Route is not set.");
                             return;
                         }
+
+                        curRoute = candRouteSet[Random.Range(0, candRouteSet.Count)];
+                        startPoint = targetPoint = transform.position = curRoute.NodeSet[0].DefaultPos;
                     }
                     else   // The target room isn't in this floor -> Stair to Stair Route
                     {
                         string sideAndType;
+                        List<Route> candRouteSet = new List<Route>();
 
                         if (curRoute.StairSide == StairSide.Left && curRoute.StairType == StairType.Down)   // From Stair Route starts in the side where previous route ends
                         {
-                            sideAndType = "Left Down Down";
-                            curRoute = mapDataManager.StairToStairRoutes[curFloor - 1].LeftDownRoute;
+                            sideAndType = "Left Up";
+                            foreach (Route route in mapDataManager.StairToStairRoutes[curFloor - 1].LeftUpRoutes)
+                            {
+                                if (route.NodeSet[0].DefaultOffSet == curRoute.NodeSet[curRoute.NodeSet.Length - 1].DefaultOffSet)
+                                    candRouteSet.Add(route);
+                            }
                         }
                         else if (curRoute.StairSide == StairSide.Left && curRoute.StairType == StairType.Up)
                         {
-                            sideAndType = "Left Up Up";
-                            curRoute = mapDataManager.StairToStairRoutes[curFloor - 1].LeftUpRoute;
+                            sideAndType = "Left Down";
+                            foreach (Route route in mapDataManager.StairToStairRoutes[curFloor - 1].LeftDownRoutes)
+                            {
+                                if (route.NodeSet[0].DefaultOffSet == curRoute.NodeSet[curRoute.NodeSet.Length - 1].DefaultOffSet)
+                                    candRouteSet.Add(route);
+                            }
                         }
                         else if (curRoute.StairSide == StairSide.Right && curRoute.StairType == StairType.Down)
                         {
-                            sideAndType = "Right Down Down";
-                            curRoute = mapDataManager.StairToStairRoutes[curFloor - 1].RightDownRoute;
+                            sideAndType = "Right Up";
+                            foreach (Route route in mapDataManager.StairToStairRoutes[curFloor - 1].RightUpRoutes)
+                            {
+                                if (route.NodeSet[0].DefaultOffSet == curRoute.NodeSet[curRoute.NodeSet.Length - 1].DefaultOffSet)
+                                    candRouteSet.Add(route);
+                            }
                         }
                         else
                         {
-                            sideAndType = "Right Up Up";
-                            curRoute = mapDataManager.StairToStairRoutes[curFloor - 1].RightUpRoute;
+                            sideAndType = "Right Down";
+                            foreach (Route route in mapDataManager.StairToStairRoutes[curFloor - 1].RightDownRoutes)
+                            {
+                                if (route.NodeSet[0].DefaultOffSet == curRoute.NodeSet[curRoute.NodeSet.Length - 1].DefaultOffSet)
+                                    candRouteSet.Add(route);
+                            }
                         }
 
-                        if (curRoute == null)
+                        if (candRouteSet.Count == 0)
                         {
                             Debug.LogError(sideAndType + " Stair to Stair Route in " + curFloor + "th Floor is not set.");
                             return;
                         }
+
+                        curRoute = candRouteSet[Random.Range(0, candRouteSet.Count)];
+                        startPoint = targetPoint = transform.position = curRoute.NodeSet[0].DefaultPos;
                     }
                     break;
                 default:    // The current route is To Room Route -> Next is In Room Route
@@ -461,13 +512,27 @@ namespace com.MJT.FindTheThief
                     break;
             }
             curNodeNum = 0;
+        }
 
-            /*if (!PhotonNetwork.connected || photonView.isMine)
-            {
-                transform.position = curRoute.NodeSet[curNodeNum].transform.position;
-                //SetNewTargetPoint();
-            }*/
-               
+        private void SetAnimationProperty()
+        {
+            Animator animator = GetComponent<Animator>();
+
+            int directionInt = -1;
+            if (direction == Vector2.up)
+                directionInt = 0;
+            else if (direction == Vector2.down)
+                directionInt = 1;
+            else if (direction == Vector2.left)
+                directionInt = 2;
+            else if (direction == Vector2.right)
+                directionInt = 3;
+
+            if (animator.GetInteger("Direction") != directionInt)
+                animator.SetInteger("Direction", directionInt);
+
+            if (animator.GetBool("IsMoving") != isMoving)
+                animator.SetBool("IsMoving", isMoving);
         }
 
         #endregion
@@ -485,7 +550,7 @@ namespace com.MJT.FindTheThief
                 stream.SendNext(isMoving);
                 stream.SendNext(blockedTime);
 
-                stream.SendNext(nodeChange);
+                stream.SendNext(nodeChangeFlag);
                 stream.SendNext(prevRoom);
                 stream.SendNext(nextRoom);
                 stream.SendNext(curNodeNum);
@@ -501,7 +566,7 @@ namespace com.MJT.FindTheThief
                 isMoving = (bool)stream.ReceiveNext();
                 blockedTime = (float)stream.ReceiveNext();
 
-                nodeChange = (bool)stream.ReceiveNext();
+                nodeChangeFlag = (bool)stream.ReceiveNext();
                 prevRoom = (int)stream.ReceiveNext();
                 nextRoom = (int)stream.ReceiveNext();
                 curNodeNum = (int)stream.ReceiveNext();

@@ -31,7 +31,25 @@ namespace com.MJT.FindTheThief
         }
 
         [SerializeField]
+        private bool isStairPoint;
+        public bool IsStairPoint
+        {
+            get
+            {
+                return isStairPoint;
+            }
+        }
+
+        [SerializeField]
         private Vector2 defaultOffset;
+        public Vector2 DefaultOffSet
+        {
+            get
+            {
+                return defaultOffset;
+            }
+        }
+
         public Vector2 DefaultPos
         {
             get

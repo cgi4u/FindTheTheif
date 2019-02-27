@@ -11,39 +11,42 @@ namespace com.MJT.FindTheThief
     public class StairRouteContainer
     {
         [SerializeField]
-        private Route leftDownRoute;
-        public Route LeftDownRoute
+        private Route[] leftDownRoutes;
+        public Route[] LeftDownRoutes
         {
             get
             {
-                return leftDownRoute;
+                return leftDownRoutes;
             }
         }
+
         [SerializeField]
-        private Route leftUpRoute;
-        public Route LeftUpRoute
+        private Route[] leftUpRoutes;
+        public Route[] LeftUpRoutes
         {
             get
             {
-                return leftUpRoute;
+                return leftUpRoutes;
             }
         }
+
         [SerializeField]
-        private Route rightDownRoute;
-        public Route RightDownRoute
+        private Route[] rightDownRoutes;
+        public Route[] RightDownRoutes
         {
             get
             {
-                return rightDownRoute;
+                return rightDownRoutes;
             }
         }
+
         [SerializeField]
-        private Route rightUpRoute;
-        public Route RightUpRoute
+        private Route[] rightUpRoutes;
+        public Route[] RightUpRoutes
         {
             get
             {
-                return rightUpRoute;
+                return rightUpRoutes;
             }
         }
     }

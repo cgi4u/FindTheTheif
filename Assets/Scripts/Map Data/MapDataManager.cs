@@ -89,14 +89,11 @@ namespace com.MJT.FindTheThief
                 {
                     NPCGenRoutes.AddRange(routes);
                 }
-                if (room.FromStairRoutes.LeftDownRoute != null)
-                    NPCGenRoutes.Add(room.FromStairRoutes.LeftDownRoute);
-                if (room.FromStairRoutes.LeftUpRoute != null)
-                    NPCGenRoutes.Add(room.FromStairRoutes.LeftUpRoute);
-                if (room.FromStairRoutes.RightDownRoute != null)
-                    NPCGenRoutes.Add(room.FromStairRoutes.RightDownRoute);
-                if (room.FromStairRoutes.RightUpRoute != null)
-                    NPCGenRoutes.Add(room.FromStairRoutes.RightUpRoute);
+
+                NPCGenRoutes.AddRange(room.FromStairRoutes.LeftDownRoutes);
+                NPCGenRoutes.AddRange(room.FromStairRoutes.LeftUpRoutes);
+                NPCGenRoutes.AddRange(room.FromStairRoutes.RightDownRoutes);
+                NPCGenRoutes.AddRange(room.FromStairRoutes.RightUpRoutes);
 
                 //Find all Item Generation Points
                 foreach (ItemGenPoint itemGenPoint in room.ItemGenPoints)
