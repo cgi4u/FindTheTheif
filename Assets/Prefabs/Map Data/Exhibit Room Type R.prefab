@@ -319,15 +319,15 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   fromStairRoutes:
-    leftDownRoute: {fileID: 0}
-    leftUpRoute: {fileID: 0}
-    rightDownRoute: {fileID: 0}
-    rightUpRoute: {fileID: 0}
+    leftDownRoutes: []
+    leftUpRoutes: []
+    rightDownRoutes: []
+    rightUpRoutes: []
   toStairRoutes:
-    leftDownRoute: {fileID: 0}
-    leftUpRoute: {fileID: 0}
-    rightDownRoute: {fileID: 0}
-    rightUpRoute: {fileID: 0}
+    leftDownRoutes: []
+    leftUpRoutes: []
+    rightDownRoutes: []
+    rightUpRoutes: []
 --- !u!1001 &2990920406810318413
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -574,6 +574,11 @@ PrefabInstance:
       propertyPath: isItemPoint
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8116909414887449922, guid: 03c6e5faa92ba0a42a20c40444495883,
+        type: 3}
+      propertyPath: itemDir.x
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 03c6e5faa92ba0a42a20c40444495883, type: 3}
 --- !u!1001 &4370752851449712265
@@ -786,6 +791,11 @@ PrefabInstance:
       propertyPath: isItemPoint
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8116909414887449922, guid: 03c6e5faa92ba0a42a20c40444495883,
+        type: 3}
+      propertyPath: itemDir.x
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 03c6e5faa92ba0a42a20c40444495883, type: 3}
 --- !u!1001 &4370752852164387354
@@ -858,6 +868,11 @@ PrefabInstance:
     - target: {fileID: 8116909414887449922, guid: 03c6e5faa92ba0a42a20c40444495883,
         type: 3}
       propertyPath: isItemPoint
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8116909414887449922, guid: 03c6e5faa92ba0a42a20c40444495883,
+        type: 3}
+      propertyPath: itemDir.x
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []

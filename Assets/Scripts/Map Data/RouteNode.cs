@@ -21,8 +21,8 @@ namespace com.MJT.FindTheThief
         }
 
         [SerializeField]
-        private Direction itemDir;
-        public Direction ItemDir
+        private Vector2 itemDir;
+        public Vector2 ItemDir
         {
             get
             {
@@ -30,7 +30,7 @@ namespace com.MJT.FindTheThief
             }
         }
 
-        [SerializeField]
+        /*[SerializeField]
         private bool isStairPoint;
         public bool IsStairPoint
         {
@@ -38,7 +38,7 @@ namespace com.MJT.FindTheThief
             {
                 return isStairPoint;
             }
-        }
+        }*/
 
         [SerializeField]
         private Vector2 defaultOffset;

@@ -98,12 +98,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e28822018340d3f4e8bdd434e8c79c60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Activated: 0
   nodeChangeFlag: 0
   isMoving: 0
   blockedTime: 0
   moveSpeed: 4
   startPoint: {x: 0, y: 0}
   targetPoint: {x: 0, y: 0}
+  direction: {x: 0, y: 0}
   curRoute: {fileID: 0}
   curNodeNum: 0
 --- !u!114 &1900755372417909915
@@ -181,7 +183,7 @@ MonoBehaviour:
   group: 0
   OwnerShipWasTransfered: 0
   prefixBackup: -1
-  synchronization: 2
+  synchronization: 3
   onSerializeTransformOption: 3
   onSerializeRigidBodyOption: 2
   ownershipTransfer: 0

@@ -222,15 +222,15 @@ MonoBehaviour:
   inRoomRoute: {fileID: 619190346668399649}
   toRoomRoutes: []
   fromStairRoutes:
-    leftDownRoute: {fileID: 0}
-    leftUpRoute: {fileID: 0}
-    rightDownRoute: {fileID: 0}
-    rightUpRoute: {fileID: 0}
+    leftDownRoutes: []
+    leftUpRoutes: []
+    rightDownRoutes: []
+    rightUpRoutes: []
   toStairRoutes:
-    leftDownRoute: {fileID: 0}
-    leftUpRoute: {fileID: 0}
-    rightDownRoute: {fileID: 0}
-    rightUpRoute: {fileID: 0}
+    leftDownRoutes: []
+    leftUpRoutes: []
+    rightDownRoutes: []
+    rightUpRoutes: []
 --- !u!1 &5432222736890869626
 GameObject:
   m_ObjectHideFlags: 0
@@ -558,7 +558,12 @@ PrefabInstance:
     - target: {fileID: 8116909414887449922, guid: 03c6e5faa92ba0a42a20c40444495883,
         type: 3}
       propertyPath: itemDir
-      value: 4
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8116909414887449922, guid: 03c6e5faa92ba0a42a20c40444495883,
+        type: 3}
+      propertyPath: itemDir.x
+      value: -1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 03c6e5faa92ba0a42a20c40444495883, type: 3}
@@ -637,7 +642,12 @@ PrefabInstance:
     - target: {fileID: 8116909414887449922, guid: 03c6e5faa92ba0a42a20c40444495883,
         type: 3}
       propertyPath: itemDir
-      value: 4
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8116909414887449922, guid: 03c6e5faa92ba0a42a20c40444495883,
+        type: 3}
+      propertyPath: itemDir.x
+      value: -1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 03c6e5faa92ba0a42a20c40444495883, type: 3}
@@ -1196,7 +1206,12 @@ PrefabInstance:
     - target: {fileID: 8116909414887449922, guid: 03c6e5faa92ba0a42a20c40444495883,
         type: 3}
       propertyPath: itemDir
-      value: 4
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8116909414887449922, guid: 03c6e5faa92ba0a42a20c40444495883,
+        type: 3}
+      propertyPath: itemDir.x
+      value: -1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 03c6e5faa92ba0a42a20c40444495883, type: 3}

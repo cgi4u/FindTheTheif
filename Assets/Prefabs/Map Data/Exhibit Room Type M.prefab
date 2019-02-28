@@ -90,15 +90,15 @@ MonoBehaviour:
   inRoomRoute: {fileID: 1701183754329464812}
   toRoomRoutes: []
   fromStairRoutes:
-    leftDownRoute: {fileID: 0}
-    leftUpRoute: {fileID: 0}
-    rightDownRoute: {fileID: 0}
-    rightUpRoute: {fileID: 0}
+    leftDownRoutes: []
+    leftUpRoutes: []
+    rightDownRoutes: []
+    rightUpRoutes: []
   toStairRoutes:
-    leftDownRoute: {fileID: 0}
-    leftUpRoute: {fileID: 0}
-    rightDownRoute: {fileID: 0}
-    rightUpRoute: {fileID: 0}
+    leftDownRoutes: []
+    leftUpRoutes: []
+    rightDownRoutes: []
+    rightUpRoutes: []
 --- !u!1 &3010567769579110225
 GameObject:
   m_ObjectHideFlags: 0
@@ -640,6 +640,11 @@ PrefabInstance:
     - target: {fileID: 8116909414887449922, guid: 03c6e5faa92ba0a42a20c40444495883,
         type: 3}
       propertyPath: itemDir
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8116909414887449922, guid: 03c6e5faa92ba0a42a20c40444495883,
+        type: 3}
+      propertyPath: itemDir.y
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -944,6 +949,11 @@ PrefabInstance:
     - target: {fileID: 8116909414887449922, guid: 03c6e5faa92ba0a42a20c40444495883,
         type: 3}
       propertyPath: itemDir
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8116909414887449922, guid: 03c6e5faa92ba0a42a20c40444495883,
+        type: 3}
+      propertyPath: itemDir.y
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -1110,6 +1120,11 @@ PrefabInstance:
     - target: {fileID: 8116909414887449922, guid: 03c6e5faa92ba0a42a20c40444495883,
         type: 3}
       propertyPath: itemDir
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8116909414887449922, guid: 03c6e5faa92ba0a42a20c40444495883,
+        type: 3}
+      propertyPath: itemDir.y
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []

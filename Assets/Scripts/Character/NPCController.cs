@@ -20,7 +20,8 @@ namespace com.MJT.FindTheThief
                 transform.parent = MultiplayRoomManager.Instance.SceneObjParent;
         }
 
-        public bool Activated { get; set; } = false;
+        [SerializeField]
+        public bool Activated = false;
 
         MapDataManager mapDataManager;      //Routing Manager Instance에 대한 참조
         // Use this for initialization
@@ -159,7 +160,7 @@ namespace com.MJT.FindTheThief
                 Debug.LogError("Collision with undefined object. Object name: " + collision.gameObject.name);
             }
 
-            SetAnimationProperty();
+            photonView.RPC("SetAnimationProperty", PhotonTargets.All, direction, isMoving);
         }
 
         [SerializeField]
@@ -173,9 +174,11 @@ namespace com.MJT.FindTheThief
         {
             startPoint = targetPoint;
 
+            /*
             // prevent location error can be caused by master client change.
             startPoint.x = Mathf.Round(startPoint.x);
             startPoint.y = Mathf.Round(startPoint.y);
+            */
 
             if (direction == Vector2.down)
             {
@@ -198,6 +201,7 @@ namespace com.MJT.FindTheThief
                 directions[2] = Vector2.left; directions[3] = Vector2.down;
             }
 
+            //issue
             Vector2 nextNodePos = (Vector2)curRoute.NodeSet[curNodeNum + 1].DefaultPos;
             for (int i = 1; i < directions.Length; i++)
             {
@@ -260,27 +264,28 @@ namespace com.MJT.FindTheThief
             if (newDirection == new Vector2())
             {
                 isMoving = false;
+                photonView.RPC("SetAnimationProperty", PhotonTargets.All, direction, isMoving);
             }
             else
             {
                 if (direction != newDirection)
                 {
                     isMoving = false;
-                    blockedTime = Random.Range(0f, 0.5f);
+                    blockedTime = Random.Range(0f, 0.3f);
+                    photonView.RPC("SetAnimationProperty", PhotonTargets.All, direction, isMoving);
                 }
                 else
                 {
                     isMoving = true;
                     targetPoint = startPoint + newDirection;
+                    photonView.RPC("SetAnimationProperty", PhotonTargets.All, newDirection, isMoving);
                 }
 
                 direction = newDirection;
             }
-
-            SetAnimationProperty();
         }
 
-        private void OnTriggerEnter2D(Collider2D collision)
+        private void OnTriggerStay2D(Collider2D collision)
         {
             if (PhotonNetwork.connected && !photonView.isMine)
                 return;
@@ -288,6 +293,16 @@ namespace com.MJT.FindTheThief
             //Debug.Log("Trigger: " + collision.gameObject.name);
             if (collision.gameObject == curRoute.NodeSet[curNodeNum + 1].gameObject)
                 nodeChangeFlag = true;
+        }
+
+        private void OnTriggerExit2D(Collider2D collision)
+        {
+            if (PhotonNetwork.connected && !photonView.isMine)
+                return;
+
+            //Debug.Log("Trigger: " + collision.gameObject.name);
+            if (collision.gameObject == curRoute.NodeSet[curNodeNum + 1].gameObject && nodeChangeFlag == true)
+                nodeChangeFlag = false;
         }
 
         [SerializeField]
@@ -305,7 +320,7 @@ namespace com.MJT.FindTheThief
             {
                 isMoving = false;
                 blockedTime = Random.Range(1f, 3f);
-                SetAnimationProperty();
+                photonView.RPC("SetAnimationProperty", PhotonTargets.All, curRoute.NodeSet[curNodeNum].ItemDir, isMoving);
             }
 
             if (curNodeNum == curRoute.NodeSet.Length - 1)       // Route ends, get next route.
@@ -514,7 +529,8 @@ namespace com.MJT.FindTheThief
             curNodeNum = 0;
         }
 
-        private void SetAnimationProperty()
+        [PunRPC]
+        private void SetAnimationProperty(Vector2 direction, bool isMoving)
         {
             Animator animator = GetComponent<Animator>();
 
@@ -547,6 +563,7 @@ namespace com.MJT.FindTheThief
                 
                 stream.SendNext(startPoint);
                 stream.SendNext(targetPoint);
+                stream.SendNext(direction);
                 stream.SendNext(isMoving);
                 stream.SendNext(blockedTime);
 
@@ -563,6 +580,7 @@ namespace com.MJT.FindTheThief
 
                 startPoint = (Vector2)stream.ReceiveNext();
                 targetPoint = (Vector2)stream.ReceiveNext();
+                direction = (Vector2)stream.ReceiveNext();
                 isMoving = (bool)stream.ReceiveNext();
                 blockedTime = (float)stream.ReceiveNext();
 
@@ -578,6 +596,19 @@ namespace com.MJT.FindTheThief
         public override void OnMasterClientSwitched(PhotonPlayer newMasterClient)
         {
             positionVaildCheck();
+
+            if (curNodeNum == curRoute.NodeSet.Length - 1)       // Route ends, get next route.
+            {
+                // If this NPC is moving on In-Room Route, next room should be picked in master client and sent to other clients
+                int randomNextRoom = -1;
+                if (curRoute.RouteType == RouteType.In_Room)
+                {
+                    randomNextRoom = Random.Range(curRoute.CurRoom + 1,
+                                                    curRoute.CurRoom + mapDataManager.Rooms.Count - 1) % mapDataManager.Rooms.Count;
+                }
+
+                photonView.RPC("ChangeCurRoute", PhotonTargets.All, randomNextRoom);
+            }
         }
 
         /// <summary>
