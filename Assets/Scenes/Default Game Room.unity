@@ -135,6 +135,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: Right Up to 2 Route(Start Left) 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: endRoom
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: stairType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: stairSide
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalPosition.x
       value: -10
@@ -178,21 +193,6 @@ PrefabInstance:
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: endRoom
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: stairType
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: stairSide
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
@@ -385,7 +385,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -0.5
       objectReference: {fileID: 0}
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalPosition.y
@@ -393,7 +393,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -0.004203615
       objectReference: {fileID: 0}
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalRotation.x
@@ -1202,6 +1202,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: Right Up to 1 Route(Start Left) 3
       objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: endRoom
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: stairType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: stairSide
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 7
@@ -1245,21 +1260,6 @@ PrefabInstance:
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: endRoom
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: stairType
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: stairSide
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
@@ -1859,6 +1859,11 @@ PrefabInstance:
       propertyPath: defaultOffset.x
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
+        type: 3}
+      propertyPath: defaultOffset.y
+      value: 0.5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
 --- !u!1001 &122760815
@@ -2195,6 +2200,11 @@ PrefabInstance:
     - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
         type: 3}
       propertyPath: defaultOffset.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
+        type: 3}
+      propertyPath: defaultOffset.y
       value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -2733,6 +2743,11 @@ PrefabInstance:
       propertyPath: defaultOffset.x
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
+        type: 3}
+      propertyPath: defaultOffset.y
+      value: 0.5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
 --- !u!1001 &185105822
@@ -3050,6 +3065,11 @@ PrefabInstance:
     - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
         type: 3}
       propertyPath: defaultOffset.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
+        type: 3}
+      propertyPath: defaultOffset.y
       value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -4109,6 +4129,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
+        type: 3}
+      propertyPath: defaultOffset.y
+      value: 0.5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
 --- !u!1001 &261017509
@@ -4789,7 +4814,17 @@ PrefabInstance:
     - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
         type: 3}
       propertyPath: defaultOffset.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
+        type: 3}
+      propertyPath: itemDir.x
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
+        type: 3}
+      propertyPath: defaultOffset.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1345774265088451216, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
         type: 3}
@@ -5083,6 +5118,11 @@ PrefabInstance:
     - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
         type: 3}
       propertyPath: defaultOffset.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
+        type: 3}
+      propertyPath: defaultOffset.y
       value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -6030,6 +6070,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: Left Up to 1 Route(Start Left) 2
       objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: endRoom
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: stairType
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalPosition.x
       value: -10
@@ -6072,16 +6122,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: endRoom
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: stairType
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -6146,6 +6186,11 @@ PrefabInstance:
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
+        type: 3}
+      propertyPath: defaultOffset.y
+      value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
@@ -6704,9 +6749,19 @@ PrefabInstance:
       propertyPath: m_Name
       value: Left Up to 0 Route(Start Left) 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: stairType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: endRoom
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 7.5
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalPosition.y
@@ -6746,16 +6801,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: stairType
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: endRoom
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -7361,6 +7406,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
+        type: 3}
+      propertyPath: defaultOffset.y
+      value: 0.5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
 --- !u!1001 &554903514
@@ -7827,6 +7877,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
+        type: 3}
+      propertyPath: defaultOffset.y
+      value: 0.5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
 --- !u!1001 &587480152
@@ -8029,6 +8084,11 @@ PrefabInstance:
       propertyPath: defaultOffset.x
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
+        type: 3}
+      propertyPath: defaultOffset.y
+      value: 0.5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
 --- !u!1001 &588102752
@@ -8040,7 +8100,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1724213684858656, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_Name
-      value: Route Node-0
+      value: Route Node 0
       objectReference: {fileID: 0}
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalPosition.x
@@ -8226,6 +8286,11 @@ PrefabInstance:
       propertyPath: defaultOffset.x
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
+        type: 3}
+      propertyPath: defaultOffset.y
+      value: 0.5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
 --- !u!1001 &599120663
@@ -8238,6 +8303,16 @@ PrefabInstance:
     - target: {fileID: 1073541738577416, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_Name
       value: Left Up to 1 Route(Start Right) 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: endRoom
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: stairType
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -8283,16 +8358,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: endRoom
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: stairType
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
 --- !u!1001 &612791424
@@ -8305,6 +8370,21 @@ PrefabInstance:
     - target: {fileID: 1073541738577416, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_Name
       value: Right Up to 0 Route(Start Left) 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: endRoom
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: stairType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: stairSide
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -8349,21 +8429,6 @@ PrefabInstance:
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: endRoom
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: stairType
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: stairSide
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
@@ -8877,6 +8942,11 @@ PrefabInstance:
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
+        type: 3}
+      propertyPath: defaultOffset.y
+      value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
@@ -9565,9 +9635,19 @@ PrefabInstance:
       propertyPath: m_Name
       value: Left Up to 0 Route(Start Right) 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: endRoom
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: stairType
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 7.5
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalPosition.y
@@ -9575,7 +9655,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.004203615
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalRotation.x
@@ -9607,16 +9687,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: endRoom
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: stairType
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -9760,7 +9830,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalPosition.y
@@ -9768,7 +9838,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -0.004203615
       objectReference: {fileID: 0}
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalRotation.x
@@ -9801,6 +9871,11 @@ PrefabInstance:
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
+        type: 3}
+      propertyPath: defaultOffset.y
+      value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
@@ -10084,7 +10159,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -10536,6 +10611,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: Left Up to 1 Route(Start Left) 3
       objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: endRoom
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: stairType
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalPosition.x
       value: -10
@@ -10578,16 +10663,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: endRoom
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: stairType
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -11040,7 +11115,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -7
+      value: -7.5
       objectReference: {fileID: 0}
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalPosition.y
@@ -11048,7 +11123,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -0.004203615
       objectReference: {fileID: 0}
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalRotation.x
@@ -11087,6 +11162,11 @@ PrefabInstance:
       propertyPath: defaultOffset.x
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
+        type: 3}
+      propertyPath: defaultOffset.y
+      value: 0.5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
 --- !u!1001 &809585538
@@ -11102,7 +11182,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -7
+      value: -7.5
       objectReference: {fileID: 0}
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalPosition.y
@@ -11110,7 +11190,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -0.004203615
       objectReference: {fileID: 0}
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalRotation.x
@@ -11147,6 +11227,11 @@ PrefabInstance:
     - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
         type: 3}
       propertyPath: defaultOffset.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
+        type: 3}
+      propertyPath: defaultOffset.y
       value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -11266,7 +11351,7 @@ PrefabInstance:
     - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
         type: 3}
       propertyPath: defaultOffset.x
-      value: 1
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
         type: 3}
@@ -11391,6 +11476,11 @@ PrefabInstance:
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
+        type: 3}
+      propertyPath: defaultOffset.y
+      value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
@@ -11600,6 +11690,11 @@ PrefabInstance:
       propertyPath: defaultOffset.x
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
+        type: 3}
+      propertyPath: defaultOffset.y
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 1345774265088451216, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
         type: 3}
       propertyPath: m_UsedByComposite
@@ -11665,6 +11760,11 @@ PrefabInstance:
     - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
         type: 3}
       propertyPath: defaultOffset.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
+        type: 3}
+      propertyPath: defaultOffset.y
       value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -11897,9 +11997,19 @@ PrefabInstance:
       propertyPath: m_Name
       value: Left Up to 0 Route(Start Left) 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: endRoom
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: stairType
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 7.5
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalPosition.y
@@ -11939,16 +12049,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: endRoom
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: stairType
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -12003,7 +12103,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalPosition.y
@@ -12236,6 +12336,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
+        type: 3}
+      propertyPath: defaultOffset.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
+        type: 3}
+      propertyPath: defaultOffset.y
+      value: 0.5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
 --- !u!1 &921205293
@@ -12438,13 +12548,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 936001508}
+  - component: {fileID: 936001509}
   m_Layer: 0
   m_Name: Test Objects
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &936001508
 Transform:
   m_ObjectHideFlags: 0
@@ -12460,6 +12571,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &936001509
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 936001507}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4951a532ca1acb34d8d1d33768d7eb09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &949590785
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12518,6 +12641,11 @@ PrefabInstance:
     - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
         type: 3}
       propertyPath: defaultOffset.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
+        type: 3}
+      propertyPath: defaultOffset.y
       value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -12736,7 +12864,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -0.5
       objectReference: {fileID: 0}
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalPosition.y
@@ -12744,7 +12872,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -0.004203615
       objectReference: {fileID: 0}
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalRotation.x
@@ -12938,7 +13066,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 19.5
+      value: 18.5
       objectReference: {fileID: 0}
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalPosition.y
@@ -12983,7 +13111,7 @@ PrefabInstance:
     - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
         type: 3}
       propertyPath: defaultOffset.x
-      value: -0.5
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
         type: 3}
@@ -13079,7 +13207,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 19.5
+      value: 18.5
       objectReference: {fileID: 0}
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalPosition.y
@@ -13125,6 +13253,11 @@ PrefabInstance:
         type: 3}
       propertyPath: defaultOffset.y
       value: -0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
+        type: 3}
+      propertyPath: defaultOffset.x
+      value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
@@ -13690,6 +13823,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: Left Up to 1 Route(Start Right) 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: endRoom
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: stairType
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalPosition.x
       value: -9
@@ -13732,16 +13875,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: endRoom
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: stairType
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -14395,7 +14528,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1724213684858656, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_Name
-      value: Route Node-1
+      value: Route Node 1
       objectReference: {fileID: 0}
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalPosition.x
@@ -14444,6 +14577,11 @@ PrefabInstance:
     - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
         type: 3}
       propertyPath: defaultOffset.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
+        type: 3}
+      propertyPath: defaultOffset.y
       value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -14895,7 +15033,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1074254088481354, guid: 1c4633e1df424e744ba8cbcba6561463, type: 3}
       propertyPath: m_Name
-      value: 0 to Left Up Route 0
+      value: 0 to Left Up Route(End Right) 0
       objectReference: {fileID: 0}
     - target: {fileID: 4885225819012274, guid: 1c4633e1df424e744ba8cbcba6561463, type: 3}
       propertyPath: m_LocalPosition.x
@@ -15012,6 +15150,11 @@ PrefabInstance:
     - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
         type: 3}
       propertyPath: defaultOffset.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
+        type: 3}
+      propertyPath: defaultOffset.y
       value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -15191,6 +15334,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: Left Up to 1 Route(Start Right) 3
       objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: endRoom
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: stairType
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalPosition.x
       value: -9
@@ -15233,16 +15386,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: endRoom
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: stairType
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -15501,6 +15644,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: Right Up to 1 Route(Start Left) 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: endRoom
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: stairType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: stairSide
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 7
@@ -15545,21 +15703,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: endRoom
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: stairType
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: stairSide
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
 --- !u!4 &1123747971 stripped
@@ -15581,7 +15724,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 18.5
+      value: 17.5
       objectReference: {fileID: 0}
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalPosition.y
@@ -15627,6 +15770,11 @@ PrefabInstance:
         type: 3}
       propertyPath: defaultOffset.y
       value: -0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
+        type: 3}
+      propertyPath: defaultOffset.x
+      value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
@@ -15710,6 +15858,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: Left Up to 1 Route(Start Left) 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: stairType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: endRoom
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalPosition.x
       value: -10
@@ -15754,16 +15912,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: stairType
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: endRoom
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
 --- !u!4 &1134535805 stripped
@@ -15797,7 +15945,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -7
+      value: -6.5
       objectReference: {fileID: 0}
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalPosition.y
@@ -15842,6 +15990,11 @@ PrefabInstance:
     - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
         type: 3}
       propertyPath: defaultOffset.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
+        type: 3}
+      propertyPath: defaultOffset.y
       value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -16048,6 +16201,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: Right Up to 2 Route(Start Left) 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: endRoom
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: stairType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: stairSide
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalPosition.x
       value: -10
@@ -16091,21 +16259,6 @@ PrefabInstance:
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: endRoom
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: stairType
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: stairSide
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
@@ -16858,6 +17011,11 @@ PrefabInstance:
       propertyPath: defaultOffset.x
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
+        type: 3}
+      propertyPath: defaultOffset.y
+      value: 0.5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
 --- !u!1001 &1224789632
@@ -17027,6 +17185,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: Left Up to 2 Route(Start Right) 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: endRoom
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: stairType
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalPosition.x
       value: -26
@@ -17069,16 +17237,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: endRoom
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: stairType
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -17224,6 +17382,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: Right Up to 1 Route(Start Left) 2
       objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: endRoom
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: stairType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: stairSide
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 7
@@ -17267,21 +17440,6 @@ PrefabInstance:
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: endRoom
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: stairType
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: stairSide
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
@@ -17488,6 +17646,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: Left Up to 2 Route(Start Left) 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: endRoom
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: stairType
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalPosition.x
       value: -27
@@ -17530,16 +17698,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: endRoom
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: stairType
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -17759,6 +17917,16 @@ PrefabInstance:
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
+        type: 3}
+      propertyPath: defaultOffset.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
+        type: 3}
+      propertyPath: defaultOffset.y
+      value: -0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
@@ -18397,7 +18565,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalPosition.y
@@ -18462,6 +18630,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: Right Up to 0 Route(Start Left) 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: endRoom
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: stairType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: stairSide
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 24
@@ -18505,21 +18688,6 @@ PrefabInstance:
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: endRoom
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: stairType
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: stairSide
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
@@ -18806,12 +18974,17 @@ PrefabInstance:
     - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
         type: 3}
       propertyPath: defaultOffset.x
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
         type: 3}
       propertyPath: defaultOffset.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
+        type: 3}
+      propertyPath: itemDir.x
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 1345774265088451216, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
         type: 3}
@@ -19168,6 +19341,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: Right Up to 0 Route(Start Right) 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: endRoom
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: stairType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: stairSide
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 25
@@ -19211,21 +19399,6 @@ PrefabInstance:
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: endRoom
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: stairType
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: stairSide
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
@@ -62092,6 +62265,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: Right Up to 1 Route(Start Right) 2
       objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: endRoom
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: stairType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: stairSide
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 8
@@ -62135,21 +62323,6 @@ PrefabInstance:
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: endRoom
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: stairType
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: stairSide
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
@@ -62431,6 +62604,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
+        type: 3}
+      propertyPath: defaultOffset.y
+      value: 0.5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
 --- !u!1001 &1431129712
@@ -62506,6 +62684,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: Right Up to 1 Route(Start Right) 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: stairType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: stairSide
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: endRoom
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 8
@@ -62550,21 +62743,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: stairType
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: stairSide
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: endRoom
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
 --- !u!4 &1435302338 stripped
@@ -62583,6 +62761,21 @@ PrefabInstance:
     - target: {fileID: 1073541738577416, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_Name
       value: Right Up to 0 Route(Start Right) 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: endRoom
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: stairType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: stairSide
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -62627,21 +62820,6 @@ PrefabInstance:
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: endRoom
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: stairType
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: stairSide
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
@@ -63683,9 +63861,19 @@ PrefabInstance:
       propertyPath: m_Name
       value: Left Up to 0 Route(Start Right) 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: stairType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: endRoom
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 7.5
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalPosition.y
@@ -63693,7 +63881,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.004203615
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalRotation.x
@@ -63725,16 +63913,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: stairType
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: endRoom
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -63974,6 +64152,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: Right Up to 1 Route(Start Right) 3
       objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: endRoom
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: stairType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: stairSide
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 8
@@ -64017,21 +64210,6 @@ PrefabInstance:
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: endRoom
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: stairType
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: stairSide
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
@@ -64145,7 +64323,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalPosition.y
@@ -64186,6 +64364,11 @@ PrefabInstance:
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
+        type: 3}
+      propertyPath: defaultOffset.y
+      value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
@@ -64797,6 +64980,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: Left Up to 1 Route(Start Left) 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: endRoom
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: stairType
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalPosition.x
       value: -10
@@ -64839,16 +65032,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: endRoom
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: stairType
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -65115,6 +65298,11 @@ PrefabInstance:
       propertyPath: defaultOffset.x
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
+        type: 3}
+      propertyPath: defaultOffset.y
+      value: 0.5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
 --- !u!1001 &1673328882
@@ -65175,6 +65363,11 @@ PrefabInstance:
     - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
         type: 3}
       propertyPath: defaultOffset.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
+        type: 3}
+      propertyPath: defaultOffset.y
       value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -65322,7 +65515,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalPosition.y
@@ -65330,7 +65523,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -0.004203615
       objectReference: {fileID: 0}
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalRotation.x
@@ -65364,6 +65557,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
+        type: 3}
+      propertyPath: defaultOffset.y
+      value: 0.5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
 --- !u!1001 &1689362046
@@ -65379,7 +65577,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -7
+      value: -6.5
       objectReference: {fileID: 0}
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalPosition.y
@@ -66581,6 +66779,11 @@ PrefabInstance:
       propertyPath: defaultOffset.x
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
+        type: 3}
+      propertyPath: defaultOffset.y
+      value: 0.5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
 --- !u!1001 &1793881623
@@ -66765,6 +66968,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: Left Up to 2 Route(Start Left) 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: endRoom
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: stairType
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalPosition.x
       value: -27
@@ -66807,16 +67020,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: endRoom
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: stairType
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -67107,7 +67310,12 @@ PrefabInstance:
     - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
         type: 3}
       propertyPath: defaultOffset.x
-      value: -0.5
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
+        type: 3}
+      propertyPath: defaultOffset.y
+      value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
@@ -67121,6 +67329,21 @@ PrefabInstance:
     - target: {fileID: 1073541738577416, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_Name
       value: Right Up to 2 Route(Start Right) 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: endRoom
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: stairType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: stairSide
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -67165,21 +67388,6 @@ PrefabInstance:
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: endRoom
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: stairType
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: stairSide
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
@@ -67924,7 +68132,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_RootOrder
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -67937,6 +68145,11 @@ PrefabInstance:
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
+        type: 3}
+      propertyPath: defaultOffset.y
+      value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
@@ -68763,7 +68976,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 18.5
+      value: 17.5
       objectReference: {fileID: 0}
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalPosition.y
@@ -68809,6 +69022,11 @@ PrefabInstance:
         type: 3}
       propertyPath: defaultOffset.y
       value: -0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
+        type: 3}
+      propertyPath: defaultOffset.x
+      value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
@@ -69296,7 +69514,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalPosition.y
@@ -69337,6 +69555,11 @@ PrefabInstance:
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
+        type: 3}
+      propertyPath: defaultOffset.y
+      value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
@@ -69902,6 +70125,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: Right Up to 1 Route(Start Left) 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: stairType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: stairSide
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: endRoom
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 7
@@ -69945,21 +70183,6 @@ PrefabInstance:
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: stairType
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: stairSide
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: endRoom
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
@@ -70027,6 +70250,11 @@ PrefabInstance:
     - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
         type: 3}
       propertyPath: defaultOffset.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
+        type: 3}
+      propertyPath: defaultOffset.y
       value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -70840,6 +71068,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: Left Up to 2 Route(Start Right) 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: endRoom
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: stairType
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalPosition.x
       value: -26
@@ -70884,16 +71122,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: endRoom
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: stairType
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
 --- !u!4 &2026725969 stripped
@@ -70911,7 +71139,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1724213684858656, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_Name
-      value: Route Node-2
+      value: Route Node 2
       objectReference: {fileID: 0}
     - target: {fileID: 4825998899259182, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48, type: 3}
       propertyPath: m_LocalPosition.x
@@ -71028,6 +71256,11 @@ PrefabInstance:
     - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
         type: 3}
       propertyPath: defaultOffset.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114573319946528832, guid: 4d9b47d04ccfbfa46b24a1359e6dfd48,
+        type: 3}
+      propertyPath: defaultOffset.y
       value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -71688,6 +71921,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: Left Up to 1 Route(Start Right) 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: endRoom
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: stairType
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalPosition.x
       value: -9
@@ -71732,16 +71975,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: endRoom
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: stairType
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
 --- !u!4 &2070679926 stripped
@@ -71760,6 +71993,21 @@ PrefabInstance:
     - target: {fileID: 1073541738577416, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_Name
       value: Right Up to 2 Route(Start Right) 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: endRoom
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: stairType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: stairSide
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -71804,21 +72052,6 @@ PrefabInstance:
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: endRoom
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: stairType
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: stairSide
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
@@ -71942,6 +72175,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: Right Up to 1 Route(Start Right) 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: endRoom
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: stairType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
+        type: 3}
+      propertyPath: stairSide
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 8
@@ -71985,21 +72233,6 @@ PrefabInstance:
     - target: {fileID: 4321642911264528, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: endRoom
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: stairType
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114789025608491958, guid: eb6400750861b184b955dbd924cb9f9b,
-        type: 3}
-      propertyPath: stairSide
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eb6400750861b184b955dbd924cb9f9b, type: 3}
@@ -73354,12 +73587,12 @@ PrefabInstance:
     - target: {fileID: 231766280820721426, guid: c6e80544fa7edcf408564ad2549d8b5d,
         type: 3}
       propertyPath: viewIdField
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 231766280820721426, guid: c6e80544fa7edcf408564ad2549d8b5d,
         type: 3}
       propertyPath: instantiationId
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c6e80544fa7edcf408564ad2549d8b5d, type: 3}

@@ -73,6 +73,21 @@ namespace com.MJT.FindTheThief
             }
         }
 
+        /*
+        private List<Route> allRoutesSet;
+        /// <summary>
+        /// Set of all existing routes.
+        /// Used to sync current route of NPC.
+        /// </summary>
+        public List<Route> AllRouteSet
+        {
+            get
+            {
+                return allRoutesSet;
+            }
+        }
+        */
+
         #endregion
 
         private void Awake()
@@ -83,8 +98,9 @@ namespace com.MJT.FindTheThief
             int genPointCnt = 0;
             foreach (ExhibitRoom room in rooms)
             {
-                //Find all NPC-generatable routes
+                //Find all NPC-generatable routes and make all routes set.
                 NPCGenRoutes.Add(room.InRoomRoute);
+
                 foreach (List<Route> routes in room.ToRoomRoutes.Values)
                 {
                     NPCGenRoutes.AddRange(routes);
@@ -116,9 +132,6 @@ namespace com.MJT.FindTheThief
                     }
                 }
             }
-
-            /*//ifRouteAssigned = new bool[allGenerationRoutes.Count];
-            ifPointAssigned = new bool[nPCGenPoints.Count];*/
 
             NPCGenPointSelector = new int[nPCGenPoints.Count];
             for (int i = 0; i < nPCGenPoints.Count; i++)
