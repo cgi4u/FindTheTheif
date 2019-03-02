@@ -503,7 +503,7 @@ namespace com.MJT.FindTheThief
         int readyWaitTimeStamp = 0;
         private void Update()
         {
-            Debug.Log(PhotonNetwork.networkingPeer.RoundTripTime);
+            //Debug.Log(PhotonNetwork.networkingPeer.RoundTripTime);
 
             int curTimeStamp = PhotonNetwork.ServerTimestamp;
             int deltaTimeStamp = curTimeStamp - prevTimeStamp;

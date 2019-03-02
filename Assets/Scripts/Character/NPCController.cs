@@ -69,11 +69,6 @@ namespace com.MJT.FindTheThief
 
         #endregion
 
-        /// <summary>
-        /// True when this NPC reached the target route node, it means change the target node to next.
-        /// </summary>
-        [SerializeField]
-        private bool nodeChangeFlag = false;
         private void Update()
         {
             if (!Activated || (PhotonNetwork.connected && !photonView.isMine))
@@ -93,7 +88,16 @@ namespace com.MJT.FindTheThief
                 Move();
                 if ((Vector2)transform.position == targetPoint)
                 {  
-                    if (nodeChangeFlag)
+                    RaycastHit2D[] hits = Physics2D.BoxCastAll(targetPoint, raycastBox, 0, new Vector2(), 0);
+                    bool reachedNode = false;
+                    foreach (RaycastHit2D hit in hits)
+                    {
+                        if (hit.collider.isTrigger
+                            && hit.collider.gameObject == curRoute.NodeSet[curNodeNum + 1].gameObject)
+                            reachedNode = true;
+                    }
+
+                    if (reachedNode)
                         ChangeNode();
                     else
                         SetNewTargetPoint();
@@ -285,33 +289,16 @@ namespace com.MJT.FindTheThief
             }
         }
 
-        private void OnTriggerEnter2D(Collider2D collision)
-        {
-            if (PhotonNetwork.connected && !photonView.isMine)
-                return;
-
-            //Debug.Log("Trigger: " + collision.gameObject.name);
-            if (collision.gameObject == curRoute.NodeSet[curNodeNum + 1].gameObject)
-                nodeChangeFlag = true;
-        }
-
-        private void OnTriggerExit2D(Collider2D collision)
-        {
-            if (PhotonNetwork.connected && !photonView.isMine)
-                return;
-
-            //Debug.Log("Trigger: " + collision.gameObject.name);
-            if (collision.gameObject == curRoute.NodeSet[curNodeNum + 1].gameObject && nodeChangeFlag == true)
-                nodeChangeFlag = false;
-        }
-
         [SerializeField]
         private Route curRoute;
         [SerializeField]
         private int curNodeNum;
 
+        [SerializeField]
         private int prevRoom;
+        [SerializeField]
         private int nextRoom;
+        [SerializeField]
         private int curFloor;
         /// <summary>
         /// Check if this NPC arrived at next node or route end. If did, change target node or current route. 
@@ -331,19 +318,19 @@ namespace com.MJT.FindTheThief
             {
                 ChangeCurRoute();
             }
-            nodeChangeFlag = false;
         }
 
         
         void ChangeCurRoute()
         {
+            Route nextRoute;
             int randomIdx = -1;
             switch (curRoute.RouteType)
             {
                 case RouteType.In_Room:                 // Currunt root is In Room Route -> Next can be Room to Room/Stair
                     prevRoom = curRoute.CurRoom;
                     nextRoom = Random.Range(curRoute.CurRoom + 1, 
-                                    curRoute.CurRoom + mapDataManager.Rooms.Count - 1) % mapDataManager.Rooms.Count;
+                                    curRoute.CurRoom + mapDataManager.Rooms.Count) % mapDataManager.Rooms.Count;
 
                     if (curFloor == mapDataManager.Rooms[nextRoom].Floor)       // The next room is in the same floor -> Room to Room route
                     {
@@ -356,7 +343,7 @@ namespace com.MJT.FindTheThief
                         }
 
                         randomIdx = Random.Range(0, toNextRoomRoutes.Count);
-                        curRoute = toNextRoomRoutes[randomIdx];
+                        nextRoute = toNextRoomRoutes[randomIdx];
                     }
                     else        // The next room is in one of the other floors -> Room to Stair route
                     {
@@ -376,7 +363,7 @@ namespace com.MJT.FindTheThief
                         }
 
                         randomIdx = Random.Range(0, candRouteSet.Length);
-                        curRoute = candRouteSet[randomIdx];
+                        nextRoute = candRouteSet[randomIdx];
                     }
 
                     break;
@@ -411,10 +398,10 @@ namespace com.MJT.FindTheThief
                             return;
                         }
 
-                        curRoute = candRouteSet[Random.Range(0, candRouteSet.Count)];
+                        nextRoute = candRouteSet[Random.Range(0, candRouteSet.Count)];
                         for (int i = 0; i < searchRouteSet.Length; i++)
                         {
-                            if (searchRouteSet[i] == curRoute)
+                            if (searchRouteSet[i] == nextRoute)
                             {
                                 randomIdx = i;
                                 break;
@@ -446,23 +433,23 @@ namespace com.MJT.FindTheThief
                             return;
                         }
 
-                        curRoute = candRouteSet[Random.Range(0, candRouteSet.Count)];
+                        nextRoute = candRouteSet[Random.Range(0, candRouteSet.Count)];
                         for (int i = 0; i < searchRouteSet.Length; i++)
                         {
-                            if (searchRouteSet[i] == curRoute)
+                            if (searchRouteSet[i] == nextRoute)
                             {
                                 randomIdx = i;
                                 break;
                             }
                         }
 
-                        startPoint = targetPoint = transform.position = curRoute.NodeSet[0].DefaultPos;
+                        startPoint = targetPoint = transform.position = nextRoute.NodeSet[0].DefaultPos;
                     }
                     break;
                 default:    // The current route is To Room Route -> Next is In Room Route
-                    curRoute = mapDataManager.Rooms[nextRoom].InRoomRoute;
+                    nextRoute = mapDataManager.Rooms[nextRoom].InRoomRoute;
 
-                    if (curRoute == null)
+                    if (nextRoute == null)
                     {
                         Debug.LogError("In Room Route of " + nextRoom + "th room is not set.");
                         return;
@@ -470,15 +457,22 @@ namespace com.MJT.FindTheThief
                     break;
             }
 
-            curNodeNum = 0;
             if (PhotonNetwork.connected)
-                photonView.RPC("SetNextRoute", PhotonTargets.Others, curRoute.RouteType, curRoute.CurRoom,
-                                        curRoute.StartRoom, curRoute.EndRoom, curRoute.StairType, curRoute.StairSide, randomIdx);
+                photonView.RPC("SetNextRoute", PhotonTargets.All, nextRoute.RouteType, nextRoute.CurRoom,
+                                        nextRoute.StartRoom, nextRoute.EndRoom, nextRoute.StairType, nextRoute.StairSide, randomIdx);
+            else
+            {
+                curRoute = nextRoute;
+                curNodeNum = 0;
+            }
         }
 
         [PunRPC]
         void SetNextRoute(RouteType type, int curRoom, int startRoom, int endRoom, StairType stairType, StairSide stairSide, int randomIdx)
         {
+            Debug.Log(GetComponent<PhotonView>().instantiationId + " before route: " + curRoute.gameObject.name);
+
+            curNodeNum = 0;
             switch (type)
             {
                 case RouteType.In_Room:
@@ -497,6 +491,8 @@ namespace com.MJT.FindTheThief
                     curRoute = mapDataManager.StairToStairRoutes[curFloor - 1].RoutesWithSideAndType(stairSide, stairType)[randomIdx];
                     break;
             }
+
+            Debug.Log(GetComponent<PhotonView>().instantiationId + " after route: " + curRoute.gameObject.name);
         }
 
         [PunRPC]
@@ -537,7 +533,6 @@ namespace com.MJT.FindTheThief
                 stream.SendNext(isMoving);
                 stream.SendNext(blockedTime);
 
-                stream.SendNext(nodeChangeFlag);
                 stream.SendNext(prevRoom);
                 stream.SendNext(nextRoom);
                 stream.SendNext(curFloor);
@@ -555,7 +550,6 @@ namespace com.MJT.FindTheThief
                 isMoving = (bool)stream.ReceiveNext();
                 blockedTime = (float)stream.ReceiveNext();
 
-                nodeChangeFlag = (bool)stream.ReceiveNext();
                 prevRoom = (int)stream.ReceiveNext();
                 nextRoom = (int)stream.ReceiveNext();
                 curFloor = (int)stream.ReceiveNext();

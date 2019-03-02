@@ -63197,8 +63197,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 983294610}
   m_HandleRect: {fileID: 983294609}
   m_Direction: 2
-  m_Value: 1
-  m_Size: 0.375
+  m_Value: 0.9999999
+  m_Size: 0.37500003
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -73582,7 +73582,7 @@ PrefabInstance:
     - target: {fileID: 7161546159838514485, guid: c6e80544fa7edcf408564ad2549d8b5d,
         type: 3}
       propertyPath: m_Name
-      value: In Room 2 Route
+      value: In Room Route
       objectReference: {fileID: 0}
     - target: {fileID: 231766280820721426, guid: c6e80544fa7edcf408564ad2549d8b5d,
         type: 3}
@@ -73593,6 +73593,16 @@ PrefabInstance:
         type: 3}
       propertyPath: instantiationId
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4409123275646653158, guid: c6e80544fa7edcf408564ad2549d8b5d,
+        type: 3}
+      propertyPath: curRoom
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4371945865419593980, guid: c6e80544fa7edcf408564ad2549d8b5d,
+        type: 3}
+      propertyPath: m_Name
+      value: In Room 2 Route
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c6e80544fa7edcf408564ad2549d8b5d, type: 3}
