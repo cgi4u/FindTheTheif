@@ -164,7 +164,10 @@ namespace com.MJT.FindTheThief
                 Debug.LogError("Collision with undefined object. Object name: " + collision.gameObject.name);
             }
 
-            photonView.RPC("SetAnimationProperty", PhotonTargets.All, direction, isMoving);
+            if (PhotonNetwork.connected)
+                photonView.RPC("SetAnimationProperty", PhotonTargets.All, direction, isMoving);
+            else
+                SetAnimationProperty(direction, isMoving);
         }
 
         [SerializeField]
@@ -268,7 +271,11 @@ namespace com.MJT.FindTheThief
             if (newDirection == new Vector2())
             {
                 isMoving = false;
-                photonView.RPC("SetAnimationProperty", PhotonTargets.All, direction, isMoving);
+
+                if (PhotonNetwork.connected)
+                    photonView.RPC("SetAnimationProperty", PhotonTargets.All, direction, isMoving);
+                else
+                    SetAnimationProperty(direction, isMoving);
             }
             else
             {
@@ -276,13 +283,21 @@ namespace com.MJT.FindTheThief
                 {
                     isMoving = false;
                     blockedTime = Random.Range(0f, 0.3f);
-                    photonView.RPC("SetAnimationProperty", PhotonTargets.All, direction, isMoving);
+
+                    if (PhotonNetwork.connected)
+                        photonView.RPC("SetAnimationProperty", PhotonTargets.All, direction, isMoving);
+                    else
+                        SetAnimationProperty(direction, isMoving);
                 }
                 else
                 {
                     isMoving = true;
                     targetPoint = startPoint + newDirection;
-                    photonView.RPC("SetAnimationProperty", PhotonTargets.All, newDirection, isMoving);
+
+                    if (PhotonNetwork.connected)
+                        photonView.RPC("SetAnimationProperty", PhotonTargets.All, newDirection, isMoving);
+                    else
+                        SetAnimationProperty(newDirection, isMoving);
                 }
 
                 direction = newDirection;
@@ -311,7 +326,11 @@ namespace com.MJT.FindTheThief
             {
                 isMoving = false;
                 blockedTime = Random.Range(1f, 3f);
-                photonView.RPC("SetAnimationProperty", PhotonTargets.All, curRoute.NodeSet[curNodeNum].ItemDir, isMoving);
+
+                if (PhotonNetwork.connected)
+                    photonView.RPC("SetAnimationProperty", PhotonTargets.All, curRoute.NodeSet[curNodeNum].ItemDir, isMoving);
+                else
+                    SetAnimationProperty(curRoute.NodeSet[curNodeNum].ItemDir, isMoving);
             }
 
             if (curNodeNum == curRoute.NodeSet.Length - 1)       // Route ends, get next route.
@@ -470,7 +489,7 @@ namespace com.MJT.FindTheThief
         [PunRPC]
         void SetNextRoute(RouteType type, int curRoom, int startRoom, int endRoom, StairType stairType, StairSide stairSide, int randomIdx)
         {
-            Debug.Log(GetComponent<PhotonView>().instantiationId + " before route: " + curRoute.gameObject.name);
+            Debug.Log(GetComponent<PhotonView>().instantiationId + " before route: " + curRoute.gameObject.name + ", Prev Room: " + prevRoom + ", Next Room: " + nextRoom);
 
             curNodeNum = 0;
             switch (type)
