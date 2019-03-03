@@ -26,7 +26,8 @@ namespace com.MJT.FindTheThief
         public GameObject grayPanel;
 
         public GameObject multiplayRoomManager;
-        
+
+        public InputField NPCNumInputField;
 
         void Start()
         {
@@ -106,6 +107,13 @@ namespace com.MJT.FindTheThief
             if (PhotonNetwork.room.PlayerCount == playersPerRoom && PhotonNetwork.isMasterClient)
             {
                 PhotonNetwork.room.IsOpen = false;
+
+                int num;
+                bool parsed = int.TryParse(NPCNumInputField.text, out num);
+                if (parsed)
+                {
+                    multiplayRoomManager.GetComponent<MultiplayRoomManager>().numberOfNPC = num;
+                }
                 PhotonNetwork.InstantiateSceneObject(multiplayRoomManager.name, new Vector3(0f, 0f, 0f), Quaternion.identity, 0, null);
             }
         }

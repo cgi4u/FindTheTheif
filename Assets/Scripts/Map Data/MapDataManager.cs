@@ -90,8 +90,35 @@ namespace com.MJT.FindTheThief
 
         #endregion
 
+        [SerializeField]
+        private int maxRandomValue;
+        public int MaxRandomValue
+        {
+            get
+            {
+                return maxRandomValue;
+            }
+        }
+
         private void Awake()
         {
+            maxRandomValue = rooms.Count;
+            foreach (StairRouteContainer container in stairToStairRoutes)
+            {
+                if (container.LeftDownRoutes.Length != 0
+                    && maxRandomValue % container.LeftDownRoutes.Length != 0)
+                    maxRandomValue *= container.LeftDownRoutes.Length;
+                if (container.LeftUpRoutes.Length != 0
+                    && maxRandomValue % container.LeftUpRoutes.Length != 0)
+                    maxRandomValue *= container.LeftUpRoutes.Length;
+                if (container.RightDownRoutes.Length != 0
+                    && maxRandomValue % container.RightDownRoutes.Length != 0)
+                    maxRandomValue *= container.RightDownRoutes.Length;
+                if (container.RightUpRoutes.Length != 0
+                    && maxRandomValue % container.RightUpRoutes.Length != 0)
+                    maxRandomValue *= container.RightUpRoutes.Length;
+            }
+
             List<Route> NPCGenRoutes = new List<Route>();
             nPCGenPoints = new List<RouteNode>();
 
@@ -104,12 +131,41 @@ namespace com.MJT.FindTheThief
                 foreach (List<Route> routes in room.ToRoomRoutes.Values)
                 {
                     NPCGenRoutes.AddRange(routes);
+
+                    if (maxRandomValue % routes.Count != 0)
+                        maxRandomValue *= routes.Count;
                 }
 
                 NPCGenRoutes.AddRange(room.FromStairRoutes.LeftDownRoutes);
                 NPCGenRoutes.AddRange(room.FromStairRoutes.LeftUpRoutes);
                 NPCGenRoutes.AddRange(room.FromStairRoutes.RightDownRoutes);
                 NPCGenRoutes.AddRange(room.FromStairRoutes.RightUpRoutes);
+
+                if (room.FromStairRoutes.LeftDownRoutes.Length != 0
+                    && maxRandomValue % room.FromStairRoutes.LeftDownRoutes.Length != 0)
+                    maxRandomValue *= room.FromStairRoutes.LeftDownRoutes.Length;
+                if (room.FromStairRoutes.LeftUpRoutes.Length != 0
+                    && maxRandomValue % room.FromStairRoutes.LeftUpRoutes.Length != 0)
+                    maxRandomValue *= room.FromStairRoutes.LeftUpRoutes.Length;
+                if (room.FromStairRoutes.RightDownRoutes.Length != 0
+                    && maxRandomValue % room.FromStairRoutes.RightDownRoutes.Length != 0)
+                    maxRandomValue *= room.FromStairRoutes.RightDownRoutes.Length;
+                if (room.FromStairRoutes.RightUpRoutes.Length != 0
+                    && maxRandomValue % room.FromStairRoutes.RightUpRoutes.Length != 0)
+                    maxRandomValue *= room.FromStairRoutes.RightUpRoutes.Length;
+
+                if (room.ToStairRoutes.LeftDownRoutes.Length != 0
+                    && maxRandomValue % room.ToStairRoutes.LeftDownRoutes.Length != 0)
+                    maxRandomValue *= room.ToStairRoutes.LeftDownRoutes.Length;
+                if (room.ToStairRoutes.LeftUpRoutes.Length != 0
+                    && maxRandomValue % room.ToStairRoutes.LeftUpRoutes.Length != 0)
+                    maxRandomValue *= room.ToStairRoutes.LeftUpRoutes.Length;
+                if (room.ToStairRoutes.RightDownRoutes.Length != 0
+                    && maxRandomValue % room.ToStairRoutes.RightDownRoutes.Length != 0)
+                    maxRandomValue *= room.ToStairRoutes.RightDownRoutes.Length;
+                if (room.ToStairRoutes.RightUpRoutes.Length != 0
+                    && maxRandomValue % room.ToStairRoutes.RightUpRoutes.Length != 0)
+                    maxRandomValue *= room.ToStairRoutes.RightUpRoutes.Length;
 
                 //Find all Item Generation Points
                 foreach (ItemGenPoint itemGenPoint in room.ItemGenPoints)

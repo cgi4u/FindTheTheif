@@ -86,22 +86,6 @@ namespace com.MJT.FindTheThief
             if (isMoving)
             {
                 Move();
-                if ((Vector2)transform.position == targetPoint)
-                {  
-                    RaycastHit2D[] hits = Physics2D.BoxCastAll(targetPoint, raycastBox, 0, new Vector2(), 0);
-                    bool reachedNode = false;
-                    foreach (RaycastHit2D hit in hits)
-                    {
-                        if (hit.collider.isTrigger
-                            && hit.collider.gameObject == curRoute.NodeSet[curNodeNum + 1].gameObject)
-                            reachedNode = true;
-                    }
-
-                    if (reachedNode)
-                        ChangeNode();
-                    else
-                        SetNewTargetPoint();
-                }
             }
             else if (blockedTime == 0f)
             {
@@ -128,6 +112,23 @@ namespace com.MJT.FindTheThief
         {
             //설정 속도에 따라 움직일 위치를 계산(MoveTowards) 이후 이동
             transform.position = Vector2.MoveTowards(transform.position, targetPoint, moveSpeed * Time.deltaTime);
+
+            if ((Vector2)transform.position == targetPoint)
+            {
+                RaycastHit2D[] hits = Physics2D.BoxCastAll(targetPoint, raycastBox, 0, new Vector2(), 0);
+                bool reachedNode = false;
+                foreach (RaycastHit2D hit in hits)
+                {
+                    if (hit.collider.isTrigger
+                        && hit.collider.gameObject == curRoute.NodeSet[curNodeNum + 1].gameObject)
+                        reachedNode = true;
+                }
+
+                if (reachedNode)
+                    ChangeNode();
+                else
+                    SetNewTargetPoint();
+            }
         }
 
         private void OnCollisionEnter2D(Collision2D collision)

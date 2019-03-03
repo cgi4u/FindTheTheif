@@ -32,10 +32,6 @@ namespace com.MJT.FindTheThief
         {
             raycastBox = GetComponent<BoxCollider2D>().size;   // To ignore collisions on edges
 
-            moveSpeed = 5.0f;
-
-            raycastBox = GetComponent<BoxCollider2D>().size;
-
             if (!PhotonNetwork.connected || photonView.isMine)
             {
                 if (localPlayer == null)
@@ -159,8 +155,7 @@ namespace com.MJT.FindTheThief
         private void Move()
         {
             //설정 속도에 따라 움직일 위치를 계산(MoveTowards) 이후 이동
-            Vector2 nextPos = Vector2.MoveTowards(transform.position, targetPoint, moveSpeed * Time.deltaTime);
-            transform.position = (Vector3)nextPos;
+            transform.position = Vector2.MoveTowards(transform.position, targetPoint, moveSpeed * Time.deltaTime);
 
             //목적지에 도달했을 경우 버튼 입력 상황에 따라 목적지를 재계산하거나 멈춤
             if (transform.position.Equals(targetPoint))

@@ -51,7 +51,7 @@ MonoBehaviour:
   detectivePrefab: {fileID: 1536311355630938, guid: 4a2bb6044e24a974eb687461314d3ef0,
     type: 3}
   sceneObjParent: {fileID: 9062036302235804974}
-  numberOfNPC: 3
+  numberOfNPC: 15
   NPCPrefab: {fileID: 1900755372417909919, guid: 135b5b3a8b693284ab93667c9b37cdc8,
     type: 3}
   itemPrefabs:
