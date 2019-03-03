@@ -7,7 +7,7 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 namespace com.MJT.FindTheThief
 {
-    public class MultiplayRoomManager : Photon.PunBehaviour, IPunObservable
+    public class MultiplayRoomManager : Photon.PunBehaviour
     {
         /// <summary>
         /// The singleton of room manager
@@ -56,8 +56,8 @@ namespace com.MJT.FindTheThief
 
             // Modify PhotonNetwork settings according to in-game mode.
             PhotonNetwork.BackgroundTimeout = 30f;
-            //PhotonNetwork.sendRate = 10;
-            //PhotonNetwork.sendRateOnSerialize = 10;
+            PhotonNetwork.sendRate = 10;
+            PhotonNetwork.sendRateOnSerialize = 10;
 
             DontDestroyOnLoad(this);
 
@@ -730,11 +730,6 @@ namespace com.MJT.FindTheThief
                 Debug.Log("Game Set. Detectives win.");
             else if (PhotonNetwork.playerList.Length == thievesNum)
                 Debug.Log("Game Set. Thieves win.");
-        }
-
-        public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-        {
-
         }
 
         public override void OnLeftRoom()

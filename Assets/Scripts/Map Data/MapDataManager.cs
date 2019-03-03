@@ -102,7 +102,7 @@ namespace com.MJT.FindTheThief
 
         private void Awake()
         {
-            maxRandomValue = rooms.Count;
+            maxRandomValue = rooms.Count - 1;
             foreach (StairRouteContainer container in stairToStairRoutes)
             {
                 if (container.LeftDownRoutes.Length != 0

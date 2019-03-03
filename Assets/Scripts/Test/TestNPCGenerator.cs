@@ -24,6 +24,8 @@ namespace com.MJT.FindTheThief
                 }
 
                 GameObject newNPC = Instantiate(NPCPrefab);
+                newNPC.name = "NPC " + i;
+                newNPC.transform.parent = transform;
                 newNPC.GetComponent<NPCController>().Init(randomPointIdx);
                 newNPC.GetComponent<NPCController>().Activated = true;
             }

@@ -71,9 +71,6 @@ namespace com.MJT.FindTheThief
 
         private void Update()
         {
-            if (!Activated || (PhotonNetwork.connected && !photonView.isMine))
-                return;
-
             if (blockedTime > 0f)
             {
                 blockedTime -= Time.deltaTime;
@@ -82,6 +79,10 @@ namespace com.MJT.FindTheThief
                     blockedTime = 0f;
                 }
             }
+
+            // Controlled by the master client(owner) after this statements.
+            if (!Activated || (PhotonNetwork.connected && !photonView.isMine))
+                return;
 
             if (isMoving)
             {
@@ -110,9 +111,10 @@ namespace com.MJT.FindTheThief
         public float moveSpeed;
         private void Move()
         {
-            //설정 속도에 따라 움직일 위치를 계산(MoveTowards) 이후 이동
+            // Move position of this NPC.
             transform.position = Vector2.MoveTowards(transform.position, targetPoint, moveSpeed * Time.deltaTime);
 
+            // Change current node or route if the NPC reached at its target node.
             if ((Vector2)transform.position == targetPoint)
             {
                 RaycastHit2D[] hits = Physics2D.BoxCastAll(targetPoint, raycastBox, 0, new Vector2(), 0);
@@ -125,50 +127,19 @@ namespace com.MJT.FindTheThief
                 }
 
                 if (reachedNode)
-                    ChangeNode();
+                {
+                    int rand1 = Random.Range(0, mapDataManager.MaxRandomValue);
+                    int rand2 = Random.Range(0, mapDataManager.MaxRandomValue);
+                    float randf = Random.Range(1f, 3f);
+
+                    if (PhotonNetwork.connected)
+                        photonView.RPC("ChangeNodeAndRoute", PhotonTargets.All, rand1, rand2, randf);
+                    else
+                        ChangeNodeAndRoute(rand1, rand2, randf);
+                }
                 else
                     SetNewTargetPoint();
             }
-        }
-
-        private void OnCollisionEnter2D(Collision2D collision)
-        {
-            if (PhotonNetwork.connected && !photonView.isMine)
-                return;
-
-            if (collision.gameObject.tag == "Player")
-            {
-                //Debug.Log("Collision with a player name: " + collision.gameObject.GetComponent<PhotonView>().owner.NickName);
-                if (Vector2.Distance(collision.gameObject.transform.position, startPoint)
-                    >= Vector2.Distance(collision.gameObject.transform.position, targetPoint))
-                {
-                    //GetComponent<PhotonTransformView>().SetSynchronizedValues(new Vector3(0f, 0f), 0f);
-                    isMoving = false;
-                    transform.position = targetPoint = startPoint;
-                }
-                else
-                {
-                    transform.position = targetPoint;
-                }
-            }
-            else if (collision.gameObject.tag == "NPC")
-            {
-                if (collision.gameObject.GetInstanceID() > gameObject.GetInstanceID())
-                {
-                    //GetComponent<PhotonTransformView>().SetSynchronizedValues(new Vector3(0f, 0f), 0f);
-                    isMoving = false;
-                    transform.position = targetPoint = startPoint;
-                }
-            }
-            else
-            {
-                Debug.LogError("Collision with undefined object. Object name: " + collision.gameObject.name);
-            }
-
-            if (PhotonNetwork.connected)
-                photonView.RPC("SetAnimationProperty", PhotonTargets.All, direction, isMoving);
-            else
-                SetAnimationProperty(direction, isMoving);
         }
 
         [SerializeField]
@@ -269,36 +240,31 @@ namespace com.MJT.FindTheThief
                     break;
             }
 
-            if (newDirection == new Vector2())
+            if (newDirection == new Vector2())  // There is no way this NPC can go.
             {
-                isMoving = false;
-
-                if (PhotonNetwork.connected)
-                    photonView.RPC("SetAnimationProperty", PhotonTargets.All, direction, isMoving);
-                else
+                if (isMoving)
+                {
+                    isMoving = false;
                     SetAnimationProperty(direction, isMoving);
+                }
             }
-            else
+            else                                // There are some way this NPC can go.
             {
                 if (direction != newDirection)
                 {
                     isMoving = false;
                     blockedTime = Random.Range(0f, 0.3f);
-
-                    if (PhotonNetwork.connected)
-                        photonView.RPC("SetAnimationProperty", PhotonTargets.All, direction, isMoving);
-                    else
-                        SetAnimationProperty(direction, isMoving);
+                    SetAnimationProperty(direction, isMoving);
                 }
                 else
                 {
-                    isMoving = true;
                     targetPoint = startPoint + newDirection;
 
-                    if (PhotonNetwork.connected)
-                        photonView.RPC("SetAnimationProperty", PhotonTargets.All, newDirection, isMoving);
-                    else
+                    if (!isMoving)
+                    {
+                        isMoving = true;
                         SetAnimationProperty(newDirection, isMoving);
+                    }
                 }
 
                 direction = newDirection;
@@ -319,203 +285,189 @@ namespace com.MJT.FindTheThief
         /// <summary>
         /// Check if this NPC arrived at next node or route end. If did, change target node or current route. 
         /// </summary>
-        private void ChangeNode()
+        [PunRPC]
+        private void ChangeNodeAndRoute(int randomSelector1, int randomSelector2, float randomBlockTime)
         {
             //GetComponent<PhotonTransformView>().SetSynchronizedValues(new Vector3(0f, 0f), 0f);
             curNodeNum += 1;
             if (curRoute.NodeSet[curNodeNum].IsItemPoint)       // Set item watching time.
             {
                 isMoving = false;
-                blockedTime = Random.Range(1f, 3f);
-
-                if (PhotonNetwork.connected)
-                    photonView.RPC("SetAnimationProperty", PhotonTargets.All, curRoute.NodeSet[curNodeNum].ItemDir, isMoving);
-                else
-                    SetAnimationProperty(curRoute.NodeSet[curNodeNum].ItemDir, isMoving);
+                blockedTime = randomBlockTime;
+                SetAnimationProperty(curRoute.NodeSet[curNodeNum].ItemDir, isMoving);
             }
 
             if (curNodeNum == curRoute.NodeSet.Length - 1)       // Route ends, get next route.
             {
-                ChangeCurRoute();
-            }
-        }
+                switch (curRoute.RouteType)
+                {
+                    case RouteType.In_Room:                 // Currunt root is In Room Route -> Next can be Room to Room/Stair
+                        prevRoom = curRoute.CurRoom;
+                        nextRoom = (prevRoom + randomSelector1 % (mapDataManager.Rooms.Count - 1) + 1) % mapDataManager.Rooms.Count;
 
-        
-        void ChangeCurRoute()
-        {
-            Route nextRoute;
-            int randomIdx = -1;
-            switch (curRoute.RouteType)
-            {
-                case RouteType.In_Room:                 // Currunt root is In Room Route -> Next can be Room to Room/Stair
-                    prevRoom = curRoute.CurRoom;
-                    nextRoom = Random.Range(curRoute.CurRoom + 1, 
-                                    curRoute.CurRoom + mapDataManager.Rooms.Count) % mapDataManager.Rooms.Count;
-
-                    if (curFloor == mapDataManager.Rooms[nextRoom].Floor)       // The next room is in the same floor -> Room to Room route
-                    {
-                        //Debug.Log("Case: Room-to-Room");
-                        List<Route> toNextRoomRoutes = mapDataManager.Rooms[prevRoom].ToRoomRoutes[nextRoom];
-                        if (toNextRoomRoutes == null)
+                        if (curFloor == mapDataManager.Rooms[nextRoom].Floor)       // The next room is in the same floor -> Room to Room route
                         {
-                            Debug.LogError("Room " + prevRoom + " to Room " + nextRoom + " Route is not set.");
-                            return;
-                        }
-
-                        randomIdx = Random.Range(0, toNextRoomRoutes.Count);
-                        nextRoute = toNextRoomRoutes[randomIdx];
-                    }
-                    else        // The next room is in one of the other floors -> Room to Stair route
-                    {
-                        StairSide stairSide = mapDataManager.Rooms[prevRoom].AdjStairSide;
-                        StairType stairType;
-                        if (mapDataManager.Rooms[nextRoom].Floor < curFloor)
-                            stairType = StairType.Down;
-                        else
-                            stairType = StairType.Up;
-
-                        Route[] candRouteSet = mapDataManager.Rooms[prevRoom].ToStairRoutes.RoutesWithSideAndType(stairSide, stairType);
-
-                        if (candRouteSet.Length == 0)
-                        {
-                            Debug.LogError("Room " + prevRoom + " to " + stairSide + " " + stairType + " Stair Route is not set.");
-                            return;
-                        }
-
-                        randomIdx = Random.Range(0, candRouteSet.Length);
-                        nextRoute = candRouteSet[randomIdx];
-                    }
-
-                    break;
-                case RouteType.Room_to_Stair:              // Current route is To Stair Route -> Next can be Stair to Room/Stair
-                case RouteType.Stair_to_Stair:
-                    if (curRoute.StairType == StairType.Down)       // Current route ends with down stair
-                        curFloor -= 1;
-                    else
-                        curFloor += 1;
-                    
-                    if (mapDataManager.Rooms[nextRoom].Floor == curFloor)   // The target room is in this floor -> Stair to Room Route
-                    {
-                        StairSide stairSide = mapDataManager.Rooms[prevRoom].AdjStairSide;
-                        StairType stairType;
-                        if (mapDataManager.Rooms[nextRoom].Floor < curFloor)
-                            stairType = StairType.Down;
-                        else
-                            stairType = StairType.Up;
-
-
-                        Route[] searchRouteSet = mapDataManager.Rooms[nextRoom].FromStairRoutes.RoutesWithSideAndType(stairSide, stairType);
-                        List<Route> candRouteSet = new List<Route>();
-                        foreach (Route route in searchRouteSet)
-                        {
-                            if (route.NodeSet[0].DefaultOffset == curRoute.NodeSet[curRoute.NodeSet.Length - 1].DefaultOffset)
-                                candRouteSet.Add(route);
-                        }
-
-                        if (candRouteSet.Count == 0)
-                        {
-                            Debug.LogError(stairSide + " " + stairType + " Stair to Room " + nextRoom + " Route is not set.");
-                            return;
-                        }
-
-                        nextRoute = candRouteSet[Random.Range(0, candRouteSet.Count)];
-                        for (int i = 0; i < searchRouteSet.Length; i++)
-                        {
-                            if (searchRouteSet[i] == nextRoute)
+                            //Debug.Log("Case: Room-to-Room");
+                            List<Route> toNextRoomRoutes = mapDataManager.Rooms[curRoute.CurRoom].ToRoomRoutes[nextRoom];
+                            if (toNextRoomRoutes == null)
                             {
-                                randomIdx = i;
-                                break;
+                                Debug.LogError("Room " + prevRoom + " to Room " + nextRoom + " Route is not set.");
+                                return;
                             }
+
+                            curRoute = toNextRoomRoutes[randomSelector2 % toNextRoomRoutes.Count];
+                        }
+                        else        // The next room is in one of the other floors -> Room to Stair route
+                        {
+                            StairSide stairSide = mapDataManager.Rooms[prevRoom].AdjStairSide;
+                            StairType stairType;
+                            if (mapDataManager.Rooms[nextRoom].Floor < curFloor)
+                                stairType = StairType.Down;
+                            else
+                                stairType = StairType.Up;
+
+                            Route[] toNextStairRoutes = mapDataManager.Rooms[prevRoom].ToStairRoutes.RoutesWithSideAndType(stairSide, stairType);
+
+                            if (toNextStairRoutes.Length == 0)
+                            {
+                                Debug.LogError("Room " + prevRoom + " to " + stairSide + " " + stairType + " Stair Route is not set.");
+                                return;
+                            }
+
+                            curRoute = toNextStairRoutes[randomSelector2 % toNextStairRoutes.Length];
                         }
 
-                        startPoint = targetPoint = transform.position = curRoute.NodeSet[0].DefaultPos;
-                    }
-                    else   // The target room isn't in this floor -> Stair to Stair Route
-                    {
-                        StairSide stairSide = mapDataManager.Rooms[prevRoom].AdjStairSide;
-                        StairType stairType;
-                        if (mapDataManager.Rooms[nextRoom].Floor < curFloor)
-                            stairType = StairType.Down;
+                        break;
+                    case RouteType.Room_to_Stair:              // Current route is To Stair Route -> Next can be Stair to Room/Stair
+                    case RouteType.Stair_to_Stair:
+                        if (curRoute.StairType == StairType.Down)       // Current route ends with down stair
+                            curFloor -= 1;
                         else
-                            stairType = StairType.Up;
+                            curFloor += 1;
 
-                        Route[] searchRouteSet = mapDataManager.StairToStairRoutes[curFloor - 1].RoutesWithSideAndType(stairSide, stairType);
-                        List<Route> candRouteSet = new List<Route>();
-                        foreach (Route route in searchRouteSet)
+                        if (mapDataManager.Rooms[nextRoom].Floor == curFloor)   // The target room is in this floor -> Stair to Room Route
                         {
-                            if (route.NodeSet[0].DefaultOffset == curRoute.NodeSet[curRoute.NodeSet.Length - 1].DefaultOffset)
-                                candRouteSet.Add(route);
+                            StairSide stairSide = mapDataManager.Rooms[prevRoom].AdjStairSide;
+                            StairType stairType;
+                            if (mapDataManager.Rooms[nextRoom].Floor < curFloor)
+                                stairType = StairType.Down;
+                            else
+                                stairType = StairType.Up;
+
+
+                            Route[] searchRouteSet = mapDataManager.Rooms[nextRoom].FromStairRoutes.RoutesWithSideAndType(stairSide, stairType);
+                            List<Route> candRouteSet = new List<Route>();
+                            foreach (Route route in searchRouteSet)
+                            {
+                                if (route.NodeSet[0].DefaultOffset == curRoute.NodeSet[curRoute.NodeSet.Length - 1].DefaultOffset)
+                                    candRouteSet.Add(route);
+                            }
+
+                            if (candRouteSet.Count == 0)
+                            {
+                                Debug.LogError(stairSide + " " + stairType + " Stair to Room " + nextRoom + " Route is not set.");
+                                return;
+                            }
+
+                            curRoute = candRouteSet[randomSelector2 % candRouteSet.Count];
+                            if (!PhotonNetwork.connected || PhotonNetwork.isMasterClient)
+                                startPoint = targetPoint = transform.position = curRoute.NodeSet[0].DefaultPos;
                         }
-
-                        if (candRouteSet.Count == 0)
+                        else   // The target room isn't in this floor -> Stair to Stair Route
                         {
-                            Debug.LogError(stairSide + " " + stairType + " Stair to Stair Route in " + curFloor + "th Floor is not set.");
+                            StairSide stairSide = mapDataManager.Rooms[prevRoom].AdjStairSide;
+                            StairType stairType;
+                            if (mapDataManager.Rooms[nextRoom].Floor < curFloor)
+                                stairType = StairType.Down;
+                            else
+                                stairType = StairType.Up;
+
+                            Route[] searchRouteSet = mapDataManager.StairToStairRoutes[curFloor - 1].RoutesWithSideAndType(stairSide, stairType);
+                            List<Route> candRouteSet = new List<Route>();
+                            foreach (Route route in searchRouteSet)
+                            {
+                                if (route.NodeSet[0].DefaultOffset == curRoute.NodeSet[curRoute.NodeSet.Length - 1].DefaultOffset)
+                                    candRouteSet.Add(route);
+                            }
+
+                            if (candRouteSet.Count == 0)
+                            {
+                                Debug.LogError(stairSide + " " + stairType + " Stair to Stair Route in " + curFloor + "th Floor is not set.");
+                                return;
+                            }
+
+                            curRoute = candRouteSet[randomSelector2 % candRouteSet.Count];
+                            if (!PhotonNetwork.connected || PhotonNetwork.isMasterClient)
+                                startPoint = targetPoint = transform.position = curRoute.NodeSet[0].DefaultPos;
+                        }
+                        break;
+                    default:    // The current route is To Room Route -> Next is In Room Route
+                        curRoute = mapDataManager.Rooms[nextRoom].InRoomRoute;
+
+                        if (curRoute == null)
+                        {
+                            Debug.LogError("In Room Route of " + nextRoom + "th room is not set.");
                             return;
                         }
+                        break;
+                }
 
-                        nextRoute = candRouteSet[Random.Range(0, candRouteSet.Count)];
-                        for (int i = 0; i < searchRouteSet.Length; i++)
-                        {
-                            if (searchRouteSet[i] == nextRoute)
-                            {
-                                randomIdx = i;
-                                break;
-                            }
-                        }
-
-                        startPoint = targetPoint = transform.position = nextRoute.NodeSet[0].DefaultPos;
-                    }
-                    break;
-                default:    // The current route is To Room Route -> Next is In Room Route
-                    nextRoute = mapDataManager.Rooms[nextRoom].InRoomRoute;
-
-                    if (nextRoute == null)
-                    {
-                        Debug.LogError("In Room Route of " + nextRoom + "th room is not set.");
-                        return;
-                    }
-                    break;
-            }
-
-            if (PhotonNetwork.connected)
-                photonView.RPC("SetNextRoute", PhotonTargets.All, nextRoute.RouteType, nextRoute.CurRoom,
-                                        nextRoute.StartRoom, nextRoute.EndRoom, nextRoute.StairType, nextRoute.StairSide, randomIdx);
-            else
-            {
-                curRoute = nextRoute;
                 curNodeNum = 0;
             }
         }
 
-        [PunRPC]
-        void SetNextRoute(RouteType type, int curRoom, int startRoom, int endRoom, StairType stairType, StairSide stairSide, int randomIdx)
+        private void OnCollisionEnter2D(Collision2D collision)
         {
-            Debug.Log(GetComponent<PhotonView>().instantiationId + " before route: " + curRoute.gameObject.name + ", Prev Room: " + prevRoom + ", Next Room: " + nextRoom);
+            if (PhotonNetwork.connected && !photonView.isMine)
+                return;
 
-            curNodeNum = 0;
-            switch (type)
+            if (collision.gameObject.GetComponent<PlayerController>() != null)
             {
-                case RouteType.In_Room:
-                    curRoute = mapDataManager.Rooms[curRoom].InRoomRoute;
-                    break;
-                case RouteType.Room_to_Room:
-                    curRoute = mapDataManager.Rooms[startRoom].ToRoomRoutes[endRoom][randomIdx];
-                    break;
-                case RouteType.Room_to_Stair:
-                    curRoute = mapDataManager.Rooms[startRoom].ToStairRoutes.RoutesWithSideAndType(stairSide, stairType)[randomIdx];
-                    break;
-                case RouteType.Stair_to_Room:
-                    curRoute = mapDataManager.Rooms[endRoom].FromStairRoutes.RoutesWithSideAndType(stairSide, stairType)[randomIdx];
-                    break;
-                case RouteType.Stair_to_Stair:
-                    curRoute = mapDataManager.StairToStairRoutes[curFloor - 1].RoutesWithSideAndType(stairSide, stairType)[randomIdx];
-                    break;
+                //Debug.Log("Collision with a player name: " + collision.gameObject.GetComponent<PhotonView>().owner.NickName);
+                if (Vector2.Distance(collision.gameObject.transform.position, startPoint)
+                    >= Vector2.Distance(collision.gameObject.transform.position, targetPoint))
+                {
+                    //GetComponent<PhotonTransformView>().SetSynchronizedValues(new Vector3(0f, 0f), 0f);
+                    isMoving = false;
+                    transform.position = targetPoint = startPoint;
+                }
+                else
+                {
+                    transform.position = targetPoint;
+                }
+            }
+            else if (collision.gameObject.GetComponent<NPCController>() != null)
+            {
+                if (collision.gameObject.GetInstanceID() > gameObject.GetInstanceID())
+                {
+                    //GetComponent<PhotonTransformView>().SetSynchronizedValues(new Vector3(0f, 0f), 0f);
+                    isMoving = false;
+                    transform.position = targetPoint = startPoint;
+                }
+            }
+            else
+            {
+                Debug.LogError("Collision with undefined object. Object name: " + collision.gameObject.name);
             }
 
-            Debug.Log(GetComponent<PhotonView>().instantiationId + " after route: " + curRoute.gameObject.name);
+            SetAnimationProperty(direction, isMoving);
         }
 
+        /// <summary>
+        /// Set this NPC's state about moving(stop or move).
+        /// </summary>
+        /// <param name="_isMoving">True if this NPC will move and false if not.</param>
+        /// <param name="_blockedTime">Blocking time for item watching or turning direction. The value less than 0 will be ignored.</param>
         [PunRPC]
+        private void SetMovingState(bool _isMoving, float _blockedTime)
+        {
+            Debug.Log("SetMovingState Called");
+
+            isMoving = _isMoving;
+            if (_blockedTime > 0f)
+                blockedTime = _blockedTime;
+        }
+
         private void SetAnimationProperty(Vector2 direction, bool isMoving)
         {
             Animator animator = GetComponent<Animator>();
@@ -550,13 +502,9 @@ namespace com.MJT.FindTheThief
                 stream.SendNext(startPoint);
                 stream.SendNext(targetPoint);
                 stream.SendNext(direction);
+
                 stream.SendNext(isMoving);
                 stream.SendNext(blockedTime);
-
-                stream.SendNext(prevRoom);
-                stream.SendNext(nextRoom);
-                stream.SendNext(curFloor);
-                stream.SendNext(curNodeNum);
 
                 //stream.SendNext(transform.position);
             }
@@ -567,13 +515,9 @@ namespace com.MJT.FindTheThief
                 startPoint = (Vector2)stream.ReceiveNext();
                 targetPoint = (Vector2)stream.ReceiveNext();
                 direction = (Vector2)stream.ReceiveNext();
+
                 isMoving = (bool)stream.ReceiveNext();
                 blockedTime = (float)stream.ReceiveNext();
-
-                prevRoom = (int)stream.ReceiveNext();
-                nextRoom = (int)stream.ReceiveNext();
-                curFloor = (int)stream.ReceiveNext();
-                curNodeNum = (int)stream.ReceiveNext();
 
                 //transform.position = (Vector3)stream.ReceiveNext();
             }

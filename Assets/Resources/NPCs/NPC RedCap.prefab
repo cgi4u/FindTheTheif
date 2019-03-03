@@ -17,8 +17,9 @@ GameObject:
   - component: {fileID: 6461677395318321203}
   - component: {fileID: 4624130643943377836}
   - component: {fileID: 3274405943293473993}
+  - component: {fileID: 2142032587828764921}
   m_Layer: 8
-  m_Name: NPC
+  m_Name: NPC RedCap
   m_TagString: NPC
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -99,7 +100,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Activated: 0
-  nodeChangeFlag: 0
   isMoving: 0
   blockedTime: 0
   moveSpeed: 4
@@ -108,6 +108,9 @@ MonoBehaviour:
   direction: {x: 0, y: 0}
   curRoute: {fileID: 0}
   curNodeNum: 0
+  prevRoom: 0
+  nextRoom: 0
+  curFloor: 0
 --- !u!114 &1900755372417909915
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -183,13 +186,14 @@ MonoBehaviour:
   group: 0
   OwnerShipWasTransfered: 0
   prefixBackup: -1
-  synchronization: 3
+  synchronization: 1
   onSerializeTransformOption: 3
   onSerializeRigidBodyOption: 2
   ownershipTransfer: 0
   ObservedComponents:
   - {fileID: 1900755372417909914}
   - {fileID: 4624130643943377836}
+  - {fileID: 2142032587828764921}
   ObservedComponentsFoldoutOpen: 1
   viewIdField: 0
   instantiationId: -1
@@ -292,3 +296,27 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &2142032587828764921
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1900755372417909919}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b8c4a61274f60b4ea5fb4299cfdbf14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowLayerWeightsInspector: 1
+  ShowParameterInspector: 1
+  m_SynchronizeParameters:
+  - Type: 3
+    SynchronizeType: 1
+    Name: Direction
+  - Type: 4
+    SynchronizeType: 1
+    Name: IsMoving
+  m_SynchronizeLayers:
+  - SynchronizeType: 1
+    LayerIndex: 0
