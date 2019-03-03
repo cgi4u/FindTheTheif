@@ -42,7 +42,7 @@ namespace com.MJT.FindTheThief
 
         [SerializeField]
         private Vector2 defaultOffset;
-        public Vector2 DefaultOffSet
+        public Vector2 DefaultOffset
         {
             get
             {

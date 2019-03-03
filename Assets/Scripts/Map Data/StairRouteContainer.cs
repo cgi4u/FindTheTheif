@@ -49,5 +49,25 @@ namespace com.MJT.FindTheThief
                 return rightUpRoutes;
             }
         }
+
+        public Route[] RoutesWithSideAndType(StairSide stairSide, StairType stairType)
+        {
+            if (stairSide  == StairSide.Left && stairType == StairType.Down)
+            {
+                return leftDownRoutes;
+            }
+            else if (stairSide == StairSide.Left && stairType == StairType.Up)
+            {
+                return leftUpRoutes;
+            }
+            else if (stairSide == StairSide.Right && stairType == StairType.Down)
+            {
+                return rightDownRoutes;
+            }
+            else
+            {
+                return rightUpRoutes;
+            }
+        }
     }
 }

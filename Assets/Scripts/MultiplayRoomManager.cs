@@ -298,7 +298,7 @@ namespace com.MJT.FindTheThief
                     return;
                 }
 
-                GameObject newNPC = PhotonNetwork.InstantiateSceneObject(NPCPrefab.name, new Vector3(0, 0, 0), Quaternion.identity, 0, null);
+                GameObject newNPC = PhotonNetwork.InstantiateSceneObject("NPCs\\" + NPCPrefab.name, new Vector3(0, 0, 0), Quaternion.identity, 0, null);
                 PhotonView.Get(newNPC).RPC("Init", PhotonTargets.All, randomPoint);
             }
         }
@@ -503,7 +503,7 @@ namespace com.MJT.FindTheThief
         int readyWaitTimeStamp = 0;
         private void Update()
         {
-            Debug.Log(PhotonNetwork.networkingPeer.RoundTripTime);
+            //Debug.Log(PhotonNetwork.networkingPeer.RoundTripTime);
 
             int curTimeStamp = PhotonNetwork.ServerTimestamp;
             int deltaTimeStamp = curTimeStamp - prevTimeStamp;
@@ -739,8 +739,7 @@ namespace com.MJT.FindTheThief
 
         public override void OnLeftRoom()
         {
-            // Remove scene load delegate
-            SceneManager.sceneLoaded -= OnGameSceneLoaded;
+            instance = null;
             Destroy(this);
         }
 
