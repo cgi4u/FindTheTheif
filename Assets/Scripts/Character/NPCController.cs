@@ -346,7 +346,7 @@ namespace com.MJT.FindTheThief
 
                     if (mapDataManager.Rooms[nextRoom].Floor == curFloor)   // The target room is in this floor -> Stair to Room Route
                     {
-                        StairSide stairSide = mapDataManager.Rooms[prevRoom].AdjStairSide;
+                        StairSide stairSide = curRoute.StairSide;
                         StairType stairType;
                         if (curRoute.StairType == StairType.Up)
                             stairType = StairType.Down;
@@ -374,14 +374,14 @@ namespace com.MJT.FindTheThief
                     }
                     else   // The target room isn't in this floor -> Stair to Stair Route
                     {
-                        StairSide stairSide = mapDataManager.Rooms[prevRoom].AdjStairSide;
+                        StairSide stairSide = curRoute.StairSide;
                         StairType stairType;
                         if (curRoute.StairType == StairType.Up)
                             stairType = StairType.Up;
                         else
                             stairType = StairType.Down;
 
-                        Route[] searchRouteSet = mapDataManager.StairToStairRoutes[curFloor - 1].RoutesWithSideAndType(stairSide, stairType);
+                        Route[] searchRouteSet = mapDataManager.StairToStairRoutes[curFloor].RoutesWithSideAndType(stairSide, stairType);
                         List<Route> candRouteSet = new List<Route>();
                         foreach (Route route in searchRouteSet)
                         {

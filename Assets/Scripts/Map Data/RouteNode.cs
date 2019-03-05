@@ -57,5 +57,13 @@ namespace com.MJT.FindTheThief
                 return (Vector2)transform.position + defaultOffset;
             }
         }
+
+        private void Awake()
+        {
+            if (!isItemPoint && itemDir != new Vector2())
+            {
+                Debug.LogError(gameObject.name + " of " + transform.parent.name + " is have itemDir value but it's not a item watching point. It may be default position value.");
+            }
+        }
     }
 }
