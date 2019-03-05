@@ -111,23 +111,6 @@ namespace com.MJT.FindTheThief
 
         #endregion
 
-        #region Stair to Stair Route Properties
-
-        [SerializeField]
-        private int floor;
-        /// <summary>
-        /// The floor number in which this route is.(used by Stair to Stair Routes)
-        /// </summary>
-        public int Floor
-        {
-            get
-            {
-                return floor;
-            }
-        }
-
-        #endregion
-
         private void Awake()
         {
             nodeSet = GetComponentsInChildren<RouteNode>();

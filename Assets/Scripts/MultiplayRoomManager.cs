@@ -56,8 +56,8 @@ namespace com.MJT.FindTheThief
 
             // Modify PhotonNetwork settings according to in-game mode.
             PhotonNetwork.BackgroundTimeout = 30f;
-            PhotonNetwork.sendRate = 10;
-            PhotonNetwork.sendRateOnSerialize = 10;
+            //PhotonNetwork.sendRate = 10;
+            //PhotonNetwork.sendRateOnSerialize = 10;
 
             DontDestroyOnLoad(this);
 
@@ -551,6 +551,7 @@ namespace com.MJT.FindTheThief
                 {
                     if ((bool)thiefPlayer.CustomProperties[pauseKey] == false)
                     {
+                        PhotonNetwork.networkingPeer.SendOutgoingCommands();
                         photonView.RPC("TakeOverMaster", thiefPlayer, PhotonNetwork.ServerTimestamp);
                         break;
                     }

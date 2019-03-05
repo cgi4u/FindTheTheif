@@ -72,4 +72,6 @@ MonoBehaviour:
   - SetNextRoute
   - ChangeNodeAndRoute
   - SetMovingState
+  - RoutingPropertiesVaildCheck
+  - Check
   DisableAutoOpenWizard: 1

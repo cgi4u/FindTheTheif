@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4957295691843986}
   - component: {fileID: 114884570925487040}
   m_Layer: 0
-  m_Name: Room-to-Room Route
+  m_Name: Room to Room Route
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -44,10 +44,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   routeType: 1
-  nodeSet: []
+  curRoom: -1
   startRoom: -1
   endRoom: -1
-  curRoom: -1
   stairType: 2
-  stairSide: 0
+  stairSide: 2
   floor: 0

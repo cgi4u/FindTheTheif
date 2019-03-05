@@ -276,7 +276,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   floor: 0
   num: 2
-  adjStairSide: 2
+  adjStairSide: 1
   itemGenPoints:
   - {fileID: 6097439660666812389}
   - {fileID: 5700249385522417866}
