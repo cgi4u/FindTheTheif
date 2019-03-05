@@ -160,6 +160,17 @@ namespace com.MJT.FindTheThief
             //목적지에 도달했을 경우 버튼 입력 상황에 따라 목적지를 재계산하거나 멈춤
             if (transform.position.Equals(targetPoint))
             {
+                RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, new Vector2());
+                foreach (RaycastHit2D hit in hits)
+                {
+                    StairPoint stairPoint = hit.collider.gameObject.GetComponent<StairPoint>();
+                    if (stairPoint != null)
+                    {
+                        transform.position = stairPoint.LinkedPoint;
+                        break;
+                    }
+                }
+
                 if (btnCount > 0)
                     SetNewTargetPoint();
                 else

@@ -348,7 +348,7 @@ namespace com.MJT.FindTheThief
                     {
                         StairSide stairSide = mapDataManager.Rooms[prevRoom].AdjStairSide;
                         StairType stairType;
-                        if (mapDataManager.Rooms[nextRoom].Floor < curFloor)
+                        if (curRoute.StairType == StairType.Up)
                             stairType = StairType.Down;
                         else
                             stairType = StairType.Up;
@@ -376,10 +376,10 @@ namespace com.MJT.FindTheThief
                     {
                         StairSide stairSide = mapDataManager.Rooms[prevRoom].AdjStairSide;
                         StairType stairType;
-                        if (mapDataManager.Rooms[nextRoom].Floor < curFloor)
-                            stairType = StairType.Down;
-                        else
+                        if (curRoute.StairType == StairType.Up)
                             stairType = StairType.Up;
+                        else
+                            stairType = StairType.Down;
 
                         Route[] searchRouteSet = mapDataManager.StairToStairRoutes[curFloor - 1].RoutesWithSideAndType(stairSide, stairType);
                         List<Route> candRouteSet = new List<Route>();
