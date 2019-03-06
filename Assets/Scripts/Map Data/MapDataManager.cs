@@ -73,20 +73,31 @@ namespace com.MJT.FindTheThief
             }
         }
 
-        /*
-        private List<Route> allRoutesSet;
+        [SerializeField]
+        private List<Transform> thiefGenertaionPoints;
         /// <summary>
-        /// Set of all existing routes.
-        /// Used to sync current route of NPC.
+        /// The points which can be selected as thief players' initial loacation.
         /// </summary>
-        public List<Route> AllRouteSet
+        public List<Transform> ThiefGenertaionPoints
         {
             get
             {
-                return allRoutesSet;
+                return thiefGenertaionPoints;
             }
         }
-        */
+
+        [SerializeField]
+        private List<Transform> detectiveGenerationPoints;
+        /// <summary>
+        /// The points which can be selected as detective players' initial loacation.
+        /// </summary>
+        public List<Transform> DetectiveGenerationPoints
+        {
+            get
+            {
+                return detectiveGenerationPoints;
+            }
+        }
 
         #endregion
 

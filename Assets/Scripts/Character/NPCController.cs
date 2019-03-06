@@ -319,7 +319,12 @@ namespace com.MJT.FindTheThief
                     }
                     else        // The next room is in one of the other floors -> Room to Stair route
                     {
-                        StairSide stairSide = mapDataManager.Rooms[prevRoom].AdjStairSide;
+                        StairSide stairSide;
+                        if (Random.Range(0, 1) == 0)
+                            stairSide = StairSide.Left;
+                        else
+                            stairSide = StairSide.Right;
+
                         StairType stairType;
                         if (mapDataManager.Rooms[nextRoom].Floor < curFloor)
                             stairType = StairType.Down;
@@ -358,12 +363,14 @@ namespace com.MJT.FindTheThief
                         List<Route> candRouteSet = new List<Route>();
                         foreach (Route route in searchRouteSet)
                         {
-                            if (route.NodeSet[0].DefaultOffset == curRoute.NodeSet[curRoute.NodeSet.Length - 1].DefaultOffset)
+                            if (route.NodeSet[0].DefaultOffset == 
+                                (Vector2)(transform.position - curRoute.NodeSet[curRoute.NodeSet.Length - 1].transform.position))
                                 candRouteSet.Add(route);
                         }
 
                         if (candRouteSet.Count == 0)
                         {
+                            Debug.LogError((Vector2)(transform.position - curRoute.NodeSet[curRoute.NodeSet.Length - 1].transform.position));
                             Debug.LogError(stairSide + " " + stairType + " Stair to Room " + nextRoom + " Route is not set.");
                             return;
                         }
@@ -385,12 +392,14 @@ namespace com.MJT.FindTheThief
                         List<Route> candRouteSet = new List<Route>();
                         foreach (Route route in searchRouteSet)
                         {
-                            if (route.NodeSet[0].DefaultOffset == curRoute.NodeSet[curRoute.NodeSet.Length - 1].DefaultOffset)
+                            if (route.NodeSet[0].DefaultOffset == 
+                                (Vector2)(transform.position - curRoute.NodeSet[curRoute.NodeSet.Length - 1].transform.position))
                                 candRouteSet.Add(route);
                         }
 
                         if (candRouteSet.Count == 0)
                         {
+                            Debug.LogError((Vector2)(transform.position - curRoute.NodeSet[curRoute.NodeSet.Length - 1].transform.position));
                             Debug.LogError(stairSide + " " + stairType + " Stair to Stair Route in " + curFloor + "th Floor is not set.");
                             return;
                         }

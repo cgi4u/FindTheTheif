@@ -35,12 +35,15 @@ namespace com.MJT.FindTheThief
         {
             return "Team of Player " + id;
         }
+        static readonly string playerGenPointKey = "Player Generation Point";
+
         static readonly string pauseKey = "Pause";
 
         /*
         static readonly string remainingThievesKey = "Remaining Thieves Number";
         static readonly string remainingTargetsKey = "Remainig Target Items Number";
         */
+
         #endregion
 
         #region Room Initialization(Before Loading Room)
@@ -185,12 +188,10 @@ namespace com.MJT.FindTheThief
             }
         }
 
-        public GameObject thiefPrefab;
-        public GameObject detectivePrefab;
-
         List<PhotonPlayer> detectivePlayers = new List<PhotonPlayer>();
         List<PhotonPlayer> thiefPlayers = new List<PhotonPlayer>();
         List<int> masterPriority = new List<int>();
+
         private void OnGameSceneLoaded(Scene scene, LoadSceneMode mode)
         {
             if (scene != SceneManager.GetSceneByName(roomLevelName))
@@ -219,13 +220,6 @@ namespace com.MJT.FindTheThief
                 }
             }
 
-            Debug.Log("We are Instantiating LocalPlayer from " + SceneManager.GetActiveScene().name);
-            // we're in a room. spawn a character for the local player. it gets synced by using PhotonNetwork.Instantiate
-            if (myTeam == Team.Detective)
-                PhotonNetwork.Instantiate(detectivePrefab.name, new Vector3(0f + PhotonNetwork.player.ID, -5f, 0f), Quaternion.identity, 0);
-            else if (myTeam == Team.Thief)
-                PhotonNetwork.Instantiate(thiefPrefab.name, new Vector3(0f + PhotonNetwork.player.ID, -5f, 0f), Quaternion.identity, 0);
-
             // Set master client priority  
             foreach (PhotonPlayer thiefPlayer in thiefPlayers)
                 masterPriority.Add(thiefPlayer.ID);
@@ -238,16 +232,37 @@ namespace com.MJT.FindTheThief
 
             masterPriority.AddRange(detectivePriority);
 
-            // Other initialization for this game.
+            // Other initialization for this new game.
             ItemController.ResetDescoverdItems();
 
             // Game initiation by the master client.
             if (PhotonNetwork.isMasterClient)
             {
+                // Set the starting point of each players and generate the local players.
+                int[] thiefGenPointSelector = new int[mapDataManager.ThiefGenertaionPoints.Count];
+                for (int i = 0; i < thiefGenPointSelector.Length; i++)
+                    thiefGenPointSelector[i] = i;
+
+                Globals.RandomizeArray<int>(thiefGenPointSelector);
+                for (int i = 0; i < thiefPlayers.Count; i++)
+                {
+                    Hashtable cp = thiefPlayers[i].CustomProperties;
+                    cp[playerGenPointKey] = thiefGenPointSelector[i];
+                    thiefPlayers[i].SetCustomProperties(cp);
+                }
+
+                for (int i = 0; i < detectivePlayers.Count; i++)
+                {
+                    Hashtable cp = detectivePlayers[i].CustomProperties;
+                    cp[playerGenPointKey] = i;
+                    detectivePlayers[i].SetCustomProperties(cp);
+                }
+
+                // Generate scene objects.
                 GameInitByMaster();
             }
 
-            PhotonExtends.SetLocalPlayerPropsByElem(readyKey, true);
+            PhotonExtends.SetLocalPlayerPropsByElem(readyKey, false);
             inReady = true;
         }
 
@@ -693,6 +708,9 @@ namespace com.MJT.FindTheThief
             CheckIfGameSet();
         }
 
+        public GameObject thiefPrefab;
+        public GameObject detectivePrefab;
+
         public override void OnPhotonCustomRoomPropertiesChanged(Hashtable propertiesThatChanged)
         {
             if (propertiesThatChanged[startKey] != null 
@@ -701,6 +719,14 @@ namespace com.MJT.FindTheThief
                 inReady = false;
                 gameStarted = true;
                 SceneManager.sceneLoaded -= OnGameSceneLoaded;
+
+                int genPointIdx = (int)PhotonNetwork.player.CustomProperties[playerGenPointKey];
+                Debug.Log("We are Instantiating LocalPlayer from " + SceneManager.GetActiveScene().name);
+                Debug.Log("You are a " + myTeam);
+                if (myTeam == Team.Detective)
+                    PhotonNetwork.Instantiate(detectivePrefab.name, mapDataManager.DetectiveGenerationPoints[genPointIdx].position, Quaternion.identity, 0);
+                else if (myTeam == Team.Thief)
+                    PhotonNetwork.Instantiate(thiefPrefab.name, mapDataManager.ThiefGenertaionPoints[genPointIdx].position, Quaternion.identity, 0);
 
                 if (PhotonNetwork.isMasterClient)
                 {

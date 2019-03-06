@@ -34,6 +34,7 @@ namespace com.MJT.FindTheThief
             }
         }
 
+         /*
         [SerializeField]
         private StairSide adjStairSide;
         public StairSide AdjStairSide
@@ -43,6 +44,7 @@ namespace com.MJT.FindTheThief
                 return adjStairSide;
             }
         }
+        */
 
         //방 내부의 아이템 생성 지점
         [SerializeField]
