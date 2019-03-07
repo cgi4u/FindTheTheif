@@ -36,6 +36,7 @@ namespace com.MJT.FindTheThief
             return "Team of Player " + id;
         }
         static readonly string playerGenPointKey = "Player Generation Point";
+        static readonly string theifFigureKey = "Theif Figure";
 
         static readonly string pauseKey = "Pause";
 
@@ -242,12 +243,18 @@ namespace com.MJT.FindTheThief
                 int[] thiefGenPointSelector = new int[mapDataManager.ThiefGenertaionPoints.Count];
                 for (int i = 0; i < thiefGenPointSelector.Length; i++)
                     thiefGenPointSelector[i] = i;
-
                 Globals.RandomizeArray<int>(thiefGenPointSelector);
+
+                for (int i = 0; i < NPCPrefabs.Length; i++)
+                    randomNPCSelector.Add(i);
+                Globals.RandomizeList<int>(randomNPCSelector);
+
                 for (int i = 0; i < thiefPlayers.Count; i++)
                 {
                     Hashtable cp = thiefPlayers[i].CustomProperties;
                     cp[playerGenPointKey] = thiefGenPointSelector[i];
+                    cp[theifFigureKey] = randomNPCSelector[0];
+                    randomNPCSelector.RemoveAt(0);
                     thiefPlayers[i].SetCustomProperties(cp);
                 }
 
@@ -298,22 +305,29 @@ namespace com.MJT.FindTheThief
         }
 
         public int numberOfNPC;
-        public GameObject NPCPrefab;
+        public GameObject[] NPCPrefabs;
+        private List<int> randomNPCSelector = new List<int>();
         /// <summary>
         /// Generate NPCs at random nodes.
         /// </summary>
         private void NPCGeneration()
         {
+            if (numberOfNPC > randomNPCSelector.Count)
+            {
+                Debug.LogError("Error: Attempt to generate more number of NPCs than available NPC prefabs.");
+                return;
+            }
+
             for (int i = 0; i < numberOfNPC; i++)
             {
                 int randomPoint = mapDataManager.GetRandomNPCGenPoint();
                 if (randomPoint == -1)
                 {
-                    Debug.LogError("Error: Attempt to generate more number of NPC than available");
+                    Debug.LogError("Error: Attempt to generate more number of NPCs than available generation points.");
                     return;
                 }
 
-                GameObject newNPC = PhotonNetwork.InstantiateSceneObject("NPCs\\" + NPCPrefab.name, new Vector3(0, 0, 0), Quaternion.identity, 0, null);
+                GameObject newNPC = PhotonNetwork.InstantiateSceneObject("NPCs\\" + NPCPrefabs[randomNPCSelector[i]].name, new Vector3(0, 0, 0), Quaternion.identity, 0, null);
                 PhotonView.Get(newNPC).RPC("Init", PhotonTargets.All, randomPoint);
             }
         }
@@ -726,7 +740,13 @@ namespace com.MJT.FindTheThief
                 if (myTeam == Team.Detective)
                     PhotonNetwork.Instantiate(detectivePrefab.name, mapDataManager.DetectiveGenerationPoints[genPointIdx].position, Quaternion.identity, 0);
                 else if (myTeam == Team.Thief)
-                    PhotonNetwork.Instantiate(thiefPrefab.name, mapDataManager.ThiefGenertaionPoints[genPointIdx].position, Quaternion.identity, 0);
+                { 
+                    GameObject myTheif = PhotonNetwork.Instantiate(thiefPrefab.name, mapDataManager.ThiefGenertaionPoints[genPointIdx].position, Quaternion.identity, 0);
+
+                    int figureNPCIdx = (int)PhotonNetwork.player.CustomProperties[theifFigureKey];
+                    myTheif.GetComponent<SpriteRenderer>().sprite = NPCPrefabs[figureNPCIdx].GetComponent<SpriteRenderer>().sprite;
+                    myTheif.GetComponent<Animator>().runtimeAnimatorController = NPCPrefabs[figureNPCIdx].GetComponent<Animator>().runtimeAnimatorController;
+                }
 
                 if (PhotonNetwork.isMasterClient)
                 {

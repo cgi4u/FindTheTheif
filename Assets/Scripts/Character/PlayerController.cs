@@ -87,6 +87,7 @@ namespace com.MJT.FindTheThief
             transform.position = startPoint;
 
             isMoving = false;
+            SetAnimationProperty();
         }
 
         #region Player Moving
@@ -198,7 +199,10 @@ namespace com.MJT.FindTheThief
                 if (btnCount > 0)
                     SetNewTargetPoint();
                 else
+                {
                     isMoving = false;
+                    SetAnimationProperty();
+                }
             }
 
             return;
@@ -247,6 +251,29 @@ namespace com.MJT.FindTheThief
                 isMoving = false;
             else
                 isMoving = true;
+
+            SetAnimationProperty();
+        }
+
+        private void SetAnimationProperty()
+        {
+            Animator animator = GetComponent<Animator>();
+
+            int directionInt = -1;
+            if (direction == Vector2.up)
+                directionInt = 0;
+            else if (direction == Vector2.down)
+                directionInt = 1;
+            else if (direction == Vector2.left)
+                directionInt = 2;
+            else if (direction == Vector2.right)
+                directionInt = 3;
+
+            if (animator.GetInteger("Direction") != directionInt)
+                animator.SetInteger("Direction", directionInt);
+
+            if (animator.GetBool("IsMoving") != isMoving)
+                animator.SetBool("IsMoving", isMoving);
         }
 
         #endregion
