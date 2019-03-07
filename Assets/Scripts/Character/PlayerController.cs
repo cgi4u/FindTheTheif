@@ -166,7 +166,31 @@ namespace com.MJT.FindTheThief
                     StairPoint stairPoint = hit.collider.gameObject.GetComponent<StairPoint>();
                     if (stairPoint != null)
                     {
-                        transform.position = stairPoint.LinkedPoint;
+                        Vector2 newPos = stairPoint.LinkedPoint;
+
+                        bool posConfirmed = false;
+                        while (!posConfirmed)
+                        {
+                            RaycastHit2D[] stairFrontHits = Physics2D.RaycastAll(newPos, new Vector2());
+
+                            posConfirmed = true;
+                            foreach (RaycastHit2D stairFrontHit in stairFrontHits)
+                            {
+                                if (!stairFrontHit.collider.isTrigger)
+                                {
+                                    posConfirmed = false;
+
+                                    if (newPos.y > transform.position.y)
+                                        newPos += Vector2.up;
+                                    else
+                                        newPos += Vector2.down;
+
+                                    break;
+                                }
+                            }
+                        }
+
+                        transform.position = newPos;
                         break;
                     }
                 }

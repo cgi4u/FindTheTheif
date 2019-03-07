@@ -358,13 +358,16 @@ namespace com.MJT.FindTheThief
                         else
                             stairType = StairType.Up;
 
+                        Vector2 entryOffset = new Vector2(0.5f, 0f);
+                        if (Vector2.Distance(transform.position, (Vector2)curRoute.NodeSet[curRoute.NodeSet.Length - 1].transform.position - entryOffset)
+                            < Vector2.Distance(transform.position, (Vector2)curRoute.NodeSet[curRoute.NodeSet.Length - 1].transform.position + entryOffset))
+                            entryOffset = -entryOffset;
 
                         Route[] searchRouteSet = mapDataManager.Rooms[nextRoom].FromStairRoutes.RoutesWithSideAndType(stairSide, stairType);
                         List<Route> candRouteSet = new List<Route>();
                         foreach (Route route in searchRouteSet)
                         {
-                            if (route.NodeSet[0].DefaultOffset == 
-                                (Vector2)(transform.position - curRoute.NodeSet[curRoute.NodeSet.Length - 1].transform.position))
+                            if (route.NodeSet[0].DefaultOffset == entryOffset)
                                 candRouteSet.Add(route);
                         }
 
@@ -377,7 +380,44 @@ namespace com.MJT.FindTheThief
 
                         curRoute = candRouteSet[randomSelector2 % candRouteSet.Count];
                         if (!PhotonNetwork.connected || PhotonNetwork.isMasterClient)
-                            startPoint = targetPoint = transform.position = curRoute.NodeSet[0].DefaultPos;
+                        {
+                            Vector2 newPos = curRoute.NodeSet[0].DefaultPos;
+
+                            bool posConfirmed = false;
+                            while (!posConfirmed)
+                            {
+                                RaycastHit2D[] hits = Physics2D.RaycastAll(newPos, new Vector2());
+
+                                posConfirmed = true;
+                                foreach (RaycastHit2D hit in hits)
+                                {
+                                    if (!hit.collider.isTrigger)
+                                    {
+                                        posConfirmed = false;
+
+                                        if (stairType == StairType.Down)
+                                            newPos += Vector2.up;
+                                        else
+                                            newPos += Vector2.down;
+
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if (stairType == StairType.Down)
+                                direction = Vector2.up;
+                            else
+                                direction = Vector2.down;
+
+                            if (PhotonNetwork.connected)
+                            {
+                                photonView.RPC("SyncPosImmediately", PhotonTargets.All, newPos);
+                                PhotonNetwork.networkingPeer.SendOutgoingCommands();
+                            }
+                            else
+                                SyncPosImmediately(newPos);
+                        }
                     }
                     else   // The target room isn't in this floor -> Stair to Stair Route
                     {
@@ -388,12 +428,16 @@ namespace com.MJT.FindTheThief
                         else
                             stairType = StairType.Down;
 
+                        Vector2 entryOffset = new Vector2(0.5f, 0f);
+                        if (Vector2.Distance(transform.position, (Vector2)curRoute.NodeSet[curRoute.NodeSet.Length - 1].transform.position - entryOffset)
+                            < Vector2.Distance(transform.position, (Vector2)curRoute.NodeSet[curRoute.NodeSet.Length - 1].transform.position + entryOffset))
+                            entryOffset = -entryOffset;
+
                         Route[] searchRouteSet = mapDataManager.StairToStairRoutes[curFloor].RoutesWithSideAndType(stairSide, stairType);
                         List<Route> candRouteSet = new List<Route>();
                         foreach (Route route in searchRouteSet)
                         {
-                            if (route.NodeSet[0].DefaultOffset == 
-                                (Vector2)(transform.position - curRoute.NodeSet[curRoute.NodeSet.Length - 1].transform.position))
+                            if (route.NodeSet[0].DefaultOffset == entryOffset)
                                 candRouteSet.Add(route);
                         }
 
@@ -405,8 +449,45 @@ namespace com.MJT.FindTheThief
                         }
 
                         curRoute = candRouteSet[randomSelector2 % candRouteSet.Count];
+                        Vector2 newPos = curRoute.NodeSet[0].DefaultPos;
+
+                        bool posConfirmed = false;
                         if (!PhotonNetwork.connected || PhotonNetwork.isMasterClient)
-                            startPoint = targetPoint = transform.position = curRoute.NodeSet[0].DefaultPos;
+                        {
+                            while (!posConfirmed)
+                            {
+                                RaycastHit2D[] hits = Physics2D.RaycastAll(newPos, new Vector2());
+
+                                posConfirmed = true;
+                                foreach (RaycastHit2D hit in hits)
+                                {
+                                    if (!hit.collider.isTrigger)
+                                    {
+                                        posConfirmed = false;
+
+                                        if (stairType == StairType.Up)
+                                            newPos += Vector2.up;
+                                        else
+                                            newPos += Vector2.down;
+
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if (stairType == StairType.Up)
+                                direction = Vector2.up;
+                            else
+                                direction = Vector2.down;
+
+                            if (PhotonNetwork.connected)
+                            {
+                                photonView.RPC("SyncPosImmediately", PhotonTargets.All, newPos);
+                                PhotonNetwork.networkingPeer.SendOutgoingCommands();
+                            }
+                            else
+                                SyncPosImmediately(newPos);
+                        }
                     }
                 }
                 else if (curRoute.RouteType == RouteType.Stair_to_Room || curRoute.RouteType == RouteType.Room_to_Room)    // The current route is To Room Route -> Next is In Room Route
@@ -430,6 +511,12 @@ namespace com.MJT.FindTheThief
             }
         }
 
+        [PunRPC]
+        private void SyncPosImmediately(Vector2 newPos)
+        {
+            startPoint = targetPoint = transform.position = newPos;
+        }
+
         private void OnCollisionEnter2D(Collision2D collision)
         {
             if (PhotonNetwork.connected && !photonView.isMine)
@@ -437,7 +524,6 @@ namespace com.MJT.FindTheThief
 
             if (collision.gameObject.GetComponent<PlayerController>() != null)
             {
-                //Debug.Log("Collision with a player name: " + collision.gameObject.GetComponent<PhotonView>().owner.NickName);
                 if (Vector2.Distance(collision.gameObject.transform.position, startPoint)
                     >= Vector2.Distance(collision.gameObject.transform.position, targetPoint))
                 {
@@ -452,11 +538,15 @@ namespace com.MJT.FindTheThief
             }
             else if (collision.gameObject.GetComponent<NPCController>() != null)
             {
-                if (collision.gameObject.GetInstanceID() > gameObject.GetInstanceID())
+                if (Vector2.Distance(collision.GetContact(0).point, startPoint)
+                    >= Vector2.Distance(collision.GetContact(0).point, targetPoint))
                 {
-                    //GetComponent<PhotonTransformView>().SetSynchronizedValues(new Vector3(0f, 0f), 0f);
                     isMoving = false;
                     transform.position = targetPoint = startPoint;
+                }
+                else
+                {
+                    transform.position = targetPoint;
                 }
             }
             else
@@ -465,6 +555,22 @@ namespace com.MJT.FindTheThief
             }
 
             SetAnimationProperty(direction, isMoving);
+        }
+
+        private NPCController GetCollisionPriorty(NPCController npc1, NPCController npc2)
+        {
+            if (npc1.startPoint == npc1.targetPoint)
+                return npc1;
+            else if (npc2.startPoint == npc2.targetPoint)
+                return npc2;
+            else
+            {
+                if (npc1.GetInstanceID() > npc2.GetInstanceID())
+                    return npc1;
+                else
+                    return npc2;
+            }
+
         }
 
         private void SetAnimationProperty(Vector2 direction, bool isMoving)

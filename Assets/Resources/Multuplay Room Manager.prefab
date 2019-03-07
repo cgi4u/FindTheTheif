@@ -46,12 +46,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   roomLevelName: Default Game Room
-  thiefPrefab: {fileID: 4203696217380748978, guid: 525f72b978b9e7941acdcbf8b1145f7b,
-    type: 3}
-  detectivePrefab: {fileID: 1536311355630938, guid: 4a2bb6044e24a974eb687461314d3ef0,
-    type: 3}
   sceneObjParent: {fileID: 9062036302235804974}
-  numberOfNPC: 15
+  numberOfNPC: 18
   NPCPrefab: {fileID: 1900755372417909919, guid: 135b5b3a8b693284ab93667c9b37cdc8,
     type: 3}
   itemPrefabs:
@@ -88,6 +84,10 @@ MonoBehaviour:
   inReady: 0
   gameStarted: 0
   gameSet: 0
+  thiefPrefab: {fileID: 4203696217380748978, guid: 525f72b978b9e7941acdcbf8b1145f7b,
+    type: 3}
+  detectivePrefab: {fileID: 1536311355630938, guid: 4a2bb6044e24a974eb687461314d3ef0,
+    type: 3}
 --- !u!114 &114986182949599362
 MonoBehaviour:
   m_ObjectHideFlags: 0
