@@ -27,21 +27,6 @@ PrefabInstance:
       propertyPath: instantiationId
       value: -1
       objectReference: {fileID: 0}
-    - target: {fileID: 1398978320534156988, guid: f45d73c9e53777343926b98126757bb1,
-        type: 3}
-      propertyPath: m_PositionModel.SynchronizeEnabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1398978320534156988, guid: f45d73c9e53777343926b98126757bb1,
-        type: 3}
-      propertyPath: m_PositionModel.TeleportEnabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1398978320534156988, guid: f45d73c9e53777343926b98126757bb1,
-        type: 3}
-      propertyPath: m_PositionModel.InterpolateOption
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 6009032931105501773, guid: f45d73c9e53777343926b98126757bb1,
         type: 3}
       propertyPath: myColor
@@ -106,6 +91,27 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6009032931105501770, guid: f45d73c9e53777343926b98126757bb1,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 34499ca8a6d180241b71882ea2719f09,
+        type: 3}
+    - target: {fileID: 1398978320534156988, guid: f45d73c9e53777343926b98126757bb1,
+        type: 3}
+      propertyPath: m_PositionModel.SynchronizeEnabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1398978320534156988, guid: f45d73c9e53777343926b98126757bb1,
+        type: 3}
+      propertyPath: m_PositionModel.TeleportEnabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1398978320534156988, guid: f45d73c9e53777343926b98126757bb1,
+        type: 3}
+      propertyPath: m_PositionModel.InterpolateOption
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f45d73c9e53777343926b98126757bb1, type: 3}

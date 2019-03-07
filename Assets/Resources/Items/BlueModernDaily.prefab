@@ -12,6 +12,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlueModernDaily
       objectReference: {fileID: 0}
+    - target: {fileID: 1767984582041642346, guid: f45d73c9e53777343926b98126757bb1,
+        type: 3}
+      propertyPath: viewIdField
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1767984582041642346, guid: f45d73c9e53777343926b98126757bb1,
+        type: 3}
+      propertyPath: instantiationId
+      value: -1
+      objectReference: {fileID: 0}
     - target: {fileID: 6009032931105501773, guid: f45d73c9e53777343926b98126757bb1,
         type: 3}
       propertyPath: myColor
@@ -82,15 +92,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1767984582041642346, guid: f45d73c9e53777343926b98126757bb1,
+    - target: {fileID: 6009032931105501770, guid: f45d73c9e53777343926b98126757bb1,
         type: 3}
-      propertyPath: viewIdField
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1767984582041642346, guid: f45d73c9e53777343926b98126757bb1,
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: d45a5f1cf39f4164d8d4288b67bd164b,
         type: 3}
-      propertyPath: instantiationId
-      value: -1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f45d73c9e53777343926b98126757bb1, type: 3}
