@@ -130,12 +130,13 @@ namespace com.MJT.FindTheThief
                 {
                     int rand1 = Random.Range(0, mapDataManager.MaxRandomValue);
                     int rand2 = Random.Range(0, mapDataManager.MaxRandomValue);
+                    int rand3 = Random.Range(0, 2);
                     float randf = Random.Range(1f, 3f);
 
                     if (PhotonNetwork.connected)
-                        photonView.RPC("ChangeNodeAndRoute", PhotonTargets.All, rand1, rand2, randf);
+                        photonView.RPC("ChangeNodeAndRoute", PhotonTargets.All, rand1, rand2, rand3, randf);
                     else
-                        ChangeNodeAndRoute(rand1, rand2, randf);
+                        ChangeNodeAndRoute(rand1, rand2, rand3, randf);
                 }
                 else
                     SetNewTargetPoint();
@@ -287,7 +288,7 @@ namespace com.MJT.FindTheThief
         /// Check if this NPC arrived at next node or route end. If did, change target node or current route. 
         /// </summary>
         [PunRPC]
-        private void ChangeNodeAndRoute(int randomSelector1, int randomSelector2, float randomBlockTime)
+        private void ChangeNodeAndRoute(int randomSelector1, int randomSelector2, int stairSelector, float randomBlockTime)
         {
             //GetComponent<PhotonTransformView>().SetSynchronizedValues(new Vector3(0f, 0f), 0f);
             curNodeNum += 1;
@@ -320,7 +321,7 @@ namespace com.MJT.FindTheThief
                     else        // The next room is in one of the other floors -> Room to Stair route
                     {
                         StairSide stairSide;
-                        if (Random.Range(0, 1) == 0)
+                        if (stairSelector == 0)
                             stairSide = StairSide.Left;
                         else
                             stairSide = StairSide.Right;
@@ -538,15 +539,11 @@ namespace com.MJT.FindTheThief
             }
             else if (collision.gameObject.GetComponent<NPCController>() != null)
             {
-                if (Vector2.Distance(collision.GetContact(0).point, startPoint)
-                    >= Vector2.Distance(collision.GetContact(0).point, targetPoint))
+                if (collision.gameObject.GetInstanceID() > gameObject.GetInstanceID())
                 {
+                    //GetComponent<PhotonTransformView>().SetSynchronizedValues(new Vector3(0f, 0f), 0f);
                     isMoving = false;
                     transform.position = targetPoint = startPoint;
-                }
-                else
-                {
-                    transform.position = targetPoint;
                 }
             }
             else
