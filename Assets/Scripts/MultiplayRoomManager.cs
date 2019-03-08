@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using ExitGames.Client.Photon;
 using UnityEngine;
 
 using UnityEngine.SceneManagement;
@@ -30,6 +29,7 @@ namespace com.MJT.FindTheThief
         static readonly string readyKey = "Ready";
         static readonly string startKey = "Game Started";
         static readonly string gameSetKey = "Game Set";
+        static readonly string winTeamKey = "Win Team";
 
         private string TeamKey(int id)
         {
@@ -208,6 +208,9 @@ namespace com.MJT.FindTheThief
             UIManager.Instance.SetTeamLabel(myTeam);
             UIManager.Instance.RenewThievesNum(thievesNum);
 
+            if (myTeam == Team.Detective)
+                UIManager.Instance.DeactivateUIGroup();
+
             foreach (PhotonPlayer player in PhotonNetwork.playerList)
             {
                 Team teamOfPlayer = (Team)PhotonNetwork.room.CustomProperties[TeamKey(player.ID)];
@@ -245,7 +248,7 @@ namespace com.MJT.FindTheThief
                     thiefGenPointSelector[i] = i;
                 Globals.RandomizeArray<int>(thiefGenPointSelector);
 
-                for (int i = 0; i < NPCPrefabs.Length; i++)
+                for (int i = 0; i < _NPCPrefabs.Length; i++)
                     randomNPCSelector.Add(i);
                 Globals.RandomizeList<int>(randomNPCSelector);
 
@@ -305,7 +308,15 @@ namespace com.MJT.FindTheThief
         }
 
         public int numberOfNPC;
-        public GameObject[] NPCPrefabs;
+        [SerializeField]
+        private GameObject[] _NPCPrefabs;
+        public GameObject[] NPCPrefabs
+        {
+            get
+            {
+                return _NPCPrefabs;
+            }
+        }
         private List<int> randomNPCSelector = new List<int>();
         /// <summary>
         /// Generate NPCs at random nodes.
@@ -327,7 +338,7 @@ namespace com.MJT.FindTheThief
                     return;
                 }
 
-                GameObject newNPC = PhotonNetwork.InstantiateSceneObject("NPCs\\" + NPCPrefabs[randomNPCSelector[i]].name, new Vector3(0, 0, 0), Quaternion.identity, 0, null);
+                GameObject newNPC = PhotonNetwork.InstantiateSceneObject("NPCs\\" + _NPCPrefabs[randomNPCSelector[i]].name, new Vector3(0, 0, 0), Quaternion.identity, 0, null);
                 PhotonView.Get(newNPC).RPC("Init", PhotonTargets.All, randomPoint);
             }
         }
@@ -515,13 +526,17 @@ namespace com.MJT.FindTheThief
 
         // Start/End time of the game(use server time to set)
         [SerializeField]
-        private int leftTimeStamp;
+        private int timeStampForPrepare;
+        private int prepareStartTimeStamp;
+
         [SerializeField]
-        bool inReady = false;
-        [SerializeField]
-        bool gameStarted = false;
-        [SerializeField]
-        bool gameSet = false;
+        private int timeStampPerGame;
+        private int startTimeStamp;
+
+        private bool inReady = false;
+        private bool gameStarted = false;
+        private bool prepareTimeEnd = false;
+        private bool gameSet = false;
 
         int prevTimeStamp;
         private void Start()
@@ -563,8 +578,22 @@ namespace com.MJT.FindTheThief
                 return;
             // Section after game is started.
 
-            leftTimeStamp -= deltaTimeStamp;
-            UIManager.Instance.RenewTimeLabel(leftTimeStamp / 1000);
+            //Debug.Log(curTimeStamp);
+            if (prepareTimeEnd)
+            {
+                UIManager.Instance.RenewTimeLabel((timeStampPerGame - (curTimeStamp - startTimeStamp)) / 1000);
+            }
+            else if (timeStampForPrepare - (curTimeStamp - prepareStartTimeStamp) <= 0)
+            {
+                if (myTeam == Team.Detective)
+                    UIManager.Instance.ActivateUIGroup();
+                startTimeStamp = PhotonNetwork.ServerTimestamp;
+                prepareTimeEnd = true;
+            }
+            else
+            {
+                UIManager.Instance.RenewTimeLabel((timeStampForPrepare - (curTimeStamp - prepareStartTimeStamp)) / 1000);
+            }
         }
 
         private void LateUpdate()
@@ -730,8 +759,6 @@ namespace com.MJT.FindTheThief
             if (propertiesThatChanged[startKey] != null 
                 && (bool)propertiesThatChanged[startKey] && !gameStarted)
             {
-                inReady = false;
-                gameStarted = true;
                 SceneManager.sceneLoaded -= OnGameSceneLoaded;
 
                 int genPointIdx = (int)PhotonNetwork.player.CustomProperties[playerGenPointKey];
@@ -743,9 +770,8 @@ namespace com.MJT.FindTheThief
                 { 
                     GameObject myTheif = PhotonNetwork.Instantiate(thiefPrefab.name, mapDataManager.ThiefGenertaionPoints[genPointIdx].position, Quaternion.identity, 0);
 
-                    int figureNPCIdx = (int)PhotonNetwork.player.CustomProperties[theifFigureKey];
-                    myTheif.GetComponent<SpriteRenderer>().sprite = NPCPrefabs[figureNPCIdx].GetComponent<SpriteRenderer>().sprite;
-                    myTheif.GetComponent<Animator>().runtimeAnimatorController = NPCPrefabs[figureNPCIdx].GetComponent<Animator>().runtimeAnimatorController;
+                    int NPCIdx = (int)PhotonNetwork.player.CustomProperties[theifFigureKey];
+                    myTheif.GetComponent<PhotonView>().RPC("SetSpriteAndAnimation", PhotonTargets.All, NPCIdx);
                 }
 
                 if (PhotonNetwork.isMasterClient)
@@ -756,7 +782,9 @@ namespace com.MJT.FindTheThief
                     }
                 }
 
-                return;
+                prepareStartTimeStamp = PhotonNetwork.ServerTimestamp;
+                inReady = false;
+                gameStarted = true;
             }
 
             if (propertiesThatChanged[gameSetKey] != null
@@ -767,7 +795,6 @@ namespace com.MJT.FindTheThief
 
                 gameSet = true;
                 gameStarted = false;
-                return;
             }
         }
 

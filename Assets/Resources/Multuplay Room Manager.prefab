@@ -48,27 +48,27 @@ MonoBehaviour:
   roomLevelName: Default Game Room
   sceneObjParent: {fileID: 9062036302235804974}
   numberOfNPC: 18
-  NPCPrefabs:
-  - {fileID: 1900755372417909919, guid: 20ef49644f01fe54a8747859ab0c35b5, type: 3}
-  - {fileID: 1900755372417909919, guid: cf880ad8441628945b1dfde28245841b, type: 3}
-  - {fileID: 1900755372417909919, guid: 8311586f8a0378844b49418cc2531983, type: 3}
-  - {fileID: 1900755372417909919, guid: dc20ef2c85782c94eaa27bb333b1bba4, type: 3}
-  - {fileID: 1900755372417909919, guid: 8be8b07c0055b7b4fbdecd8a43fe1a1f, type: 3}
-  - {fileID: 1900755372417909919, guid: 17e107568e512d34a85679af900244b4, type: 3}
-  - {fileID: 1900755372417909919, guid: 992579e01e01c7646b44055da5fc0526, type: 3}
-  - {fileID: 1900755372417909919, guid: c95fb01ed9a3c5443a21a5b776833e2b, type: 3}
-  - {fileID: 1900755372417909919, guid: a994a7abf1266de48a3b2afa25d97f3b, type: 3}
-  - {fileID: 1900755372417909919, guid: 24ac8bbfb8a773543a97a0ed9695b3fa, type: 3}
-  - {fileID: 1900755372417909919, guid: 135b5b3a8b693284ab93667c9b37cdc8, type: 3}
-  - {fileID: 1900755372417909919, guid: 29ddd1e01fc507d4f9795705cfee11ec, type: 3}
-  - {fileID: 1900755372417909919, guid: 75c981d97d586884ca854a5f32c3be16, type: 3}
-  - {fileID: 1900755372417909919, guid: c5c63ed1ca9ba3543be0953f1c25b1ac, type: 3}
-  - {fileID: 1900755372417909919, guid: 8d0af9ad57d380c43b5683cf916e71f5, type: 3}
-  - {fileID: 1900755372417909919, guid: e64b92a99bfa30d4e93655ea7bdbe6f5, type: 3}
-  - {fileID: 1900755372417909919, guid: cf0a9c9a84a8f964e8820016bda14d81, type: 3}
-  - {fileID: 1900755372417909919, guid: 209491bd031611840ab9b574da2fa3a0, type: 3}
-  - {fileID: 1900755372417909919, guid: af3be78142b60c140acc8d3ab22de299, type: 3}
-  - {fileID: 1900755372417909919, guid: 82ad3462f552eb04b84f1d3458bb48fb, type: 3}
+  _NPCPrefabs:
+  - {fileID: 7938114074802122126, guid: ef86782a54792224892aa8cffd3cbc3c, type: 3}
+  - {fileID: 294662172499688182, guid: 6e413f2d65a839b45b345baaefb3730a, type: 3}
+  - {fileID: 5233620422931506476, guid: e2a901ffa1549f740a75e9327d4b9eec, type: 3}
+  - {fileID: 411007586375694151, guid: ab908a699f5312a4ea42aa3b3fc58b76, type: 3}
+  - {fileID: 2394877336906099730, guid: 8e63f1ec53397a3479f43cc7be6d37e8, type: 3}
+  - {fileID: 638950563215790608, guid: e0402d37c78f2544dbb22da6a93ec0e0, type: 3}
+  - {fileID: 3467445668703988590, guid: f5ac66acf7bf97b4991a32fb1c79c809, type: 3}
+  - {fileID: 5772985747559926896, guid: eb03af5b2721396438f9803cffef20e6, type: 3}
+  - {fileID: 7866458611911526808, guid: 0d02d27c6f949cd4392146063567097f, type: 3}
+  - {fileID: 5078400297183509156, guid: c91bb2e98dfa51d47873611756fa30a8, type: 3}
+  - {fileID: 1793491246905821481, guid: 4b792e51be0ac3b4bbdd177463252fad, type: 3}
+  - {fileID: 2695441979825709123, guid: 4151399dd9f60ee44af02f8c11721538, type: 3}
+  - {fileID: 2035214656262915292, guid: 776c5522ba017324bbdc8b28e76452a7, type: 3}
+  - {fileID: 1625913741521787184, guid: 651dcbf1f250fc34996f148dfe09a552, type: 3}
+  - {fileID: 5375358366664060200, guid: 418d1f1d8e0595046af0f886a9720048, type: 3}
+  - {fileID: 4238639215895870504, guid: 77e1ec0cfce267e4f9ab0a7cca8c7cd9, type: 3}
+  - {fileID: 2342461071057663727, guid: 92604f1dc6930804ba45bdd1498e7931, type: 3}
+  - {fileID: 8808527869284749666, guid: 3ae960bc295702a428a40b39b2f1167a, type: 3}
+  - {fileID: 2674180450295607117, guid: 0d53b88683523794f958b09730b1a7ed, type: 3}
+  - {fileID: 4194690385879481028, guid: 5fb0a15d0c965964d8a0e6ee4d59bfa9, type: 3}
   itemPrefabs:
   - {fileID: 6619406176001590459, guid: ee79df95f46524b4bbafdaa667c84828, type: 3}
   - {fileID: 7114427026344995535, guid: 4160d91361942b74982963fc63af1e05, type: 3}
@@ -99,10 +99,9 @@ MonoBehaviour:
   - {fileID: 418247004385567571, guid: a10d59b3ede3d3e44aa97c70ad0c5d15, type: 3}
   targetItemNum: 3
   targetItems: []
-  leftTimeStamp: 60000
-  inReady: 0
-  gameStarted: 0
-  gameSet: 0
+  timeStampForPrepare: 5000
+  prepareStartTimeStamp: 0
+  timeStampPerGame: 60000
   thiefPrefab: {fileID: 4203696217380748978, guid: 525f72b978b9e7941acdcbf8b1145f7b,
     type: 3}
   detectivePrefab: {fileID: 1536311355630938, guid: 4a2bb6044e24a974eb687461314d3ef0,

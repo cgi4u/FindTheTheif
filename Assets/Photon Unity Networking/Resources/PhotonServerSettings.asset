@@ -75,4 +75,5 @@ MonoBehaviour:
   - RoutingPropertiesVaildCheck
   - Check
   - SyncPosImmediately
+  - SetSpriteAndAnimation
   DisableAutoOpenWizard: 1

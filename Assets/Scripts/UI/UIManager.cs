@@ -50,6 +50,8 @@ namespace com.MJT.FindTheThief
 
             targetItemList.gameObject.SetActive(false);
 
+            blackPanel.SetActive(false);
+
             //Debug.Log(moveButtonPanelRect);
             //Debug.Log(ConvertToScreenRect(arrestPopUpPanel));
         }
@@ -289,6 +291,20 @@ namespace com.MJT.FindTheThief
         }
 
         #endregion
+
+        public GameObject blackPanel;
+        public CanvasGroup InteractableUIGroup;
+        public void DeactivateUIGroup()
+        {
+            InteractableUIGroup.interactable = false;
+            blackPanel.SetActive(true);
+        }
+        
+        public void ActivateUIGroup()
+        {
+            InteractableUIGroup.interactable = true;
+            blackPanel.SetActive(false);
+        }
 
         /// <summary>
         /// Label to show the team of the local player.

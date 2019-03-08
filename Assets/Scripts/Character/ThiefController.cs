@@ -30,6 +30,13 @@ namespace com.MJT.FindTheThief
             localThief = this;
         }
 
+        [PunRPC]
+        private void SetSpriteAndAnimation(int NPCIdx)
+        {
+            GetComponent<SpriteRenderer>().sprite = MultiplayRoomManager.Instance.NPCPrefabs[NPCIdx].GetComponent<SpriteRenderer>().sprite;
+            GetComponent<Animator>().runtimeAnimatorController = MultiplayRoomManager.Instance.NPCPrefabs[NPCIdx].GetComponent<Animator>().runtimeAnimatorController;
+        }
+
         private ItemController stoleItem;
         public ItemController StoleItem
         {
