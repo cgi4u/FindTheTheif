@@ -63,26 +63,53 @@ namespace com.MJT.FindTheThief
         {
             if (!observerMode)
             {
-                if (Input.GetMouseButtonDown(0))
+                if (Application.platform == RuntimePlatform.Android)
                 {
-                    //Debug.Log(Input.mousePosition);
-                    //if (moveButtonPanelRect.Contains(Input.mousePosition))
-                    //Debug.Log("Contained in the mouse panel.");
-
-                    if (arrestPopUp.gameObject.GetActive() && IsTouchPointValid(Input.mousePosition, ConvertToScreenRect(arrestPopUpPanel)))
+                    if (Input.touchCount > 0)
                     {
-                        arrestPopUp.gameObject.SetActive(false);
-                        arrestPopUpPanel.anchoredPosition = arrestPopUp.OrgAnchorPos;
+                        for (int i = 0; i < Input.touchCount; i++)
+                        {
+                            Touch tempTouchs = Input.GetTouch(i);
+                            if (tempTouchs.phase == TouchPhase.Began)
+                            {
+                                if (arrestPopUp.gameObject.GetActive() && IsTouchPointValid(Input.mousePosition, ConvertToScreenRect(arrestPopUpPanel)))
+                                {
+                                    arrestPopUp.gameObject.SetActive(false);
+                                    arrestPopUpPanel.anchoredPosition = arrestPopUp.OrgAnchorPos;
+                                }
+
+                                if (itemInfoPopUp.gameObject.GetActive() && IsTouchPointValid(Input.mousePosition, Rect.zero))
+                                {
+                                    itemInfoPopUp.gameObject.SetActive(false);
+                                    itemInfoPopUpPanel.anchoredPosition = itemInfoPopUp.OrgAnchorPos;
+                                }
+                            }
+                        }
                     }
-
-                    if (itemInfoPopUp.gameObject.GetActive() && IsTouchPointValid(Input.mousePosition, Rect.zero))
+                }
+                else
+                {
+                    if (Input.GetMouseButtonDown(0))
                     {
-                        itemInfoPopUp.gameObject.SetActive(false);
-                        itemInfoPopUpPanel.anchoredPosition = itemInfoPopUp.OrgAnchorPos;
+                        //Debug.Log(Input.mousePosition);
+                        //if (moveButtonPanelRect.Contains(Input.mousePosition))
+                        //Debug.Log("Contained in the mouse panel.");
+
+                        if (arrestPopUp.gameObject.GetActive() && IsTouchPointValid(Input.mousePosition, ConvertToScreenRect(arrestPopUpPanel)))
+                        {
+                            arrestPopUp.gameObject.SetActive(false);
+                            arrestPopUpPanel.anchoredPosition = arrestPopUp.OrgAnchorPos;
+                        }
+
+                        if (itemInfoPopUp.gameObject.GetActive() && IsTouchPointValid(Input.mousePosition, Rect.zero))
+                        {
+                            itemInfoPopUp.gameObject.SetActive(false);
+                            itemInfoPopUpPanel.anchoredPosition = itemInfoPopUp.OrgAnchorPos;
+                        }
                     }
                 }
             }
-            else
+            else        // For observer mode(not used now)
             {
                 if (Input.GetMouseButtonDown(0))
                 {

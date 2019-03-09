@@ -79,6 +79,11 @@ namespace com.MJT.FindTheThief
         private Sprite orgSprite;
         [SerializeField]
         protected Sprite transparentSprite;
+
+        [SerializeField]
+        private Vector2 touchAreaSize;
+        private Rect touchArea;
+
         public bool IsStolen { get; set; } = false;
         public bool IsStolenChecked { get; set; } = false;
 
@@ -170,7 +175,8 @@ namespace com.MJT.FindTheThief
 
         private void Awake()
         {
-            transform.parent = MultiplayRoomManager.Instance.SceneObjParent;
+            if (PhotonNetwork.connected)
+                transform.parent = MultiplayRoomManager.Instance.SceneObjParent;
 
             orgSprite = GetComponent<SpriteRenderer>().sprite;
         }
@@ -178,6 +184,8 @@ namespace com.MJT.FindTheThief
         private void Start()
         {
             GetComponent<SpriteRenderer>().sortingOrder = -(int)(transform.position.y * 100f);
+            touchArea = new Rect(transform.position.x - touchAreaSize.x / 2, transform.position.y - touchAreaSize.y / 2,
+                                                    touchAreaSize.x, touchAreaSize.y);
         }
 
         [PunRPC]
@@ -242,9 +250,38 @@ namespace com.MJT.FindTheThief
             UIManager.Instance.RenewDiscoverdItemList(discoveredItems);
         }
 
+        /*
         private void OnMouseUp()
         {
             UIManager.Instance.SetItemPopUp(this, Input.mousePosition);
+        }
+        */
+
+        private void Update()
+        {
+            if (Application.platform == RuntimePlatform.Android)
+            {
+                if (Input.touchCount > 0)
+                {
+                    for (int i = 0; i < Input.touchCount; i++)
+                    {
+                        Touch curTouch = Input.GetTouch(i);
+                        Vector2 touchedWorldPoint = Camera.main.ScreenToWorldPoint(curTouch.position);
+                        if (curTouch.phase == TouchPhase.Ended && touchArea.Contains(touchedWorldPoint))
+                            UIManager.Instance.SetItemPopUp(this, Input.GetTouch(i).position);
+                    }
+                }
+            }
+            else
+            {
+                if (Input.GetMouseButtonUp(0))
+                {
+                    Vector2 clickedWorldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                    Debug.Log(clickedWorldPoint);
+                    if (touchArea.Contains(clickedWorldPoint))
+                        UIManager.Instance.SetItemPopUp(this, Input.mousePosition);
+                }
+            }
         }
     }
 }
