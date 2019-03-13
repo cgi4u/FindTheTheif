@@ -250,21 +250,15 @@ namespace com.MJT.FindTheThief
         /// <returns></returns>
         private bool IsTouchPointValid(Vector3 touchPoint, Rect popUpRect)
         {
-            Debug.Log("Touched point: " + touchPoint);
-
             // Check the touched point is in the area of the pop-up itself.
-            Debug.Log("Pop-up Rect: " + popUpRect);
             if (popUpRect.Contains(touchPoint))
             {
-                Debug.Log("Touched point is in the pop-up area.");
                 return false;
             }
 
             // Check the touched point is in the area of the other UI windows.
-            Debug.Log("Move Button Panel Rect: " + moveButtonPanelRect);
             if (moveButtonPanelRect.Contains(touchPoint))
             {
-                Debug.Log("Touched point is in the move button area.");
                 return false;
             }
 

@@ -68,7 +68,7 @@ namespace com.MJT.FindTheThief
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            if (item == null || item.IsStolen)
+            if (!MultiplayRoomManager.Instance.PrepareTimeEnd || item == null || item.IsStolen)
                 return;
 
             //Only works when local thief player walks in front of this point
@@ -81,7 +81,7 @@ namespace com.MJT.FindTheThief
 
         private void OnTriggerExit2D(Collider2D collision)
         {
-            if (item == null || item.IsStolen)
+            if (!MultiplayRoomManager.Instance.PrepareTimeEnd || item == null || item.IsStolen)
                 return;
 
             //Only works when local player walks out front of this point

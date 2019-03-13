@@ -37,36 +37,39 @@ namespace com.MJT.FindTheThief
             GetComponent<Animator>().runtimeAnimatorController = MultiplayRoomManager.Instance.NPCPrefabs[NPCIdx].GetComponent<Animator>().runtimeAnimatorController;
         }
 
-        private ItemController stoleItem;
+        private ItemController itemInHand;
         public ItemController StoleItem
         {
             get
             {
-                return stoleItem;
+                return itemInHand;
             }
         }
 
         [PunRPC]
         public void StealItemInPoint(int itemPoint)
         {
-            stoleItem = MapDataManager.Instance.ItemGenPoints[itemPoint].Item;
+            itemInHand = MapDataManager.Instance.ItemGenPoints[itemPoint].Item;
+            itemInHand.Stolen();
         }
 
         [PunRPC]
         public void PutItemInPoint()
         {
-            stoleItem = null;
+            itemInHand = null;
         }
 
-        public override void OnOwnershipTransfered(object[] viewAndPlayers)
+        /// <summary>
+        /// Excuted when this thief player is arrested by a detective.
+        /// </summary>
+        [PunRPC]
+        public void Arrested()
         {
-            if (stoleItem != null)
-            {
-                stoleItem.GetComponent<PhotonView>().RPC("Restored", PhotonTargets.AllViaServer);
-            }
+            if (itemInHand != null)
+                itemInHand.Restored();
 
             if (photonView.isMine)
-                PhotonNetwork.Destroy(gameObject);
+                PhotonNetwork.Destroy(this.gameObject);
         }
     }
 }

@@ -10,6 +10,8 @@ namespace com.MJT.FindTheThief
 {
     public class Launcher : Photon.PunBehaviour
     {
+        private readonly string _gameVersion = "0.1";
+
         // Use this for initialization
         void Awake()
         {
@@ -88,7 +90,12 @@ namespace com.MJT.FindTheThief
             PhotonNetwork.AuthValues.AuthType = CustomAuthenticationType.Facebook;
             PhotonNetwork.AuthValues.UserId = facebookId; // alternatively set by server
             PhotonNetwork.AuthValues.AddAuthParameter("token", aToken);
-            PhotonNetwork.ConnectUsingSettings("1.0");
+            PhotonNetwork.ConnectUsingSettings(_gameVersion);
+        }
+
+        public void TestLogin()
+        {
+            PhotonNetwork.ConnectUsingSettings(_gameVersion);
         }
 
         // if AutoJoinLobby is false

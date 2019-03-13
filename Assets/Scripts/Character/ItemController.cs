@@ -195,7 +195,6 @@ namespace com.MJT.FindTheThief
             MapDataManager.Instance.ItemGenPoints[itemGenPointIdx].SetItem(this);
         }
 
-        [PunRPC]
         public void Stolen()
         {
             IsStolen = true;
@@ -210,7 +209,6 @@ namespace com.MJT.FindTheThief
             }
         }
 
-        [PunRPC]
         public void Restored()
         {
             IsStolen = false;
@@ -218,6 +216,7 @@ namespace com.MJT.FindTheThief
             // Change sprite to the item's original one.
             SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
             spriteRenderer.sprite = orgSprite;
+
             if (spriteRenderer.isVisible)
             {
                 spriteRenderer.enabled = false;
@@ -231,7 +230,6 @@ namespace com.MJT.FindTheThief
             {
                 if (!IsStolen)
                 {
-                    Debug.Log(gameObject.name + "is visible.");
                     discoveredItems.Add(this);
                 }
             }
@@ -277,7 +275,6 @@ namespace com.MJT.FindTheThief
                 if (Input.GetMouseButtonUp(0))
                 {
                     Vector2 clickedWorldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                    Debug.Log(clickedWorldPoint);
                     if (touchArea.Contains(clickedWorldPoint))
                         UIManager.Instance.SetItemPopUp(this, Input.mousePosition);
                 }

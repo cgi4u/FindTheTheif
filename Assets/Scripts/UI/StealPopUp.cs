@@ -11,9 +11,8 @@ namespace com.MJT.FindTheThief
             
         public void OnStealButton()
         {
-            ThiefController.LocalThief.GetComponent<PhotonView>().
+            ThiefController.LocalThief.photonView.
                 RPC("StealItemInPoint", PhotonTargets.AllViaServer, CurGenPoint.Index);
-            CurGenPoint.Item.GetComponent<PhotonView>().RPC("Stolen", PhotonTargets.AllViaServer);
 
             gameObject.SetActive(false);
         }

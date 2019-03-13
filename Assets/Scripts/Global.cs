@@ -23,6 +23,8 @@ namespace com.MJT.FindTheThief
 
     public static class Globals
     {
+        
+
         /// <summary>
         /// Randomly shuffle elements of 1-dimensional array. 
         /// </summary>

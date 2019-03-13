@@ -19,7 +19,8 @@ namespace com.MJT.FindTheThief
 
         private void Update()
         {
-            if (MultiplayRoomManager.Instance.MyTeam != Team.Detective)
+            if (PhotonNetwork.connected 
+                && MultiplayRoomManager.Instance.MyTeam != Team.Detective)
                 return;
 
             Sprite curSprite = GetComponent<SpriteRenderer>().sprite;
@@ -44,7 +45,6 @@ namespace com.MJT.FindTheThief
                 if (Input.GetMouseButtonUp(0))
                 {
                     Vector2 clickedWorldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                    Debug.Log(clickedWorldPoint);
                     if (touchArea.Contains(clickedWorldPoint))
                         UIManager.Instance.SetArrestPopUp(gameObject, Input.mousePosition);
                 }

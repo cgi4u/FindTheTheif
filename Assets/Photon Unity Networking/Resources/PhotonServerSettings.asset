@@ -76,4 +76,7 @@ MonoBehaviour:
   - Check
   - SyncPosImmediately
   - SetSpriteAndAnimation
+  - Arrested
+  - ArrestSuccess
+  - StealSuccess
   DisableAutoOpenWizard: 1

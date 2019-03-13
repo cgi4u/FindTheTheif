@@ -13,9 +13,9 @@ namespace com.MJT.FindTheThief
         {
             ThiefController localThief = ThiefController.LocalThief;
 
-            MultiplayRoomManager.Instance.GetComponent<PhotonView>()
-                .RPC("ItemStolen", PhotonTargets.AllViaServer, localThief.StoleItem.GenPoint.Index);
-            localThief.GetComponent<PhotonView>().RPC("PutItemInPoint", PhotonTargets.All);
+            MultiplayRoomManager.Instance.photonView
+                .RPC("StealSuccess", PhotonTargets.AllViaServer, PhotonNetwork.player.ID, localThief.StoleItem.GenPoint.Index);
+            localThief.photonView.RPC("PutItemInPoint", PhotonTargets.All);
 
             gameObject.SetActive(false);
         }

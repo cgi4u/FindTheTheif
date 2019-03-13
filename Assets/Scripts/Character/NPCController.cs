@@ -554,6 +554,7 @@ namespace com.MJT.FindTheThief
             SetAnimationProperty(direction, isMoving);
         }
 
+        /*
         private NPCController GetCollisionPriorty(NPCController npc1, NPCController npc2)
         {
             if (npc1.startPoint == npc1.targetPoint)
@@ -569,6 +570,7 @@ namespace com.MJT.FindTheThief
             }
 
         }
+        */
 
         private void SetAnimationProperty(Vector2 direction, bool isMoving)
         {
@@ -641,12 +643,14 @@ namespace com.MJT.FindTheThief
                 transform.position = targetPoint;
         }
 
+        /*
         [PunRPC]
         private void RoutingPropertiesVaildCheck(int masterPrevRoom, int masterNextRoom)
         {
             prevRoom = masterPrevRoom;
             nextRoom = masterNextRoom;
         }
+        */
 
         /// <summary>
         /// Check this NPC is in the vaild position(it means that this NPC is 'in line'.).

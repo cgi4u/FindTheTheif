@@ -33,8 +33,9 @@ namespace com.MJT.FindTheThief
             Debug.Log("Try to arrest.");
             if (selectedThief != null)
             {
-                MultiplayRoomManager.Instance.photonView.RPC("ArrestThief", PhotonTargets.AllViaServer, selectedThief.GetComponent<PhotonView>().ownerId);
-                selectedThief.GetComponent<PhotonView>().RequestOwnership();
+                MultiplayRoomManager.Instance.photonView.RPC("ArrestSuccess", PhotonTargets.AllViaServer, 
+                    PhotonNetwork.player.ID, selectedThief.photonView.ownerId);
+                selectedThief.photonView.RPC("Arrested", PhotonTargets.AllViaServer);
             }
             else
                 MultiplayRoomManager.Instance.photonView.RPC("ArrestFailed", PhotonTargets.All, PhotonNetwork.player.ID);
