@@ -78,6 +78,8 @@ namespace com.MJT.FindTheThief
             Debug.Log("PlayerName: " + PhotonNetwork.playerName);
             Debug.Log("Maximum Player:" + PhotonNetwork.room.MaxPlayers);
 
+            PhotonNetwork.automaticallySyncScene = true;
+
             if (PhotonNetwork.room.PlayerCount == 1)    //When local player made this room
             {
                 //Set room properties

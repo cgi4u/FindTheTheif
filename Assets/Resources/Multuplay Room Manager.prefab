@@ -100,12 +100,12 @@ MonoBehaviour:
   targetItemNum: 3
   targetItems: []
   timeStampForPrepare: 5000
-  prepareStartTimeStamp: 0
   timeStampPerGame: 60000
   thiefPrefab: {fileID: 4203696217380748978, guid: 525f72b978b9e7941acdcbf8b1145f7b,
     type: 3}
   detectivePrefab: {fileID: 1536311355630938, guid: 4a2bb6044e24a974eb687461314d3ef0,
     type: 3}
+  recordSceneName: Record Scene
 --- !u!114 &114986182949599362
 MonoBehaviour:
   m_ObjectHideFlags: 0

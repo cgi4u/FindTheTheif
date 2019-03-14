@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 using UnityEngine.SceneManagement;
@@ -277,7 +278,7 @@ namespace com.MJT.FindTheThief
                 GenerateSceneObject();
             }
 
-            PhotonExtends.SetLocalPlayerPropsByElem(readyKey, false);
+            PhotonExtends.SetLocalPlayerPropsByElem(readyKey, true);
             inReady = true;
         }
 
@@ -584,7 +585,7 @@ namespace com.MJT.FindTheThief
             // Section after game is started.
 
             //Debug.Log(curTimeStamp);
-            if (PrepareTimeEnd)
+            if (PrepareTimeEnd && !GameSet)
             {
                 UIManager.Instance.RenewTimeLabel((timeStampPerGame - (curTimeStamp - startTimeStamp)) / 1000);
             }
@@ -700,6 +701,7 @@ namespace com.MJT.FindTheThief
 
             if (thievesNum == arrestedThievesNum)
             {
+                PhotonExtends.SetRoomCustomPropsByElem(winTeamKey, (int)Team.Detective);
                 PhotonExtends.SetRoomCustomPropsByElem(gameSetKey, true);
             }
         } 
@@ -741,6 +743,7 @@ namespace com.MJT.FindTheThief
 
                 if (targetItems.Count == 0 && PhotonNetwork.isMasterClient)
                 {
+                    PhotonExtends.SetRoomCustomPropsByElem(winTeamKey, (int)Team.Thief);
                     PhotonExtends.SetRoomCustomPropsByElem(gameSetKey, true);
                 }
             } 
@@ -780,8 +783,17 @@ namespace com.MJT.FindTheThief
             else
                 detectivePlayers.Remove(otherPlayer);
             masterPriority.Remove(otherPlayer.ID);
-            
-            CheckIfGameSet();
+
+            if (thievesNum - arrestedThievesNum == 0)
+            {
+                PhotonExtends.SetRoomCustomPropsByElem(winTeamKey, (int)Team.Detective);
+                PhotonExtends.SetRoomCustomPropsByElem(gameSetKey, true);
+            }
+            else if (PhotonNetwork.playerList.Length == thievesNum)
+            {
+                PhotonExtends.SetRoomCustomPropsByElem(winTeamKey, (int)Team.Thief);
+                PhotonExtends.SetRoomCustomPropsByElem(gameSetKey, true);
+            }
         }
 
         public GameObject thiefPrefab;
@@ -823,11 +835,17 @@ namespace com.MJT.FindTheThief
             if (propertiesThatChanged[gameSetKey] != null
                     && (bool)propertiesThatChanged[gameSetKey] == true && !GameSet)
             {
-                Time.timeScale = 0;
-                UIManager.Instance.RenewErrorLabel("Game Set");
-
+                PhotonNetwork.automaticallySyncScene = false;
                 GameSet = true;
                 GameStarted = false;
+
+                Team winTeam = (Team)propertiesThatChanged[winTeamKey];
+                if (winTeam == myTeam)
+                    UIManager.Instance.SetWinPanel();
+                else
+                    UIManager.Instance.SetLosePanel();
+
+                StartCoroutine("LoadRecordScene");
 
                 foreach (PhotonPlayer player in PhotonNetwork.playerList)
                 {
@@ -845,16 +863,19 @@ namespace com.MJT.FindTheThief
             }
         }
 
-        public void CheckIfGameSet()
+        public string recordSceneName;
+        IEnumerator LoadRecordScene()
         {
-            if (thievesNum - arrestedThievesNum == 0)
-                Debug.Log("Game Set. Detectives win.");
-            else if (PhotonNetwork.playerList.Length == thievesNum)
-                Debug.Log("Game Set. Thieves win.");
+            yield return new WaitForSeconds(5f);
+
+            for (int i = sceneObjParent.childCount - 1; i >= 0; i--)
+                Destroy(sceneObjParent.GetChild(i).gameObject);
+            SceneManager.LoadScene(recordSceneName);
         }
 
         public override void OnLeftRoom()
         {
+            SceneManager.sceneLoaded -= OnGameSceneLoaded;
             instance = null;
             Destroy(this);
         }

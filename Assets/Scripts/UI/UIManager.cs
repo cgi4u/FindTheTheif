@@ -51,6 +51,8 @@ namespace com.MJT.FindTheThief
             targetItemList.gameObject.SetActive(false);
 
             blackPanel.SetActive(false);
+            winPanel.SetActive(false);
+            losePanel.SetActive(false);
 
             //Debug.Log(moveButtonPanelRect);
             //Debug.Log(ConvertToScreenRect(arrestPopUpPanel));
@@ -309,6 +311,25 @@ namespace com.MJT.FindTheThief
             {
                 stolenItemList.text += "\n" + ItemInfoToString(item);
             }
+        }
+
+        #endregion
+
+        #region Win/Lose Panel
+
+        public GameObject winPanel;
+        public GameObject losePanel;
+
+        public void SetWinPanel()
+        {
+            winPanel.SetActive(true);
+            InteractableUIGroup.interactable = false;
+        }
+
+        public void SetLosePanel()
+        {
+            losePanel.SetActive(true);
+            InteractableUIGroup.interactable = false;
         }
 
         #endregion

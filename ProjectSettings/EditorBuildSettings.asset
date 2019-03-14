@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Default Game Room.unity
     guid: 1444b43770511b0429dc3aef5da803a1
+  - enabled: 1
+    path: Assets/Scenes/Record Scene.unity
+    guid: 06b88aa7b3c885745b8d984e4e4a4433
   m_configObjects: {}
