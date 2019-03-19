@@ -17,25 +17,25 @@ namespace com.MJT.FindTheThief
                 Debug.Log(vertical);
                 Debug.Log(horizontal);
 
-                Direction direction = Direction.None;
+                MoveDirection direction = MoveDirection.Stop;
                 if (horizontal > 0)
                 {
-                    direction = Direction.Right;
+                    direction = MoveDirection.Right;
                 }
                 else if (horizontal < 0)
                 {
-                    direction = Direction.Left;
+                    direction = MoveDirection.Left;
                 }
                 else if (vertical > 0)
                 {
-                    direction = Direction.Up;
+                    direction = MoveDirection.Up;
                 }
                 else if (vertical < 0)
                 {
-                    direction = Direction.Down;
+                    direction = MoveDirection.Down;
                 }
 
-                if (direction != Direction.None)
+                if (direction != MoveDirection.Stop)
                 {
                     Debug.Log("Button pushed stage 1: " + direction);
                     PlayerController.LocalPlayer.OnMoveButtonPushed(direction);

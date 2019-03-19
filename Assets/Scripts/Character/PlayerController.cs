@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 
 namespace com.MJT.FindTheThief
@@ -72,7 +73,7 @@ namespace com.MJT.FindTheThief
                 //GetComponent<PhotonTransformView>().SetSynchronizedValues(moveSpeed * direction, 0f);
                 Move();
             }
-            else if (btnCount > 0)
+            else if (curDirection != MoveDirection.Stop)
                 SetNewTargetPoint();
 
             //Set sprite sorting order by using y-axis postion
@@ -97,25 +98,28 @@ namespace com.MJT.FindTheThief
         public float moveSpeed;
         private bool isMoving = false;
 
-        public void OnMoveButtonPushed(Direction dir)
+        [SerializeField]
+        private MoveDirection curDirection = MoveDirection.Stop;
+        public void ChangeMoveDirection(MoveDirection direction)
         {
-            //현재 눌린 버튼의 갯수를 저장
-            btnCount += 1;
+            curDirection = direction;
+        }
 
-            //현재 눌린 버튼에 해당하는 배열 번호에 갯수와 동일한 수를 저장
-            //어떤 버튼이 마지막으로 눌렸는지를 판단하여 이동한다.
+        public void OnMoveButtonPushed(MoveDirection dir)
+        {
+            btnCount += 1;
             switch (dir)
             {
-                case Direction.Up:
+                case MoveDirection.Up:
                     buttons[0] = btnCount;
                     break;
-                case Direction.Down:
+                case MoveDirection.Down:
                     buttons[1] = btnCount;
                     break;
-                case Direction.Left:
+                case MoveDirection.Left:
                     buttons[2] = btnCount;
                     break;
-                case Direction.Right:
+                case MoveDirection.Right:
                     buttons[3] = btnCount;
                     break;
                 default:
@@ -124,20 +128,20 @@ namespace com.MJT.FindTheThief
             }
         }
 
-        public void OnMoveButtonReleased(Direction dir)
+        public void OnMoveButtonReleased(MoveDirection dir)
         {
             switch (dir)
             {
-                case Direction.Up:
+                case MoveDirection.Up:
                     buttons[0] = 0;
                     break;
-                case Direction.Down:
+                case MoveDirection.Down:
                     buttons[1] = 0;
                     break;
-                case Direction.Left:
+                case MoveDirection.Left:
                     buttons[2] = 0;
                     break;
-                case Direction.Right:
+                case MoveDirection.Right:
                     buttons[3] = 0;
                     break;
                 default:
@@ -157,6 +161,7 @@ namespace com.MJT.FindTheThief
         {
             //설정 속도에 따라 움직일 위치를 계산(MoveTowards) 이후 이동
             transform.position = Vector2.MoveTowards(transform.position, targetPoint, moveSpeed * Time.deltaTime);
+            //SetRatioBarValue(Vector2.Distance(transform.position, startPoint) / Vector2.Distance(startPoint, targetPoint));
 
             //목적지에 도달했을 경우 버튼 입력 상황에 따라 목적지를 재계산하거나 멈춤
             if (transform.position.Equals(targetPoint))
@@ -196,7 +201,7 @@ namespace com.MJT.FindTheThief
                     }
                 }
 
-                if (btnCount > 0)
+                if (curDirection != MoveDirection.Stop)
                     SetNewTargetPoint();
                 else
                 {
@@ -208,28 +213,27 @@ namespace com.MJT.FindTheThief
             return;
         }
 
-        Vector2 direction = new Vector2(0f, 0f);
+        Vector2 directionVec = new Vector2(0f, 0f);
         private void SetNewTargetPoint()
         {
             startPoint = (Vector2)transform.position;   // Set starting point
 
-            if (btnCount == buttons[0])
+            switch (curDirection)
             {
-                direction = Vector2.up;
+                case MoveDirection.Down:
+                    directionVec = Vector2.down;
+                    break;
+                case MoveDirection.Right:
+                    directionVec = Vector2.right;
+                    break;
+                case MoveDirection.Up:
+                    directionVec = Vector2.up;
+                    break;
+                case MoveDirection.Left:
+                    directionVec = Vector2.left;
+                    break;
             }
-            else if (btnCount == buttons[1])
-            {
-                direction = Vector2.down;
-            }
-            else if (btnCount == buttons[2])
-            {
-                direction = Vector2.left;
-            }
-            else if (btnCount == buttons[3])
-            {
-                direction = Vector2.right;
-            }
-            targetPoint = startPoint + direction;
+            targetPoint = startPoint + directionVec;
 
             //움직이는 과정에서 플레이어와 충돌하는 물체가 있을지를 판단.
             //플레이어(자기자신)의 콜라이더와 무조건 충돌하므로 다른 콜라이더가 있는지 판단하기 위해 BoxCast가 아닌 BoxCastAll을 쓴다.
@@ -259,21 +263,22 @@ namespace com.MJT.FindTheThief
         {
             Animator animator = GetComponent<Animator>();
 
-            int directionInt = -1;
-            if (direction == Vector2.up)
-                directionInt = 0;
-            else if (direction == Vector2.down)
-                directionInt = 1;
-            else if (direction == Vector2.left)
-                directionInt = 2;
-            else if (direction == Vector2.right)
-                directionInt = 3;
-
-            if (animator.GetInteger("Direction") != directionInt)
-                animator.SetInteger("Direction", directionInt);
-
-            if (animator.GetBool("IsMoving") != isMoving)
-                animator.SetBool("IsMoving", isMoving);
+            switch (curDirection)
+            {
+                case MoveDirection.Up:
+                    animator.SetInteger("Direction", 0);
+                    break;
+                case MoveDirection.Down:
+                    animator.SetInteger("Direction", 1);
+                    break;
+                case MoveDirection.Left:
+                    animator.SetInteger("Direction", 2);
+                    break;
+                case MoveDirection.Right:
+                    animator.SetInteger("Direction", 3);
+                    break;
+            }
+            animator.SetBool("IsMoving", isMoving);
         }
 
         #endregion
@@ -293,6 +298,18 @@ namespace com.MJT.FindTheThief
                 targetPoint = (Vector2)stream.ReceiveNext();
             }
         }
+
+        #endregion
+
+        #region Move Ratio Bar
+
+        /*
+        public GameObject ratioBar;
+        private void SetRatioBarValue(float ratio)
+        {
+            ratioBar.GetComponent<Image>().fillAmount = ratio;
+        }
+        */
 
         #endregion
     }

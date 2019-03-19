@@ -9,7 +9,7 @@ namespace com.MJT.FindTheThief
     public class MoveButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
 
-        public Direction direction;
+        public MoveDirection direction;
 
         //Detect current clicks on the Button (the one with the script attached)
         public void OnPointerDown(PointerEventData pointerEventData)

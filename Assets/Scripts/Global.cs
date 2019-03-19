@@ -7,7 +7,7 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 namespace com.MJT.FindTheThief
 { 
     public enum Team { Undefined, Detective, Thief }
-    public enum Direction { None, Up, Down, Right, Left }
+    public enum MoveDirection { Stop, Down, Right, Up, Left }
 
     public enum RouteType { In_Room, Room_to_Room, Room_to_Stair, Stair_to_Room, Stair_to_Stair }
     public enum StairType { Up, Down, None }
