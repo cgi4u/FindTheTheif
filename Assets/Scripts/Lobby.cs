@@ -43,11 +43,21 @@ namespace com.MJT.FindTheThief
             }
         }
 
+        public SkillSelector detectiveSkillSelector;
+        public SkillSelector thiefSkillSelector;
+
         public void GameMatching()
         {
             if (string.IsNullOrEmpty(nameInputField.text))
             {
                 Debug.Log("Please write your player name.");
+                return;
+            }
+
+            if (!detectiveSkillSelector.SetSkillPreference() 
+                || !thiefSkillSelector.SetSkillPreference())
+            {
+                Debug.Log("Please select skillset.");
                 return;
             }
 

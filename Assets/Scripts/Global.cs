@@ -9,11 +9,15 @@ namespace com.MJT.FindTheThief
     public enum Team { Undefined, Detective, Thief }
     public enum MoveDirection { Stop, Down, Right, Up, Left }
 
+    #region Route Properties Enum
+
     public enum RouteType { In_Room, Room_to_Room, Room_to_Stair, Stair_to_Room, Stair_to_Stair }
     public enum StairType { Up, Down, None }
     public enum StairSide { Left, Right, None }
 
-    #region Item Properties
+    #endregion
+
+    #region Item Properties Enum
 
     public enum ItemColor { Red, Blue, Yellow }
     public enum ItemAge { Ancient, Middle, Modern }
@@ -21,9 +25,13 @@ namespace com.MJT.FindTheThief
 
     #endregion
 
+    public static class Constants
+    {
+        public static readonly int maxSkillNum = 2;
+    }
+
     public static class Globals
     {
-        
 
         /// <summary>
         /// Randomly shuffle elements of 1-dimensional array. 
