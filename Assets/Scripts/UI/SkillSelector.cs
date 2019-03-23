@@ -9,7 +9,7 @@ namespace com.MJT.FindTheThief
     public class SkillSelector : MonoBehaviour
     {
         public Team team;
-        private List<int> enabledSkills = new List<int>();
+        private List<int> selectedSkills = new List<int>();
 
         private void Awake()
         {
@@ -18,24 +18,24 @@ namespace com.MJT.FindTheThief
                 int prefSkill = PlayerPrefs.GetInt(team + " Skill " + i, -1);
                 if (prefSkill == -1) return;
 
-                enabledSkills.Add(prefSkill);
+                selectedSkills.Add(prefSkill);
             }
 
             RenewSkillLabel();
         }
 
-        public void SkillOnOff(int skillNum)
+        public void SkillOnOff(int skillCode)
         {
-            if (!enabledSkills.Contains(skillNum))
+            if (!selectedSkills.Contains(skillCode))
             {
-                if (enabledSkills.Count >= Constants.maxSkillNum)
+                if (selectedSkills.Count >= Constants.maxSkillNum)
                     return;
 
-                enabledSkills.Add(skillNum);
+                selectedSkills.Add(skillCode);
             }
             else
             {
-                enabledSkills.Remove(skillNum);
+                selectedSkills.Remove(skillCode);
             }
 
             RenewSkillLabel();
@@ -45,22 +45,26 @@ namespace com.MJT.FindTheThief
         public void RenewSkillLabel()
         {
             skillLabel.text = "";
-            for (int i = 0; i < enabledSkills.Count; i++)
+            for (int i = 0; i < selectedSkills.Count; i++)
             {
-                skillLabel.text += enabledSkills[i];
-                if (i != enabledSkills.Count - 1)
+                skillLabel.text += selectedSkills[i];
+                if (i != selectedSkills.Count - 1)
                     skillLabel.text += ", ";
             }
         }
 
+        /// <summary>
+        /// Save skillset selected by user to PlayerPrefs. PlayerPrefs should be replaced by Game Server in release.
+        /// </summary>
+        /// <returns>Return true when success to save, or return false.</returns>
         public bool SetSkillPreference()
         {
-            if (Constants.maxSkillNum != enabledSkills.Count)
+            if (Constants.maxSkillNum != selectedSkills.Count)
                 return false;
 
-            for (int i = 0; i < enabledSkills.Count; i++)
+            for (int i = 0; i < selectedSkills.Count; i++)
             {
-                PlayerPrefs.SetInt(team + " Skill " + i, enabledSkills[i]);
+                PlayerPrefs.SetInt(team + " Skill " + i, selectedSkills[i]);
             }
             return true;
         }

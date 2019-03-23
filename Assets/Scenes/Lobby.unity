@@ -158,6 +158,11 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 114384398559193958, guid: 22c0bfe08a34ee44c9062287a92faac8,
+        type: 3}
+      propertyPath: m_Interactable
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 224056902677465468, guid: 22c0bfe08a34ee44c9062287a92faac8,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -300,6 +305,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
       value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 114384398559193958, guid: 22c0bfe08a34ee44c9062287a92faac8,
+        type: 3}
+      propertyPath: m_Interactable
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224056902677465468, guid: 22c0bfe08a34ee44c9062287a92faac8,
         type: 3}
@@ -1040,6 +1050,11 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 114384398559193958, guid: 22c0bfe08a34ee44c9062287a92faac8,
+        type: 3}
+      propertyPath: m_Interactable
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 224056902677465468, guid: 22c0bfe08a34ee44c9062287a92faac8,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1134,6 +1149,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Text
       value: "\uC2A4\uD0AC3"
+      objectReference: {fileID: 0}
+    - target: {fileID: 114761764577542718, guid: 22c0bfe08a34ee44c9062287a92faac8,
+        type: 3}
+      propertyPath: m_FillCenter
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 22c0bfe08a34ee44c9062287a92faac8, type: 3}
@@ -1847,7 +1867,7 @@ PrefabInstance:
     - target: {fileID: 114384398559193958, guid: 22c0bfe08a34ee44c9062287a92faac8,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 224056902677465468, guid: 22c0bfe08a34ee44c9062287a92faac8,
         type: 3}
@@ -2630,6 +2650,11 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 114384398559193958, guid: 22c0bfe08a34ee44c9062287a92faac8,
+        type: 3}
+      propertyPath: m_Interactable
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 224056902677465468, guid: 22c0bfe08a34ee44c9062287a92faac8,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2856,7 +2881,7 @@ PrefabInstance:
     - target: {fileID: 114384398559193958, guid: 22c0bfe08a34ee44c9062287a92faac8,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 224056902677465468, guid: 22c0bfe08a34ee44c9062287a92faac8,
         type: 3}
@@ -3157,7 +3182,7 @@ PrefabInstance:
     - target: {fileID: 114384398559193958, guid: 22c0bfe08a34ee44c9062287a92faac8,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114384398559193958, guid: 22c0bfe08a34ee44c9062287a92faac8,
         type: 3}
@@ -4160,7 +4185,7 @@ PrefabInstance:
     - target: {fileID: 114384398559193958, guid: 22c0bfe08a34ee44c9062287a92faac8,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 224056902677465468, guid: 22c0bfe08a34ee44c9062287a92faac8,
         type: 3}

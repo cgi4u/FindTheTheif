@@ -25,6 +25,14 @@ namespace com.MJT.FindTheThief
 
     #endregion
 
+    #region Skill Names
+    /*
+    public enum ThiefSkills { Smoke, SecretDoor, Num }
+    public enum DetectiveSkills { FastMoving, ItemChange, Num }
+    */
+    #endregion
+
+
     public static class Constants
     {
         public static readonly int maxSkillNum = 2;

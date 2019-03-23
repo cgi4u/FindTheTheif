@@ -303,13 +303,13 @@ namespace com.MJT.FindTheThief
 
         #region Move Ratio Bar
 
-        /*
+        
         public GameObject ratioBar;
         private void SetRatioBarValue(float ratio)
         {
             ratioBar.GetComponent<Image>().fillAmount = ratio;
         }
-        */
+        
 
         #endregion
     }
