@@ -1,28 +1,40 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace com.MJT.FindTheThief
 {
-    public enum SkillType { Passive, Time, Number }
-
-    public class SkillData
+    [CreateAssetMenu]
+    public class SkillDataSet : ScriptableObject
     {
-        static readonly string skillIconPath = "Assets\\Sprite\\UI\\Skill Icons\\";
-        static SkillData[] allSkillData = {
-            new SkillData(0, Resources.Load<Sprite>(skillIconPath + "Smoke"), SkillType.Number, 2)
-        };
-
-        public static SkillData Get(int skillCode)
+        [SerializeField]
+        private SkillData[] set;
+        [SerializeField]
+        private Team team;
+        public Team Team
         {
-            for (int i = 0; i < allSkillData.Length; i++)
+            get
             {
-                if (skillCode == allSkillData[i].code)
-                    return allSkillData[i];
+                return team;
             }
-            return null;
         }
 
+        public SkillData Get(int i)
+        {
+            if (i < 0 || i >= set.Length)
+                return null;
+
+            return set[i];
+        }
+    }
+
+    public enum SkillType { Passive, Time, Number }
+
+    [Serializable]
+    public class SkillData
+    {
+        [SerializeField]
         private int code;
         public int Code
         {
@@ -32,6 +44,17 @@ namespace com.MJT.FindTheThief
             }
         }
 
+        [SerializeField]
+        private string skillMethodName;
+        public string SkillMethodName
+        {
+            get
+            {
+                return skillMethodName;
+            }
+        }
+
+        [SerializeField]
         private Sprite icon;
         public Sprite Icon
         {
@@ -41,6 +64,7 @@ namespace com.MJT.FindTheThief
             }
         }
 
+        [SerializeField]
         private SkillType type;
         public SkillType Type
         {
@@ -53,6 +77,7 @@ namespace com.MJT.FindTheThief
         /// <summary>
         /// Timestamp for time type, limit skill using number of num type.
         /// </summary>
+        [SerializeField]
         private int typeData;
         public int TypeData
         {
@@ -60,14 +85,6 @@ namespace com.MJT.FindTheThief
             {
                 return typeData;
             }
-        }
-
-        SkillData(int _code, Sprite _icon, SkillType _type, int _typeData)
-        {
-            code = _code;
-            icon = _icon;
-            type = _type;
-            typeData = _typeData;
         }
     }
 }

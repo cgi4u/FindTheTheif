@@ -9,11 +9,15 @@ namespace com.MJT.FindTheThief
     [RequireComponent(typeof(Button))]
     public class SkillSelectButton : MonoBehaviour
     {
-        public SkillManager skillManager;
-        public int skillCode;
-        private void Awake()
+        private SkillData skillData;
+
+        public void SetSkillData(SkillData _skillData)
         {
-            
+            skillData = _skillData;
+
+            GetComponent<Image>().sprite = skillData.Icon;
         }
+
+        
     }
 }

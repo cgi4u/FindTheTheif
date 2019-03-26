@@ -8,24 +8,41 @@ namespace com.MJT.FindTheThief
 { 
     public class SkillSelector : MonoBehaviour
     {
-        public Team team;
+        public SkillDataSet skillDataSet;
         private List<int> selectedSkills = new List<int>();
+
+        [SerializeField]
+        private Button[] buttons;
+        private bool[] isButtonOn;
+        private SkillData[] skillDataForButtons; 
 
         private void Awake()
         {
+            isButtonOn = new bool[buttons.Length];
+            skillDataForButtons = new SkillData[buttons.Length];
+
             for (int i = 0; i < Constants.maxSkillNum; i++)
             {
-                int prefSkill = PlayerPrefs.GetInt(team + " Skill " + i, -1);
+                int prefSkill = PlayerPrefs.GetInt(skillDataSet.Team + " Skill " + i, -1);
                 if (prefSkill == -1) return;
 
                 selectedSkills.Add(prefSkill);
             }
 
+            for (int i = 0; i < buttons.Length; i++)
+            {
+                skillDataForButtons[i] = skillDataSet.Get(i);
+
+                buttons[i].GetComponent<Image>().sprite = skillDataForButtons[i].Icon;
+            }
+
             RenewSkillLabel();
         }
 
-        public void SkillOnOff(int skillCode)
+        public void SkillOnOff(int buttonIdx)
         {
+            int skillCode = skillDataForButtons[buttonIdx].Code;
+
             if (!selectedSkills.Contains(skillCode))
             {
                 if (selectedSkills.Count >= Constants.maxSkillNum)
@@ -64,7 +81,7 @@ namespace com.MJT.FindTheThief
 
             for (int i = 0; i < selectedSkills.Count; i++)
             {
-                PlayerPrefs.SetInt(team + " Skill " + i, selectedSkills[i]);
+                PlayerPrefs.SetInt(skillDataSet.Team + " Skill " + i, selectedSkills[i]);
             }
             return true;
         }
