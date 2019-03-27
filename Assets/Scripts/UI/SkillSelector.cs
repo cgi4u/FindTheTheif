@@ -12,50 +12,49 @@ namespace com.MJT.FindTheThief
         private List<int> selectedSkills = new List<int>();
 
         [SerializeField]
-        private Button[] buttons;
-        private bool[] isButtonOn;
-        private SkillData[] skillDataForButtons; 
+        private SkillSelectButton[] buttons;
 
         private void Awake()
         {
-            isButtonOn = new bool[buttons.Length];
-            skillDataForButtons = new SkillData[buttons.Length];
-
             for (int i = 0; i < Constants.maxSkillNum; i++)
             {
                 int prefSkill = PlayerPrefs.GetInt(skillDataSet.Team + " Skill " + i, -1);
-                if (prefSkill == -1) return;
+                if (prefSkill == -1) break;
 
                 selectedSkills.Add(prefSkill);
             }
 
             for (int i = 0; i < buttons.Length; i++)
             {
-                skillDataForButtons[i] = skillDataSet.Get(i);
+                SkillData data = skillDataSet.Get(i);
+                bool isOn = selectedSkills.Contains(data.Code);
 
-                buttons[i].GetComponent<Image>().sprite = skillDataForButtons[i].Icon;
+                buttons[i].SetSkillData(skillDataSet.Get(i), this, isOn);
             }
 
             RenewSkillLabel();
         }
 
-        public void SkillOnOff(int buttonIdx)
+        public bool OnOffSkill(int skillCode)
         {
-            int skillCode = skillDataForButtons[buttonIdx].Code;
+            bool ret;
 
             if (!selectedSkills.Contains(skillCode))
             {
                 if (selectedSkills.Count >= Constants.maxSkillNum)
-                    return;
+                    return false;
 
                 selectedSkills.Add(skillCode);
+                ret = true;
             }
             else
             {
                 selectedSkills.Remove(skillCode);
+                ret = false;
             }
 
             RenewSkillLabel();
+            return ret;
         }
 
         public Text skillLabel;

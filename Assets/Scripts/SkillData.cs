@@ -5,30 +5,6 @@ using UnityEngine;
 
 namespace com.MJT.FindTheThief
 {
-    [CreateAssetMenu]
-    public class SkillDataSet : ScriptableObject
-    {
-        [SerializeField]
-        private SkillData[] set;
-        [SerializeField]
-        private Team team;
-        public Team Team
-        {
-            get
-            {
-                return team;
-            }
-        }
-
-        public SkillData Get(int i)
-        {
-            if (i < 0 || i >= set.Length)
-                return null;
-
-            return set[i];
-        }
-    }
-
     public enum SkillType { Passive, Time, Number }
 
     [Serializable]
@@ -45,12 +21,12 @@ namespace com.MJT.FindTheThief
         }
 
         [SerializeField]
-        private string skillMethodName;
-        public string SkillMethodName
+        private string methodName;
+        public string MethodName
         {
             get
             {
-                return skillMethodName;
+                return methodName;
             }
         }
 
