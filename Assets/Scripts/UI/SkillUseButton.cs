@@ -37,17 +37,20 @@ namespace com.MJT.FindTheThief
 
             skillIcon.sprite = skillData.Icon;
             usable = true;
-
+            remainingDelayText.gameObject.SetActive(false);
             switch (skillData.Type)
             {
                 case SkillType.Count:
                     skillCount = skillData.TypeData;
+                    remainingCountText.text = skillCount.ToString();
                     break;
                 case SkillType.Delay:
                     skillDelayTimestamp = skillData.TypeData;
+                    remainingCountText.gameObject.SetActive(false);
                     break;
                 case SkillType.Passive:
                     skillManager.UseSkill(skillIdx);
+                    remainingCountText.gameObject.SetActive(false);
                     usable = false;
                     break;
             }
@@ -63,10 +66,7 @@ namespace com.MJT.FindTheThief
             {
                 case SkillType.Count:
                     skillCount -= 1;
-                    if (skillCount == 0)
-                    {
-                        usable = false;
-                    }
+                    SetUnusableWithCount(skillCount);
                     break;
                 case SkillType.Delay:
                     SetUnusableWithTime(skillDelayTimestamp);
@@ -80,25 +80,48 @@ namespace com.MJT.FindTheThief
         {
             usable = false;
             GetComponent<Image>().sprite = unusableSprite;
-            skillIcon.rectTransform.position = skillIcon.rectTransform.position - imageOffsetVec;
+            skillIcon.rectTransform.position -= imageOffsetVec;
 
             StartCoroutine(SetUsableAfterTime((float)timestamp / 1000f));
         }
 
         private IEnumerator SetUsableAfterTime(float time)
         {
-            yield return new WaitForSeconds(time);
+            remainingDelayText.gameObject.SetActive(true);
 
+            while (time > 0f) {
+                remainingDelayText.text = ((int)time).ToString();
+                if (time > 1f)
+                {
+                    yield return new WaitForSeconds(1f);
+                    time -= 1f;
+                }
+                else
+                {
+                    yield return new WaitForSeconds(time);
+                    time -= time;
+                }
+            }
+
+            remainingDelayText.gameObject.SetActive(false);
             usable = true;
             GetComponent<Image>().sprite = usableSprite;
-            skillIcon.rectTransform.position = skillIcon.rectTransform.position + imageOffsetVec;
+            skillIcon.rectTransform.position += imageOffsetVec;
         }
 
         public Text remainingCountText;
 
-        private void SetUnsuableWithCount(int Count)
+        private void SetUnusableWithCount(int count)
         {
+            remainingCountText.text = count.ToString();
 
+            if (count == 0)
+            {
+                usable = false;
+                GetComponent<Image>().sprite = unusableSprite;
+                skillIcon.rectTransform.position -= imageOffsetVec;
+                remainingCountText.rectTransform.position -= imageOffsetVec;
+            }
         }
     }
 }
