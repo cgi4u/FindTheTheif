@@ -18,6 +18,7 @@ namespace com.MJT.FindTheThief
         private Vector3 imageOffsetVec;
 
         private SkillData skillData;
+        private int skillIdx;
         private SkillSelector skillSelector;
 
         private bool initialized = false;
@@ -27,10 +28,11 @@ namespace com.MJT.FindTheThief
             imageOffsetVec = new Vector3(0f, GetComponent<RectTransform>().rect.height * imageOffsetRatio, 0f);
         }
 
-        public void SetSkillData(SkillData _skillData, SkillSelector _skillSelector, bool isOn)
+        public void SetSkillData(SkillData _skillData, SkillSelector _skillSelector, int _skillIdx, bool isOn)
         {
             skillData = _skillData;
             skillSelector = _skillSelector;
+            skillIdx = _skillIdx;
 
             skillIcon.sprite = skillData.Icon;
 
@@ -47,7 +49,7 @@ namespace com.MJT.FindTheThief
         {
             if (!initialized) return;
 
-            if (skillSelector.OnOffSkill(skillData.Code))
+            if (skillSelector.OnOffSkill(skillIdx))
             {
                 if (GetComponent<Image>().sprite == offSprite)
                     skillIcon.rectTransform.position = skillIcon.rectTransform.position - imageOffsetVec;

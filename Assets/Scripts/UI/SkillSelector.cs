@@ -11,45 +11,49 @@ namespace com.MJT.FindTheThief
         public SkillDataSet skillDataSet;
         private List<int> selectedSkills = new List<int>();
 
-        [SerializeField]
-        private SkillSelectButton[] buttons;
-
         private void Awake()
         {
             for (int i = 0; i < Constants.maxSkillNum; i++)
             {
+                // Get the index of skills selected previous game.
                 int prefSkill = PlayerPrefs.GetInt(skillDataSet.Team + " Skill " + i, -1);
                 if (prefSkill == -1) break;
 
                 selectedSkills.Add(prefSkill);
             }
+        }
 
+        [SerializeField]
+        private SkillSelectButton[] buttons;
+
+        private void Start()
+        {
             for (int i = 0; i < buttons.Length; i++)
             {
                 SkillData data = skillDataSet.Get(i);
-                bool isOn = selectedSkills.Contains(data.Code);
+                bool isOn = selectedSkills.Contains(i);
 
-                buttons[i].SetSkillData(skillDataSet.Get(i), this, isOn);
+                buttons[i].SetSkillData(skillDataSet.Get(i), this, i, isOn);
             }
 
             RenewSkillLabel();
         }
 
-        public bool OnOffSkill(int skillCode)
+        public bool OnOffSkill(int skillIdx)
         {
             bool ret;
 
-            if (!selectedSkills.Contains(skillCode))
+            if (!selectedSkills.Contains(skillIdx))
             {
                 if (selectedSkills.Count >= Constants.maxSkillNum)
                     return false;
 
-                selectedSkills.Add(skillCode);
+                selectedSkills.Add(skillIdx);
                 ret = true;
             }
             else
             {
-                selectedSkills.Remove(skillCode);
+                selectedSkills.Remove(skillIdx);
                 ret = false;
             }
 

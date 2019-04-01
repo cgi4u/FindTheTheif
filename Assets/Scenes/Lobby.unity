@@ -841,7 +841,7 @@ MonoBehaviour:
     type: 3}
   NPCNumInputField: {fileID: 1870610371}
   detectiveSkillSelector: {fileID: 822839574}
-  thiefSkillSelector: {fileID: 0}
+  thiefSkillSelector: {fileID: 764535935}
 --- !u!4 &446397742
 Transform:
   m_ObjectHideFlags: 0

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace com.MJT.FindTheThief
 {
-    public enum SkillType { Passive, Time, Number }
+    public enum SkillType { Passive, Delay, Count, PassiveCount }
 
     [Serializable]
     public class SkillData
