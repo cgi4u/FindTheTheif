@@ -16,7 +16,7 @@ namespace com.MJT.FindTheThief
         private void Check()
         {
             checkedNum += 1;
-            UIManager.Instance.RenewErrorLabel(checkedNum.ToString());
+            UIManager.Instance.SetErrorMsg(checkedNum.ToString());
         }
     }
 }

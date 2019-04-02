@@ -258,6 +258,8 @@ namespace com.MJT.FindTheThief
                     randomNPCSelector.Add(i);
                 Globals.RandomizeList<int>(randomNPCSelector);
 
+                //Set the avatar of the thief player from NPC list and remove selected NPCs from the list.
+                //And set the generation points of the thief players.
                 for (int i = 0; i < thiefPlayers.Count; i++)
                 {
                     Hashtable cp = thiefPlayers[i].CustomProperties;
@@ -266,7 +268,8 @@ namespace com.MJT.FindTheThief
                     randomNPCSelector.RemoveAt(0);
                     thiefPlayers[i].SetCustomProperties(cp);
                 }
-
+                
+                //Set the generation points of the detective players.
                 for (int i = 0; i < detectivePlayers.Count; i++)
                 {
                     Hashtable cp = detectivePlayers[i].CustomProperties;
@@ -458,11 +461,9 @@ namespace com.MJT.FindTheThief
             }
             if (targetItemPoints.Count != targetItemNum)
             {
-                //issue: Error
                 Debug.LogError("There are not enough rooms for item generation.");
                 return;
             }
-
 
             // Generate items.
             for (int i = 0; i < numOfItemGenPoint; i++)
@@ -576,16 +577,19 @@ namespace com.MJT.FindTheThief
                 //if all player is in ready, fire game start signal to other players(via server in order to reduce delay).
                 if (allPlayersReady)
                 {
-                    PhotonExtends.SetRoomCustomPropsByElem(startKey, true);
+                    int startTimestamp = PhotonNetwork.ServerTimestamp + 10000;
+                    PhotonExtends.SetRoomCustomPropsByElem(startKey, startTimestamp);
+                    inReady = false;
                 }
             }
 
-            if (!GameStarted)
+            if (!GameStarted || GameSet)
                 return;
             // Section after game is started.
 
-            //Debug.Log(curTimeStamp);
-            if (PrepareTimeEnd && !GameSet)
+            //Renew remaining time displayed in UI.
+            //
+            if (PrepareTimeEnd)
             {
                 UIManager.Instance.RenewTimeLabel((timeStampPerGame - (curTimeStamp - startTimeStamp)) / 1000);
             }
@@ -685,7 +689,7 @@ namespace com.MJT.FindTheThief
                 return;
             }
 
-            UIManager.Instance.RenewErrorLabel("Thief " + thiefID + " is arrested.");
+            UIManager.Instance.SetErrorMsg("Thief " + thiefID + " is arrested.");
             arrestedThievesNum += 1;
             UIManager.Instance.RenewThievesNum(thievesNum - arrestedThievesNum);
 
@@ -709,7 +713,7 @@ namespace com.MJT.FindTheThief
         [PunRPC]
         public void ArrestFailed(int detectiveID)
         {
-            UIManager.Instance.RenewErrorLabel("Detective " + PhotonPlayer.Find(detectiveID).NickName + " failed to arrest.");
+            UIManager.Instance.SetErrorMsg("Detective " + PhotonPlayer.Find(detectiveID).NickName + " failed to arrest.");
         }
 
         #endregion
@@ -728,7 +732,7 @@ namespace com.MJT.FindTheThief
             ItemController.RenewDiscoveredItemPrioirty(stolenItem);
             UIManager.Instance.RenewStolenItemList(stolenItems);
 
-            UIManager.Instance.RenewErrorLabel("Item " + stolenItem.name + " is stolen.");
+            UIManager.Instance.SetErrorMsg("Item " + stolenItem.name + " is stolen.");
 
             if (targetItems.Contains(stolenItem))
             {
@@ -801,8 +805,8 @@ namespace com.MJT.FindTheThief
 
         public override void OnPhotonCustomRoomPropertiesChanged(Hashtable propertiesThatChanged)
         {
-            if (propertiesThatChanged[startKey] != null 
-                && (bool)propertiesThatChanged[startKey] && !GameStarted)
+            // When the game start key is set by the master client, start the game.
+            if (propertiesThatChanged[startKey] != null && !GameStarted)
             {
                 SceneManager.sceneLoaded -= OnGameSceneLoaded;
 
@@ -828,6 +832,8 @@ namespace com.MJT.FindTheThief
                 }
 
                 prepareStartTimeStamp = PhotonNetwork.ServerTimestamp;
+                UIManager.Instance.SetErrorMsg(PhotonNetwork.ServerTimestamp.ToString());
+
                 inReady = false;
                 GameStarted = true;
             }
@@ -866,7 +872,7 @@ namespace com.MJT.FindTheThief
         public string recordSceneName;
         IEnumerator LoadRecordScene()
         {
-            yield return new WaitForSeconds(5f);
+            yield return new WaitForSeconds(1f);
 
             for (int i = sceneObjParent.childCount - 1; i >= 0; i--)
                 Destroy(sceneObjParent.GetChild(i).gameObject);

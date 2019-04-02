@@ -33,8 +33,10 @@ namespace com.MJT.FindTheThief
         [PunRPC]
         private void SetSpriteAndAnimation(int NPCIdx)
         {
-            GetComponent<SpriteRenderer>().sprite = MultiplayRoomManager.Instance.NPCPrefabs[NPCIdx].GetComponent<SpriteRenderer>().sprite;
-            GetComponent<Animator>().runtimeAnimatorController = MultiplayRoomManager.Instance.NPCPrefabs[NPCIdx].GetComponent<Animator>().runtimeAnimatorController;
+            GetComponent<SpriteRenderer>().sprite 
+                = MultiplayRoomManager.Instance.NPCPrefabs[NPCIdx].GetComponent<SpriteRenderer>().sprite;
+            GetComponent<Animator>().runtimeAnimatorController 
+                = MultiplayRoomManager.Instance.NPCPrefabs[NPCIdx].GetComponent<Animator>().runtimeAnimatorController;
         }
 
         private ItemController itemInHand;

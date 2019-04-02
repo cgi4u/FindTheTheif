@@ -462,7 +462,7 @@ namespace com.MJT.FindTheThief
         /// Label to use check error in device environmnet(Should not work in release version)
         /// </summary>
         public Text errorLabel;
-        public void RenewErrorLabel(string errorMsg)
+        public void SetErrorMsg(string errorMsg)
         {
             errorLabel.text = errorMsg;
         }

@@ -56,12 +56,14 @@ namespace com.MJT.FindTheThief
             }
         }
 
+        /*
         public void OnTouched()
         {
             if (usable == false)
                 return;
 
             skillManager.UseSkill(skillIdx);
+
             switch (skillData.Type)
             {
                 case SkillType.Count:
@@ -73,14 +75,49 @@ namespace com.MJT.FindTheThief
                     break;
             }
         }
+        */
+
+        public void OnTouchDown()
+        {
+            if (usable == false)
+                return;
+
+            GetComponent<Image>().sprite = unusableSprite;
+            skillIcon.rectTransform.position -= imageOffsetVec;
+            remainingCountText.rectTransform.position -= imageOffsetVec;
+        }
+
+        public void OnTouchUp()
+        {
+            if (usable == false)
+                return;
+
+            skillManager.UseSkill(skillIdx);
+
+            switch (skillData.Type)
+            {
+                case SkillType.Count:
+                    skillCount -= 1;
+                    SetUnusableWithCount(skillCount);
+                    break;
+                case SkillType.Delay:
+                    SetUnusableWithTime(skillDelayTimestamp);
+                    break;
+            }
+
+            if (usable)
+            {
+                GetComponent<Image>().sprite = usableSprite;
+                skillIcon.rectTransform.position += imageOffsetVec;
+                remainingCountText.rectTransform.position += imageOffsetVec;
+            }
+        }
 
         public Text remainingDelayText;
 
         private void SetUnusableWithTime(int timestamp)
         {
             usable = false;
-            GetComponent<Image>().sprite = unusableSprite;
-            skillIcon.rectTransform.position -= imageOffsetVec;
 
             StartCoroutine(SetUsableAfterTime((float)timestamp / 1000f));
         }
@@ -118,10 +155,9 @@ namespace com.MJT.FindTheThief
             if (count == 0)
             {
                 usable = false;
-                GetComponent<Image>().sprite = unusableSprite;
-                skillIcon.rectTransform.position -= imageOffsetVec;
-                remainingCountText.rectTransform.position -= imageOffsetVec;
             }
         }
+
+        
     }
 }
