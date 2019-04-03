@@ -24,6 +24,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06102087a585e3541825d269a3adb6e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  NPCPrefabs: {fileID: 11400000, guid: 11fefd89de77be3479ad3da5b8d5842d, type: 2}
 --- !u!1001 &4202969183899360232
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -33,7 +34,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1536311355630938, guid: 4a2bb6044e24a974eb687461314d3ef0, type: 3}
       propertyPath: m_Name
-      value: Theif
+      value: Thief
       objectReference: {fileID: 0}
     - target: {fileID: 4468993316946668, guid: 4a2bb6044e24a974eb687461314d3ef0, type: 3}
       propertyPath: m_LocalPosition.x
@@ -104,6 +105,11 @@ PrefabInstance:
       propertyPath: ObservedComponents.Array.data[1]
       value: 
       objectReference: {fileID: 4307369249999149096}
+    - target: {fileID: 114659465982488614, guid: 4a2bb6044e24a974eb687461314d3ef0,
+        type: 3}
+      propertyPath: ObservedComponents.Array.data[2]
+      value: 
+      objectReference: {fileID: 1191928055512701920}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4a2bb6044e24a974eb687461314d3ef0, type: 3}
 --- !u!1 &4203696217380748978 stripped
@@ -134,5 +140,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1191928055512701920 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3087611667984678920, guid: 4a2bb6044e24a974eb687461314d3ef0,
+    type: 3}
+  m_PrefabInstance: {fileID: 4202969183899360232}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4203696217380748978}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b8c4a61274f60b4ea5fb4299cfdbf14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

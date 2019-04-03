@@ -22,14 +22,12 @@ namespace com.MJT.FindTheThief
         }
 
         MapDataManager mapDataManager;
+        UIManager uiManager;
 
         #region Keys for custom property setting
 
-        readonly string TeamSetKey = "Player Team Set";
-
-        readonly string sceneLoadedKey = "Scene Loaded";
-        readonly string gameInitKey = "Game Initiated";
-        readonly string playerInitKey = "Player Initiated";
+        readonly string teamSettingEndKey = "Player Team Set";
+        readonly string initializedKey = "Game Initiated";
         readonly string playerReadyKey = "Player Ready";
         readonly string startTimeKey = "Game Start Timestamp";
         readonly string gameSetKey = "Game Set";
@@ -37,12 +35,12 @@ namespace com.MJT.FindTheThief
 
         readonly string TeamKey = "My team";
         readonly string playerGenPointKey = "Player Generation Point";
-        readonly string theifFigureKey = "Theif Figure";
+        readonly string theifFigureIdxKey = "Theif Figure";
 
         readonly string playerRecordsKey = "Player Records";
         readonly string playerRecordsNumKey = "Player Records Number";
 
-        readonly string pauseKey = "Pause";
+        readonly string pauseKey = "Paused";
 
         /*
         static readonly string remainingThievesKey = "Remaining Thieves Number";
@@ -51,8 +49,10 @@ namespace com.MJT.FindTheThief
 
         #endregion
 
-        #region Set Players' Team
-
+        /// <summary>
+        /// Local client's current game state.
+        /// </summary>
+        public EGameState GameState { get; set; } = EGameState.None;
         private int thievesNum;
 
         private void Awake()
@@ -81,6 +81,7 @@ namespace com.MJT.FindTheThief
             }
 
             mapDataManager = MapDataManager.Instance;
+            uiManager = UIManager.Instance;
 
             Hashtable roomCp = PhotonNetwork.room.CustomProperties;
 
@@ -98,7 +99,7 @@ namespace com.MJT.FindTheThief
                 return;
             }
 
-            PhotonExtends.SetLocalPlayerPropsByElem(pauseKey, false);
+            PhotonExtends.SetLocalPlayerProp(pauseKey, false);
 
             if (PhotonNetwork.isMasterClient) {
                 //Randomly switch the master client. It prevents that the player who made room always be picked as a thief.
@@ -151,6 +152,12 @@ namespace com.MJT.FindTheThief
         /// </summary>
         private void SetTeamOfPlayers()
         {
+            if (!PhotonNetwork.isMasterClient)
+            {
+                Debug.LogError("Team setting must be operated by the master client.");
+                return;
+            }
+
             int playerNum = PhotonNetwork.playerList.Length;
             if (playerNum <= thievesNum)
             {
@@ -186,7 +193,7 @@ namespace com.MJT.FindTheThief
             Globals.RandomizeArray<int>(thiefSelector);
 
             // Select thieves(master client + others)
-            PhotonExtends.SetLocalPlayerPropsByElem(TeamKey, (int)ETeam.Thief);
+            PhotonExtends.SetLocalPlayerProp(TeamKey, (int)ETeam.Thief);
             for (int i = 0; i < thievesNum - 1; i++)
             {
                 PhotonPlayer thiefPlayer = PhotonPlayer.Find(thiefSelector[i]);
@@ -195,12 +202,8 @@ namespace com.MJT.FindTheThief
                 thiefPlayer.SetCustomProperties(playerCp);
             }
 
-            PhotonExtends.SetRoomCustomPropsByElem(TeamSetKey, true);
+            PhotonExtends.SetRoomCustomProp(teamSettingEndKey, true);
         }
-
-        #endregion
-
-        #region Game Initialization(After Loading Room, Including Object Generation) 
 
         private void InitializeGame()
         {
@@ -208,9 +211,9 @@ namespace com.MJT.FindTheThief
             myTeam = (ETeam)PhotonNetwork.player.CustomProperties[TeamKey];
 
             //Set UI Informations and deactive the interactive UI before game start).
-            UIManager.Instance.SetTeamLabel(myTeam);
-            UIManager.Instance.RenewThievesNum(thievesNum);
-            UIManager.Instance.DeactivateUIGroup();
+            uiManager.SetTeamLabel(myTeam);
+            uiManager.RenewThievesNum(thievesNum);
+            uiManager.DeactivateUIGroup();
 
             detectivePlayers = new List<PhotonPlayer>();
             thiefPlayers = new List<PhotonPlayer>();
@@ -240,47 +243,15 @@ namespace com.MJT.FindTheThief
 
             masterPriority.AddRange(detectivePriority);
 
-            // Other initialization for this new game.
+            // Initilize discoverd item list.
             ItemController.ResetDescoverdItems();
 
             // Game initiation by the master client.
             if (PhotonNetwork.isMasterClient)
             {
-                // Set the starting point of each players and generate the local players.
-                int[] thiefGenPointSelector = new int[mapDataManager.ThiefGenertaionPoints.Count];
-                for (int i = 0; i < thiefGenPointSelector.Length; i++)
-                    thiefGenPointSelector[i] = i;
-                Globals.RandomizeArray<int>(thiefGenPointSelector);
-
-                for (int i = 0; i < _NPCPrefabs.Length; i++)
-                    randomNPCSelector.Add(i);
-                Globals.RandomizeList<int>(randomNPCSelector);
-
-                //Set the avatar of the thief player from NPC list and remove selected NPCs from the list.
-                //And set the generation points of the thief players.
-                for (int i = 0; i < thiefPlayers.Count; i++)
-                {
-                    Hashtable cp = thiefPlayers[i].CustomProperties;
-                    cp[playerGenPointKey] = thiefGenPointSelector[i];
-                    cp[theifFigureKey] = randomNPCSelector[0];
-                    randomNPCSelector.RemoveAt(0);
-                    thiefPlayers[i].SetCustomProperties(cp);
-                }
-                
-                //Set the generation points of the detective players.
-                for (int i = 0; i < detectivePlayers.Count; i++)
-                {
-                    Hashtable cp = detectivePlayers[i].CustomProperties;
-                    cp[playerGenPointKey] = i;
-                    detectivePlayers[i].SetCustomProperties(cp);
-                }
-
-                // Generate scene objects.
-                GenerateSceneObject();
+                // Set generation points of players and generate scene objects.
+                SetGenPointAndGenSceneObj();
             }
-
-            PhotonExtends.SetLocalPlayerPropsByElem(playerInitKey, true);
-            gameInitialized = true;
         }
 
         [SerializeField]
@@ -296,14 +267,46 @@ namespace com.MJT.FindTheThief
             }
         }
 
+        private List<int> randomNPCSelector = new List<int>();
+
         /// <summary>
         /// Generate NPCs and Items for current game. Should be called by the master client.
         /// </summary>
-        private void GenerateSceneObject()
+        private void SetGenPointAndGenSceneObj()
         {
             if (!PhotonNetwork.isMasterClient) {
-                Debug.LogError("Object generation must be oprated by the master client.");
+                Debug.LogError("Object generation must be operated by the master client.");
                 return;
+            }
+
+            // Set the starting point of each players and generate the local players.
+            int[] thiefGenPointSelector = new int[mapDataManager.ThiefGenertaionPoints.Count];
+            for (int i = 0; i < thiefGenPointSelector.Length; i++)
+                thiefGenPointSelector[i] = i;
+            Globals.RandomizeArray<int>(thiefGenPointSelector);
+
+            for (int i = 0; i < NPCPrefabs.Count; i++)
+                randomNPCSelector.Add(i);
+            Globals.RandomizeList<int>(randomNPCSelector);
+
+            //Set the avatar of the thief player from NPC list and remove selected NPCs from the list.
+            //And set the generation points of the thief players.
+            for (int i = 0; i < thiefPlayers.Count; i++)
+            {
+                Hashtable cp = thiefPlayers[i].CustomProperties;
+                cp[playerGenPointKey] = thiefGenPointSelector[i];
+                cp[theifFigureIdxKey] = randomNPCSelector[0];
+                thiefPlayers[i].SetCustomProperties(cp);
+
+                randomNPCSelector.RemoveAt(0);
+            }
+
+            //Set the generation points of the detective players.
+            for (int i = 0; i < detectivePlayers.Count; i++)
+            {
+                Hashtable cp = detectivePlayers[i].CustomProperties;
+                cp[playerGenPointKey] = i;
+                detectivePlayers[i].SetCustomProperties(cp);
             }
 
             // Generate Scene Objects(NPCs, Items).
@@ -311,20 +314,12 @@ namespace com.MJT.FindTheThief
             GenerateItems();
 
             // Game initiation ends, send ready signal to other players. 
-            PhotonExtends.SetRoomCustomPropsByElem(gameInitKey, true);
+            PhotonExtends.SetRoomCustomProp(initializedKey, true);
         }
 
         public int NPCNum;
-        [SerializeField]
-        private GameObject[] _NPCPrefabs;
-        public GameObject[] NPCPrefabs
-        {
-            get
-            {
-                return _NPCPrefabs;
-            }
-        }
-        private List<int> randomNPCSelector = new List<int>();
+        public NPCPrefabSet NPCPrefabs;
+
         /// <summary>
         /// Generate NPCs at random nodes.
         /// </summary>
@@ -345,7 +340,7 @@ namespace com.MJT.FindTheThief
                     return;
                 }
 
-                GameObject newNPC = PhotonNetwork.InstantiateSceneObject("NPCs\\" + _NPCPrefabs[randomNPCSelector[i]].name, 
+                GameObject newNPC = PhotonNetwork.InstantiateSceneObject("NPCs\\" + NPCPrefabs.Get(randomNPCSelector[i]).name, 
                                                                             new Vector3(0, 0, 0), Quaternion.identity, 0, null);
                 PhotonView.Get(newNPC).RPC("Init", PhotonTargets.All, randomPoint);
             }
@@ -355,6 +350,7 @@ namespace com.MJT.FindTheThief
         public int targetItemNum; 
         [SerializeField]
         private List<ItemController> targetItems = new List<ItemController>();
+
         /// <summary>
         /// Generate items at generation points randomly. 
         /// </summary>
@@ -514,8 +510,8 @@ namespace com.MJT.FindTheThief
             for (int i = 0; i < targetItemPoints.Length; i++)
                 targetItems.Add(mapDataManager.ItemGenPoints[targetItemPoints[i]].Item);
 
-            if ((ETeam)PhotonNetwork.room.CustomProperties[TeamKey(PhotonNetwork.player.ID)] == ETeam.Thief)
-                UIManager.Instance.RenewTargetItemList(targetItems);
+            if ((ETeam)PhotonNetwork.player.CustomProperties[TeamKey] == ETeam.Thief)
+                uiManager.RenewTargetItemList(targetItems);
         }
 
         [PunRPC]
@@ -524,34 +520,49 @@ namespace com.MJT.FindTheThief
             mapDataManager.Rooms[roomIndex].PutItemPoint.Activated = true;
         }
 
-        #endregion
+        private void GenLocalPlayerAndReady()
+        {
+            int genPointIdx = (int)PhotonNetwork.player.CustomProperties[playerGenPointKey];
+            Debug.Log("We are Instantiating LocalPlayer from " + SceneManager.GetActiveScene().name);
+            Debug.Log("You are a " + myTeam);
+            if (myTeam == ETeam.Detective)
+                PhotonNetwork.Instantiate(detectivePrefab.name, mapDataManager.DetectiveGenerationPoints[genPointIdx].position, Quaternion.identity, 0);
+            else if (myTeam == ETeam.Thief)
+            {
+                GameObject myTheif = PhotonNetwork.Instantiate(thiefPrefab.name, mapDataManager.ThiefGenertaionPoints[genPointIdx].position, Quaternion.identity, 0);
 
-        #region Shared Ingame Activities
+                int NPCIdx = (int)PhotonNetwork.player.CustomProperties[theifFigureIdxKey];
+                PhotonView.Get(myTheif).RPC("SetSpriteAndAnimation", PhotonTargets.All, NPCIdx);
+            }
+            GameState = EGameState.Ready;
 
-        public enum EGameState { Initializing, Initialized, Start, Game_Set };
-        public EGameState GameState { get; set; } = EGameState.Initializing;
+            if (PhotonNetwork.isMasterClient)
+            {
+                foreach (NPCController npc in sceneObjParent.GetComponentsInChildren<NPCController>())
+                {
+                    npc.Activated = true;
+                }
 
-        private bool gameInitialized = false;
-        private bool gameReady = false;
-        private bool startBlocked = false;
-        public bool GameStarted { get; set; } = false;
+                PhotonExtends.SetRoomCustomProp(startTimeKey, PhotonNetwork.ServerTimestamp + 3000);
+            }
+        }
+
         public bool PrepareTimeEnd { get; set; } = false;
-        public bool GameSet { get; set; } = false;
 
         // Start/End time of the game(use server time to set)
         [SerializeField]
-        private int timeStampForPrepare;
-        private int prepareStartTimeStamp;
+        private int timestampForPrepare;
+        private int prepareStartTimestamp;
 
         [SerializeField]
-        private int timeStampPerGame;
+        private int timestampPerGame;
         private int startTimestamp;
 
-        int curTimeStamp;
-        int prevTimeStamp;
+        int curTimestamp;
+        int prevTimestamp;
         private void Start()
         {
-            prevTimeStamp = PhotonNetwork.ServerTimestamp;
+            prevTimestamp = PhotonNetwork.ServerTimestamp;
         }
 
         int readyWaitTimeStamp = 0;
@@ -559,92 +570,83 @@ namespace com.MJT.FindTheThief
         {
             //Debug.Log(PhotonNetwork.networkingPeer.RoundTripTime);
 
-            curTimeStamp = PhotonNetwork.ServerTimestamp;
-            int deltaTimeStamp = curTimeStamp - prevTimeStamp;
-            prevTimeStamp = curTimeStamp;
+            curTimestamp = PhotonNetwork.ServerTimestamp;
+            int deltaTimeStamp = curTimestamp - prevTimestamp;
+            prevTimestamp = curTimestamp;
 
-            if (gameInitialized && PhotonNetwork.isMasterClient 
-                && PhotonNetwork.room.CustomProperties[gameInitKey] != null)
+            // Run after player became to ready state.
+            switch (GameState)
             {
-                bool allPlayersInited = true;
-                foreach (PhotonPlayer player in PhotonNetwork.playerList)
-                {
-                    object initState = player.CustomProperties[playerInitKey];
-                    if (initState == null)
-                    {
-                        allPlayersInited = false;
+                case EGameState.ReadyChecked:
+                    if (curTimestamp - prepareStartTimestamp < 0)
                         break;
-                    }
-                }
 
-                // If all players' clients are initialized, inform game start time to other players.
-                if (allPlayersInited)
-                {
-                    int startTimestamp = PhotonNetwork.ServerTimestamp + 3000;
-                    PhotonExtends.SetRoomCustomPropsByElem(startTimeKey, startTimestamp);
-                    gameInitialized = false;
-                }
-            }
-
-            if (gameReady && !startBlocked 
-                && curTimeStamp - prepareStartTimeStamp >= 0)
-            {
-                bool allPlayersReady = true;
-                foreach (PhotonPlayer player in PhotonNetwork.playerList)
-                {
-                    object readyState = player.CustomProperties[playerReadyKey];
-                    if (readyState == null)
+                    // Check if all players in ready state.
+                    bool allPlayersReady = true;
+                    foreach (PhotonPlayer player in PhotonNetwork.playerList)
                     {
-                        allPlayersReady = false;
-                        break;
+                        object readyState = player.CustomProperties[playerReadyKey];
+                        if (readyState == null)
+                        {
+                            allPlayersReady = false;
+                            break;
+                        }
                     }
-                }
 
-                // If any player is not in the ready state, resend the start time (by the master client).
-                if (!allPlayersReady)
-                {
-                    startBlocked = true;
+                    // If there is a player which is not in ready, postpone the start time and resend the time to all players
+                    if (!allPlayersReady)
+                    {
+                        if (PhotonNetwork.isMasterClient)
+                            photonView.RPC("PostponeStartTime", PhotonTargets.All, curTimestamp + 5000);
+                    }
+                    else
+                    {
+                        if (myTeam == ETeam.Thief)
+                            uiManager.ActivateUIGroup();
+                        GameState = EGameState.Preparing;
+                    }
 
-                    if (PhotonNetwork.isMasterClient)
-                        photonView.RPC("PostponeStartTime", PhotonTargets.All, PhotonNetwork.ServerTimestamp + 5000);
-                }
-            }
+                    break;
+                case EGameState.Preparing:
+                    // If preparing time is not over, renew time jabel.
+                    if (timestampForPrepare - (curTimestamp - prepareStartTimestamp) > 0) {
+                        uiManager.RenewTimeLabel((timestampForPrepare - (curTimestamp - prepareStartTimestamp)) / 1000);
+                    }
+                    // If prepareing time ends, let the game start.
+                    else
+                    {
+                        if (myTeam == ETeam.Detective)
+                            uiManager.ActivateUIGroup();
+                        startTimestamp = prepareStartTimestamp + timestampForPrepare;
+                        GameState = EGameState.Started;
+                    }
 
-            if (!GameStarted || GameSet)
-                return;
-            // Section after game is started.
-
-            //Renew remaining time displayed in UI.
-            //
-            if (PrepareTimeEnd)
-            {
-                UIManager.Instance.RenewTimeLabel((timeStampPerGame - (curTimeStamp - startTimestamp)) / 1000);
-            }
-            else if (timeStampForPrepare - (curTimeStamp - prepareStartTimeStamp) <= 0)
-            {
-                if (myTeam == ETeam.Detective)
-                    UIManager.Instance.ActivateUIGroup();
-                startTimestamp = PhotonNetwork.ServerTimestamp;
-                PrepareTimeEnd = true;
-            }
-            else
-            {
-                UIManager.Instance.RenewTimeLabel((timeStampForPrepare - (curTimeStamp - prepareStartTimeStamp)) / 1000);
+                    break;
+                case EGameState.Started:
+                    // Renew time label, view current remaining time.
+                    uiManager.RenewTimeLabel((timestampPerGame - (curTimestamp - startTimestamp)) / 1000);
+                    break;
+                default:
+                    break;
             }
         }
 
         [PunRPC]
-        private void PostponeStartTime(int newPrepareStartTime)
+        private void PostponeStartTime(int newPrepareStartTimestamp)
         {
-            int startTimestamp = PhotonNetwork.ServerTimestamp + 5000;
-            PhotonExtends.SetRoomCustomPropsByElem(startTimeKey, startTimestamp);
+            int prepareStartTimestamp = newPrepareStartTimestamp;
+            if (GameState == EGameState.Ready)
+            {
+                GameState = EGameState.ReadyChecked;
+                PhotonExtends.SetLocalPlayerProp(playerReadyKey, true);
+            }
         }
 
         private void LateUpdate()
         {
-            if (!GameStarted)
+            if (GameState != EGameState.Preparing && GameState != EGameState.Started)
                 return;
-            // Section after game is started
+            // Run only after game is preparing or started state.
 
             // If the local player is the master and in detective team, change the master client to be a thief if it is possible.
             if (PhotonNetwork.isMasterClient && myTeam == ETeam.Detective)
@@ -690,8 +692,6 @@ namespace com.MJT.FindTheThief
                 PhotonNetwork.SetMasterClient(PhotonNetwork.player);
         }
 
-        #endregion
-
         private void SetPlayerRecord(int newRecord)
         {
             Hashtable cp = PhotonNetwork.player.CustomProperties;
@@ -723,31 +723,31 @@ namespace com.MJT.FindTheThief
                 return;
             }
 
-            UIManager.Instance.SetErrorMsg("Thief " + thiefID + " is arrested.");
+            uiManager.SetErrorMsg("Thief " + thiefID + " is arrested.");
             arrestedThievesNum += 1;
-            UIManager.Instance.RenewThievesNum(thievesNum - arrestedThievesNum);
+            uiManager.RenewThievesNum(thievesNum - arrestedThievesNum);
 
             if (detectiveID == PhotonNetwork.player.ID)
             {
-                SetPlayerRecord(curTimeStamp - startTimestamp);
+                SetPlayerRecord(curTimestamp - startTimestamp);
             }
 
             if (PhotonNetwork.player.ID == thiefID)
             {
-                UIManager.Instance.SetObserverModeUI();
+                uiManager.SetObserverModeUI();
             }
 
             if (thievesNum == arrestedThievesNum)
             {
-                PhotonExtends.SetRoomCustomPropsByElem(winTeamKey, (int)ETeam.Detective);
-                PhotonExtends.SetRoomCustomPropsByElem(gameSetKey, true);
+                PhotonExtends.SetRoomCustomProp(winTeamKey, (int)ETeam.Detective);
+                PhotonExtends.SetRoomCustomProp(gameSetKey, true);
             }
         } 
 
         [PunRPC]
         public void ArrestFailed(int detectiveID)
         {
-            UIManager.Instance.SetErrorMsg("Detective " + PhotonPlayer.Find(detectiveID).NickName + " failed to arrest.");
+            uiManager.SetErrorMsg("Detective " + PhotonPlayer.Find(detectiveID).NickName + " failed to arrest.");
         }
 
         #endregion
@@ -764,25 +764,25 @@ namespace com.MJT.FindTheThief
             ItemController stolenItem = mapDataManager.ItemGenPoints[pointOfStolenItem].Item;
             stolenItems.Add(stolenItem);
             ItemController.RenewDiscoveredItemPrioirty(stolenItem);
-            UIManager.Instance.RenewStolenItemList(stolenItems);
+            uiManager.RenewStolenItemList(stolenItems);
 
-            UIManager.Instance.SetErrorMsg("Item " + stolenItem.name + " is stolen.");
+            uiManager.SetErrorMsg("Item " + stolenItem.name + " is stolen.");
 
             if (targetItems.Contains(stolenItem))
             {
                 targetItems.Remove(stolenItem);
                 if (myTeam == ETeam.Thief)
-                    UIManager.Instance.RenewTargetItemList(targetItems);
+                    uiManager.RenewTargetItemList(targetItems);
 
                 if (thiefID == PhotonNetwork.player.ID)
                 {
-                    SetPlayerRecord(curTimeStamp - startTimestamp);
+                    SetPlayerRecord(curTimestamp - startTimestamp);
                 }
 
                 if (targetItems.Count == 0 && PhotonNetwork.isMasterClient)
                 {
-                    PhotonExtends.SetRoomCustomPropsByElem(winTeamKey, (int)ETeam.Thief);
-                    PhotonExtends.SetRoomCustomPropsByElem(gameSetKey, true);
+                    PhotonExtends.SetRoomCustomProp(winTeamKey, (int)ETeam.Thief);
+                    PhotonExtends.SetRoomCustomProp(gameSetKey, true);
                 }
             } 
         }
@@ -795,43 +795,74 @@ namespace com.MJT.FindTheThief
             if (newMasterClient != PhotonNetwork.player)
                 return;
 
-            Debug.Log("Assgined as the new master client.");
-            if (PhotonNetwork.room.CustomProperties[sceneLoadedKey] == null)
+            Debug.Log("You were assgined as the new master client.");
+            if (PhotonNetwork.room.CustomProperties[teamSettingEndKey] == null)
                 SetTeamOfPlayers();
-            else if (PhotonNetwork.room.CustomProperties[gameInitKey] == null)
+            else if (PhotonNetwork.room.CustomProperties[initializedKey] == null)
             {
                 //Destroy NPCs/Items generated by previous mastet client.
                 int sceneObjNum = sceneObjParent.childCount;
                 for (int i = sceneObjNum - 1; i >= 0; i--)
                     PhotonNetwork.Destroy(sceneObjParent.GetChild(i).gameObject);
 
-                GenerateSceneObject();
+                SetGenPointAndGenSceneObj();
             }
 
         }
 
         public override void OnPhotonPlayerDisconnected(PhotonPlayer otherPlayer)
         {
+            if (GameState == EGameState.Game_Set)
+                return;
+
+            if (GameState != EGameState.Started && GameState != EGameState.Preparing)
+            {
+                LeaveRoomWithError("유저가 게임 준비 도중 접속을 해제했습니다");
+                return;
+            }
+
+
+            // Remove player from player list and the master client priorty list.
             if (thiefPlayers.Contains(otherPlayer))
             {
                 thiefPlayers.Remove(otherPlayer);
                 thievesNum -= 1;
-                UIManager.Instance.RenewThievesNum(thievesNum - arrestedThievesNum);
+                uiManager.RenewThievesNum(thievesNum - arrestedThievesNum);
             }
             else
                 detectivePlayers.Remove(otherPlayer);
             masterPriority.Remove(otherPlayer.ID);
 
+            // If one team has no member, the oppenent team is win.
             if (thievesNum - arrestedThievesNum == 0)
             {
-                PhotonExtends.SetRoomCustomPropsByElem(winTeamKey, (int)ETeam.Detective);
-                PhotonExtends.SetRoomCustomPropsByElem(gameSetKey, true);
+                PhotonExtends.SetRoomCustomProp(winTeamKey, (int)ETeam.Detective);
+                PhotonExtends.SetRoomCustomProp(gameSetKey, true);
             }
             else if (PhotonNetwork.playerList.Length == thievesNum)
             {
-                PhotonExtends.SetRoomCustomPropsByElem(winTeamKey, (int)ETeam.Thief);
-                PhotonExtends.SetRoomCustomPropsByElem(gameSetKey, true);
+                PhotonExtends.SetRoomCustomProp(winTeamKey, (int)ETeam.Thief);
+                PhotonExtends.SetRoomCustomProp(gameSetKey, true);
             }
+        }
+
+        public string lobbySceneName;
+        public string loginSceneName;
+        /// <summary>
+        /// Leave room when there is an unexpected error.
+        /// </summary>
+        /// <param name="errorMsg">Error message.</param>
+        private void LeaveRoomWithError(string errorMsg)
+        {
+            Debug.Log(errorMsg);
+
+            if (PhotonNetwork.connected)
+            {
+                PhotonNetwork.LeaveRoom();
+                SceneManager.LoadScene(lobbySceneName);
+            }
+            else
+                SceneManager.LoadScene(loginSceneName);
         }
 
         public GameObject thiefPrefab;
@@ -839,67 +870,42 @@ namespace com.MJT.FindTheThief
 
         public override void OnPhotonCustomRoomPropertiesChanged(Hashtable propertiesThatChanged)
         {
-            // When the game start time is set by the master client, check it is valid and prepare to start game if it is.
-            //해결해야 하는 부분 -> 만약 받은 스타트시간이 현재시간을 넘었으면 재전송 요청해야함. 이 때 자신은 레디를 하지 말아야함.
-            //npc 액티베이트는 아예 게임시작쪽으로 옮기고, 자기 캐릭터 인스턴스 소환부분만
-            //아예 스타트시간까지 레디 안된 플레이어가 있으면(레디시간보다 뒤에도 플레이어가 레디가 안되면) 아무 수행도 하지 말도록 막았다가 마스터에 의해 시작시간이 갱신되고 나서만 시작하도록 하는것도 방법
-
-            //start time이 갱신되었을 때 다음 케이스 구분을 어떻게 할지 생각해야함
-            //1. 정상적으로 처음 레디상태로 들어갈때
-            //2. 이미 레디가 된 플레이어가 갱신만 할때
-            //3. 레디가 안되었던 플레이어가 일정시간후 갱신값을 받았을때
-            if (propertiesThatChanged[startTimeKey] != null)
+            if (GameState == EGameState.None && propertiesThatChanged[teamSettingEndKey] != null)
             {
-                prepareStartTimeStamp = (int)propertiesThatChanged[startTimeKey];
+                GameState = EGameState.Team_Set;
+                InitializeGame();
+                return;
+            }
 
-                if (gameReady && !GameStarted)
-                    return;
+            if (GameState == EGameState.Team_Set && propertiesThatChanged[initializedKey] != null)
+            {
+                GameState = EGameState.Initialized;
+                GenLocalPlayerAndReady();
+                return;
+            }
 
-                int genPointIdx = (int)PhotonNetwork.player.CustomProperties[playerGenPointKey];
-                Debug.Log("We are Instantiating LocalPlayer from " + SceneManager.GetActiveScene().name);
-                Debug.Log("You are a " + myTeam);
-                if (myTeam == ETeam.Detective)
-                    PhotonNetwork.Instantiate(detectivePrefab.name, mapDataManager.DetectiveGenerationPoints[genPointIdx].position, Quaternion.identity, 0);
-                else if (myTeam == ETeam.Thief)
-                { 
-                    GameObject myTheif = PhotonNetwork.Instantiate(thiefPrefab.name, mapDataManager.ThiefGenertaionPoints[genPointIdx].position, Quaternion.identity, 0);
+            if (GameState == EGameState.Ready && propertiesThatChanged[startTimeKey] != null)
+            {
+                prepareStartTimestamp = (int)propertiesThatChanged[startTimeKey];
 
-                    int NPCIdx = (int)PhotonNetwork.player.CustomProperties[theifFigureKey];
-                    PhotonView.Get(myTheif).RPC("SetSpriteAndAnimation", PhotonTargets.All, NPCIdx);
-                }
-
-                if (PhotonNetwork.isMasterClient)
+                if (PhotonNetwork.ServerTimestamp - prepareStartTimestamp < 0)
                 {
-                    foreach(NPCController npc in sceneObjParent.GetComponentsInChildren<NPCController>())
-                    {
-                        npc.Activated = true;
-                    }
+                    GameState = EGameState.ReadyChecked;
+                    PhotonExtends.SetLocalPlayerProp(playerReadyKey, true);
                 }
-
-                prepareStartTimeStamp = (int)propertiesThatChanged[startTimeKey];
-                UIManager.Instance.SetErrorMsg(PhotonNetwork.ServerTimestamp.ToString());
-                if (PhotonNetwork.ServerTimestamp - prepareStartTimeStamp > 0)
-                {
-                    photonView.RPC("ResendStartTime", PhotonTargets.MasterClient);
-                }
-
-                gameInitialized = false;
-                gameReady = true;
             }
 
             //When Game set key is set by the master client, let the game be end.
-            if (propertiesThatChanged[gameSetKey] != null
-                    && (bool)propertiesThatChanged[gameSetKey] == true && !GameSet)
+            if (propertiesThatChanged[gameSetKey] != null)
             {
                 PhotonNetwork.automaticallySyncScene = false;
-                GameSet = true;
-                GameStarted = false;
+                GameState = EGameState.Game_Set;
 
                 ETeam winTeam = (ETeam)propertiesThatChanged[winTeamKey];
                 if (winTeam == myTeam)
-                    UIManager.Instance.SetWinPanel();
+                    uiManager.SetWinPanel();
                 else
-                    UIManager.Instance.SetLosePanel();
+                    uiManager.SetLosePanel();
 
                 StartCoroutine("LoadRecordScene");
 
@@ -919,9 +925,8 @@ namespace com.MJT.FindTheThief
             }
         }
 
-        
-
         public string recordSceneName;
+
         IEnumerator LoadRecordScene()
         {
             yield return new WaitForSeconds(1f);
@@ -934,17 +939,15 @@ namespace com.MJT.FindTheThief
 
         public override void OnLeftRoom()
         {
-            SceneManager.sceneLoaded -= OnGameSceneLoaded;
             instance = null;
-            Destroy(this);
         }
 
         private void OnApplicationPause(bool pauseStatus)
         {
-            if (!GameStarted)
+            if (GameState != EGameState.Preparing && GameState != EGameState.Started)
                 return;
 
-            PhotonExtends.SetLocalPlayerPropsByElem(pauseKey, pauseStatus);
+            PhotonExtends.SetLocalPlayerProp(pauseKey, pauseStatus);
             PhotonNetwork.networkingPeer.SendOutgoingCommands();
         }
     }

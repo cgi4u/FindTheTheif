@@ -3,7 +3,13 @@ guid: 48c015cf811cc27449a9690a978a61e9
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - sceneObjParent: {instanceID: 0}
+  - NPCPrefabs: {fileID: 11400000, guid: 11fefd89de77be3479ad3da5b8d5842d, type: 2}
+  - thiefPrefab: {fileID: 4203696217380748978, guid: 525f72b978b9e7941acdcbf8b1145f7b,
+      type: 3}
+  - detectivePrefab: {fileID: 1536311355630938, guid: 4a2bb6044e24a974eb687461314d3ef0,
+      type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

@@ -25,14 +25,7 @@ namespace com.MJT.FindTheThief
         public CanvasGroup interactableUIGroup;
         public GameObject grayPanel;
 
-        public GameObject multiplayRoomManager;
-
         public InputField NPCNumInputField;
-
-        void Start()
-        {
-            
-        }
 
         // Update is called once per frame
         void Update()
@@ -84,11 +77,11 @@ namespace com.MJT.FindTheThief
 
         public override void OnJoinedRoom()
         {
+            PhotonNetwork.automaticallySyncScene = true;
+
             Debug.Log("OnJoinedRoom() called by PUN. Now this client is in a room.");
             Debug.Log("PlayerName: " + PhotonNetwork.playerName);
             Debug.Log("Maximum Player:" + PhotonNetwork.room.MaxPlayers);
-
-            PhotonNetwork.automaticallySyncScene = true;
 
             if (PhotonNetwork.room.PlayerCount == 1)    //When local player made this room
             {
@@ -125,7 +118,7 @@ namespace com.MJT.FindTheThief
                 int NPCnum;
                 if (int.TryParse(NPCNumInputField.text, out NPCnum))
                 {
-                    PhotonExtends.SetRoomCustomPropsByElem(Constants.NPCNumKey, NPCnum);
+                    PhotonExtends.SetRoomCustomProp(Constants.NPCNumKey, NPCnum);
                 }
                 PhotonNetwork.LoadLevel(gameLevelName);
             }
@@ -133,6 +126,7 @@ namespace com.MJT.FindTheThief
 
         public void WaitCancel()
         {
+            PhotonNetwork.automaticallySyncScene = false;
             PhotonNetwork.LeaveRoom();
             curPlayerNumPanel.SetActive(false);
             grayPanel.SetActive(false);

@@ -79,4 +79,6 @@ MonoBehaviour:
   - Arrested
   - ArrestSuccess
   - StealSuccess
+  - ResendStartTime
+  - PostponeStartTime
   DisableAutoOpenWizard: 1

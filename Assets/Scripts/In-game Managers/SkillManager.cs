@@ -49,12 +49,23 @@ namespace com.MJT.FindTheThief
             if (enabledSkillButtons.Length != Constants.maxSkillNum)
             {
                 Debug.LogError("Number of skill buttons must be same with the maximum number of usable skill in a game.");
+                Destroy(this.gameObject);
                 return;
             }
+        }
+
+        bool initilaized = false;
+
+        private void Update()
+        {
+            if (initilaized || MultiplayRoomManager.Instance == null)
+                return;
 
             for (int i = 0; i < Constants.maxSkillNum; i++)
             {
                 //Get saved skill code
+                //issue: MultiplayRoomManager보다 타이밍이 빨라서 null뜸
+                //busy wait방식으로 구현?
                 int selectedSkillIdx = PlayerPrefs.GetInt(MultiplayRoomManager.Instance.MyTeam + " Skill " + i);
 
                 //여기서 스킬데이터를 보내려고 해도 바로 접근할 수 있는 방법이 없음
@@ -68,6 +79,8 @@ namespace com.MJT.FindTheThief
 
                 enabledSkillButtons[i].Init(this, selectedSkillData, selectedSkillIdx);
             }
+
+            initilaized = true;
         }
 
         public void UseSkill(int idx)

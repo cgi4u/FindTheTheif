@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38c6da614a96c1747be7ca0d38c14ffe, type: 3}
+  m_Name: NPC Prefab Set
+  m_EditorClassIdentifier: 
+  set:
+  - {fileID: 7938114074802122126, guid: ef86782a54792224892aa8cffd3cbc3c, type: 3}
+  - {fileID: 294662172499688182, guid: 6e413f2d65a839b45b345baaefb3730a, type: 3}
+  - {fileID: 5233620422931506476, guid: e2a901ffa1549f740a75e9327d4b9eec, type: 3}
+  - {fileID: 411007586375694151, guid: ab908a699f5312a4ea42aa3b3fc58b76, type: 3}
+  - {fileID: 2394877336906099730, guid: 8e63f1ec53397a3479f43cc7be6d37e8, type: 3}
+  - {fileID: 638950563215790608, guid: e0402d37c78f2544dbb22da6a93ec0e0, type: 3}
+  - {fileID: 3467445668703988590, guid: f5ac66acf7bf97b4991a32fb1c79c809, type: 3}
+  - {fileID: 5772985747559926896, guid: eb03af5b2721396438f9803cffef20e6, type: 3}
+  - {fileID: 7866458611911526808, guid: 0d02d27c6f949cd4392146063567097f, type: 3}
+  - {fileID: 5078400297183509156, guid: c91bb2e98dfa51d47873611756fa30a8, type: 3}
+  - {fileID: 1793491246905821481, guid: 4b792e51be0ac3b4bbdd177463252fad, type: 3}
+  - {fileID: 2695441979825709123, guid: 4151399dd9f60ee44af02f8c11721538, type: 3}
+  - {fileID: 2035214656262915292, guid: 776c5522ba017324bbdc8b28e76452a7, type: 3}
+  - {fileID: 1625913741521787184, guid: 651dcbf1f250fc34996f148dfe09a552, type: 3}
+  - {fileID: 5375358366664060200, guid: 418d1f1d8e0595046af0f886a9720048, type: 3}
+  - {fileID: 4238639215895870504, guid: 77e1ec0cfce267e4f9ab0a7cca8c7cd9, type: 3}
+  - {fileID: 2342461071057663727, guid: 92604f1dc6930804ba45bdd1498e7931, type: 3}
+  - {fileID: 8808527869284749666, guid: 3ae960bc295702a428a40b39b2f1167a, type: 3}
+  - {fileID: 4194690385879481028, guid: 5fb0a15d0c965964d8a0e6ee4d59bfa9, type: 3}
+  - {fileID: 2674180450295607117, guid: 0d53b88683523794f958b09730b1a7ed, type: 3}

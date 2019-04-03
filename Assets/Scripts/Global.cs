@@ -8,6 +8,7 @@ namespace com.MJT.FindTheThief
 { 
     public enum ETeam { Undefined, Detective, Thief }
     public enum EMoveDirection { Stop, Down, Right, Up, Left }
+    public enum EGameState { None, Team_Set, Initialized, Ready, ReadyChecked, Preparing, Started, Game_Set };
 
     #region Route Properties Enum
 
@@ -80,7 +81,7 @@ namespace com.MJT.FindTheThief
 
     public static class PhotonExtends
     { 
-        public static void SetRoomCustomPropsByElem(object key, object value)
+        public static void SetRoomCustomProp(object key, object value)
         {
             if (!PhotonNetwork.inRoom)
             {
@@ -93,7 +94,7 @@ namespace com.MJT.FindTheThief
             PhotonNetwork.room.SetCustomProperties(roomCp);
         }
 
-        public static void SetLocalPlayerPropsByElem(object key, object value)
+        public static void SetLocalPlayerProp(object key, object value)
         {
             if (!PhotonNetwork.connected)
             {
