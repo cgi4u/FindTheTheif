@@ -73,7 +73,7 @@ namespace com.MJT.FindTheThief
                 //GetComponent<PhotonTransformView>().SetSynchronizedValues(moveSpeed * direction, 0f);
                 Move();
             }
-            else if (curDirection != MoveDirection.Stop)
+            else if (curDirection != EMoveDirection.Stop)
                 SetNewTargetPoint();
 
             //Set sprite sorting order by using y-axis postion
@@ -99,27 +99,27 @@ namespace com.MJT.FindTheThief
         private bool isMoving = false;
 
         [SerializeField]
-        private MoveDirection curDirection = MoveDirection.Stop;
-        public void ChangeMoveDirection(MoveDirection direction)
+        private EMoveDirection curDirection = EMoveDirection.Stop;
+        public void ChangeMoveDirection(EMoveDirection direction)
         {
             curDirection = direction;
         }
 
-        public void OnMoveButtonPushed(MoveDirection dir)
+        public void OnMoveButtonPushed(EMoveDirection dir)
         {
             btnCount += 1;
             switch (dir)
             {
-                case MoveDirection.Up:
+                case EMoveDirection.Up:
                     buttons[0] = btnCount;
                     break;
-                case MoveDirection.Down:
+                case EMoveDirection.Down:
                     buttons[1] = btnCount;
                     break;
-                case MoveDirection.Left:
+                case EMoveDirection.Left:
                     buttons[2] = btnCount;
                     break;
-                case MoveDirection.Right:
+                case EMoveDirection.Right:
                     buttons[3] = btnCount;
                     break;
                 default:
@@ -128,20 +128,20 @@ namespace com.MJT.FindTheThief
             }
         }
 
-        public void OnMoveButtonReleased(MoveDirection dir)
+        public void OnMoveButtonReleased(EMoveDirection dir)
         {
             switch (dir)
             {
-                case MoveDirection.Up:
+                case EMoveDirection.Up:
                     buttons[0] = 0;
                     break;
-                case MoveDirection.Down:
+                case EMoveDirection.Down:
                     buttons[1] = 0;
                     break;
-                case MoveDirection.Left:
+                case EMoveDirection.Left:
                     buttons[2] = 0;
                     break;
-                case MoveDirection.Right:
+                case EMoveDirection.Right:
                     buttons[3] = 0;
                     break;
                 default:
@@ -201,7 +201,7 @@ namespace com.MJT.FindTheThief
                     }
                 }
 
-                if (curDirection != MoveDirection.Stop)
+                if (curDirection != EMoveDirection.Stop)
                     SetNewTargetPoint();
                 else
                 {
@@ -220,16 +220,16 @@ namespace com.MJT.FindTheThief
 
             switch (curDirection)
             {
-                case MoveDirection.Down:
+                case EMoveDirection.Down:
                     directionVec = Vector2.down;
                     break;
-                case MoveDirection.Right:
+                case EMoveDirection.Right:
                     directionVec = Vector2.right;
                     break;
-                case MoveDirection.Up:
+                case EMoveDirection.Up:
                     directionVec = Vector2.up;
                     break;
-                case MoveDirection.Left:
+                case EMoveDirection.Left:
                     directionVec = Vector2.left;
                     break;
             }
@@ -265,16 +265,16 @@ namespace com.MJT.FindTheThief
 
             switch (curDirection)
             {
-                case MoveDirection.Up:
+                case EMoveDirection.Up:
                     animator.SetInteger("Direction", 0);
                     break;
-                case MoveDirection.Down:
+                case EMoveDirection.Down:
                     animator.SetInteger("Direction", 1);
                     break;
-                case MoveDirection.Left:
+                case EMoveDirection.Left:
                     animator.SetInteger("Direction", 2);
                     break;
-                case MoveDirection.Right:
+                case EMoveDirection.Right:
                     animator.SetInteger("Direction", 3);
                     break;
             }

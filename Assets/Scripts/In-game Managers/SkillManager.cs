@@ -61,7 +61,7 @@ namespace com.MJT.FindTheThief
                 //skilldata의 인덱스와 동일하게 저장한후에 바로 접근할수있도록?
 
                 SkillData selectedSkillData;
-                if (MultiplayRoomManager.Instance.MyTeam == Team.Detective)
+                if (MultiplayRoomManager.Instance.MyTeam == ETeam.Detective)
                     selectedSkillData = detectiveSkillDataSet.Get(selectedSkillIdx);
                 else
                     selectedSkillData = thiefSkillDataSet.Get(selectedSkillIdx);
@@ -72,7 +72,7 @@ namespace com.MJT.FindTheThief
 
         public void UseSkill(int idx)
         {
-            if (MultiplayRoomManager.Instance.MyTeam == Team.Detective)
+            if (MultiplayRoomManager.Instance.MyTeam == ETeam.Detective)
                 detectiveSkillMethods[idx]();
             else
                 thiefSkillMethods[idx]();

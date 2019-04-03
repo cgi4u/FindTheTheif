@@ -6,8 +6,8 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 namespace com.MJT.FindTheThief
 { 
-    public enum Team { Undefined, Detective, Thief }
-    public enum MoveDirection { Stop, Down, Right, Up, Left }
+    public enum ETeam { Undefined, Detective, Thief }
+    public enum EMoveDirection { Stop, Down, Right, Up, Left }
 
     #region Route Properties Enum
 
@@ -35,6 +35,10 @@ namespace com.MJT.FindTheThief
 
     public static class Constants
     {
+        //For sending the number of NPCs using custom room property from lobby to in-game.
+        //Should be used in the test version only.
+        public static readonly string NPCNumKey = "NPC Number";
+
         public static readonly int maxSkillNum = 2;
     }
 

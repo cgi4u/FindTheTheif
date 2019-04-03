@@ -11,8 +11,8 @@ namespace com.MJT.FindTheThief
         [SerializeField]
         private SkillData[] set;
         [SerializeField]
-        private Team team;
-        public Team Team
+        private ETeam team;
+        public ETeam Team
         {
             get
             {

@@ -111,6 +111,8 @@ namespace com.MJT.FindTheThief
             PhotonNetwork.LoadLevel("Demo Room");*/
         }
 
+        public string gameLevelName;
+
         public override void OnPhotonPlayerConnected(PhotonPlayer newPlayer)
         {
             curPlayerNum.text = PhotonNetwork.room.PlayerCount.ToString();
@@ -120,13 +122,12 @@ namespace com.MJT.FindTheThief
             {
                 PhotonNetwork.room.IsOpen = false;
 
-                int num;
-                bool parsed = int.TryParse(NPCNumInputField.text, out num);
-                if (parsed)
+                int NPCnum;
+                if (int.TryParse(NPCNumInputField.text, out NPCnum))
                 {
-                    multiplayRoomManager.GetComponent<MultiplayRoomManager>().numberOfNPC = num;
+                    PhotonExtends.SetRoomCustomPropsByElem(Constants.NPCNumKey, NPCnum);
                 }
-                PhotonNetwork.InstantiateSceneObject(multiplayRoomManager.name, new Vector3(0f, 0f, 0f), Quaternion.identity, 0, null);
+                PhotonNetwork.LoadLevel(gameLevelName);
             }
         }
 

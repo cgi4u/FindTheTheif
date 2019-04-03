@@ -20,7 +20,7 @@ namespace com.MJT.FindTheThief
         private void Update()
         {
             if (PhotonNetwork.connected 
-                && MultiplayRoomManager.Instance.MyTeam != Team.Detective)
+                && MultiplayRoomManager.Instance.MyTeam != ETeam.Detective)
                 return;
 
             Sprite curSprite = GetComponent<SpriteRenderer>().sprite;

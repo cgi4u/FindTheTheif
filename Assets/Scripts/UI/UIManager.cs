@@ -352,14 +352,14 @@ namespace com.MJT.FindTheThief
         /// Label to show the team of the local player.
         /// </summary>
         public Text TeamLabel;
-        public void SetTeamLabel(Team myTeam)
+        public void SetTeamLabel(ETeam myTeam)
         {
             switch (myTeam)
             {
-                case Team.Detective:
+                case ETeam.Detective:
                     TeamLabel.text = "탐정";
                     break;
-                case Team.Thief:
+                case ETeam.Thief:
                     TeamLabel.text = "도둑";
                     break;
                 default:

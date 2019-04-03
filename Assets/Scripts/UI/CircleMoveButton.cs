@@ -27,7 +27,7 @@ namespace com.MJT.FindTheThief
         public Sprite leftSprite;
 
         [SerializeField]
-        private MoveDirection curDirection = MoveDirection.Stop;
+        private EMoveDirection curDirection = EMoveDirection.Stop;
         private void Update()
         {
             if (Input.GetMouseButton(0)
@@ -37,35 +37,35 @@ namespace com.MJT.FindTheThief
                 float angle = Mathf.Atan2(Input.mousePosition.y - transform.position.y,
                                             Input.mousePosition.x - transform.position.x) * Mathf.Rad2Deg;
 
-                if (angle >= -135f && angle < -45f && curDirection != MoveDirection.Down)
+                if (angle >= -135f && angle < -45f && curDirection != EMoveDirection.Down)
                 {
                     image.sprite = downSprite;
-                    OnDirectionChange(MoveDirection.Down);
+                    OnDirectionChange(EMoveDirection.Down);
                 }
-                else if (angle >= -45f && angle < 45f && curDirection != MoveDirection.Right)
+                else if (angle >= -45f && angle < 45f && curDirection != EMoveDirection.Right)
                 {
                     image.sprite = rightSprite;
-                    OnDirectionChange(MoveDirection.Right);
+                    OnDirectionChange(EMoveDirection.Right);
                 }
-                else if (angle >= 45f && angle < 135f && curDirection != MoveDirection.Up)
+                else if (angle >= 45f && angle < 135f && curDirection != EMoveDirection.Up)
                 {
                     image.sprite = upSprite;
-                    OnDirectionChange(MoveDirection.Up);
+                    OnDirectionChange(EMoveDirection.Up);
                 }
-                else if ((angle >= 135f || angle < -135f) && curDirection != MoveDirection.Left)
+                else if ((angle >= 135f || angle < -135f) && curDirection != EMoveDirection.Left)
                 {
                     image.sprite = leftSprite;
-                    OnDirectionChange(MoveDirection.Left);
+                    OnDirectionChange(EMoveDirection.Left);
                 }
             }
-            else if (curDirection != MoveDirection.Stop)
+            else if (curDirection != EMoveDirection.Stop)
             {
                 image.sprite = defaultSprite;
-                OnDirectionChange(MoveDirection.Stop);
+                OnDirectionChange(EMoveDirection.Stop);
             }
         }
 
-        private void OnDirectionChange(MoveDirection direction)
+        private void OnDirectionChange(EMoveDirection direction)
         {
             curDirection = direction;
             PlayerController.LocalPlayer.ChangeMoveDirection(curDirection);
