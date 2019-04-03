@@ -27,8 +27,9 @@ namespace com.MJT.FindTheThief
 
         readonly string sceneLoadedKey = "Scene Loaded";
         readonly string gameInitKey = "Game Initiated";
-        readonly string readyKey = "Ready";
-        readonly string startKey = "Game Started";
+        readonly string playerInitKey = "Player Initiated";
+        readonly string readyKey = "Player Ready";
+        readonly string startTimeKey = "Game Start Timestamp";
         readonly string gameSetKey = "Game Set";
         readonly string winTeamKey = "Win Team";
 
@@ -281,8 +282,8 @@ namespace com.MJT.FindTheThief
                 GenerateSceneObject();
             }
 
-            PhotonExtends.SetLocalPlayerPropsByElem(readyKey, true);
-            inReady = true;
+            PhotonExtends.SetLocalPlayerPropsByElem(playerInitKey, true);
+            inPlayerInit = true;
         }
 
         [SerializeField]
@@ -530,7 +531,8 @@ namespace com.MJT.FindTheThief
 
         #region Shared Ingame Activities
 
-        private bool inReady = false;
+        private bool inPlayerInit = false;
+        private bool gameReady = false;
         public bool GameStarted { get; set; } = false;
         public bool PrepareTimeEnd { get; set; } = false;
         public bool GameSet { get; set; } = false;
@@ -560,26 +562,26 @@ namespace com.MJT.FindTheThief
             int deltaTimeStamp = curTimeStamp - prevTimeStamp;
             prevTimeStamp = curTimeStamp;
 
-            if (inReady && PhotonNetwork.isMasterClient && PhotonNetwork.room.CustomProperties[gameInitKey] != null)
+            if (inPlayerInit && PhotonNetwork.isMasterClient && PhotonNetwork.room.CustomProperties[gameInitKey] != null)
             {
-                bool allPlayersReady = true;
+                bool allPlayersInited = true;
                 foreach (PhotonPlayer player in PhotonNetwork.playerList)
                 {
-                    object readyState = player.CustomProperties[readyKey];
+                    object readyState = player.CustomProperties[playerInitKey];
                     if (readyState == null)
                     {
-                        allPlayersReady = false;
+                        allPlayersInited = false;
                         readyWaitTimeStamp += deltaTimeStamp;
                         break;
                     }
                 }
 
                 //if all player is in ready, fire game start signal to other players(via server in order to reduce delay).
-                if (allPlayersReady)
+                if (allPlayersInited)
                 {
-                    int startTimestamp = PhotonNetwork.ServerTimestamp + 10000;
-                    PhotonExtends.SetRoomCustomPropsByElem(startKey, startTimestamp);
-                    inReady = false;
+                    int startTimestamp = PhotonNetwork.ServerTimestamp + 5000;
+                    PhotonExtends.SetRoomCustomPropsByElem(startTimeKey, startTimestamp);
+                    inPlayerInit = false;
                 }
             }
 
@@ -805,8 +807,11 @@ namespace com.MJT.FindTheThief
 
         public override void OnPhotonCustomRoomPropertiesChanged(Hashtable propertiesThatChanged)
         {
-            // When the game start key is set by the master client, start the game.
-            if (propertiesThatChanged[startKey] != null && !GameStarted)
+            // When the game start time is set by the master client, check it is valid and prepare to start game if it is.
+            //해결해야 하는 부분 -> 만약 받은 스타트시간이 현재시간을 넘었으면 재전송 요청해야함. 이 때 자신은 레디를 하지 말아야함.
+            //npc 액티베이트는 아예 게임시작쪽으로 옮기고, 자기 캐릭터 인스턴스 소환부분만
+            //아예 스타트시간까지 레디 안된 플레이어가 있으면(레디시간보다 뒤에도 플레이어가 레디가 안되면) 아무 수행도 하지 말도록 막았다가 마스터에 의해 시작시간이 갱신되고 나서만 시작하도록 하는것도 방법
+            if (propertiesThatChanged[startTimeKey] != null && !GameStarted)
             {
                 SceneManager.sceneLoaded -= OnGameSceneLoaded;
 
@@ -831,13 +836,18 @@ namespace com.MJT.FindTheThief
                     }
                 }
 
-                prepareStartTimeStamp = PhotonNetwork.ServerTimestamp;
+                prepareStartTimeStamp = (int)propertiesThatChanged[startTimeKey];
                 UIManager.Instance.SetErrorMsg(PhotonNetwork.ServerTimestamp.ToString());
+                if (PhotonNetwork.ServerTimestamp - prepareStartTimeStamp > 0)
+                {
+                    photonView.RPC("ResendStartTime", PhotonTargets.MasterClient);
+                }
 
-                inReady = false;
-                GameStarted = true;
+                inPlayerInit = false;
+                gameReady = true;
             }
 
+            //When Game set key is set by the master client, let the game be end.
             if (propertiesThatChanged[gameSetKey] != null
                     && (bool)propertiesThatChanged[gameSetKey] == true && !GameSet)
             {
@@ -869,11 +879,19 @@ namespace com.MJT.FindTheThief
             }
         }
 
+        [PunRPC]
+        private void ResendStartTime()
+        {
+            int startTimestamp = PhotonNetwork.ServerTimestamp + 5000;
+            PhotonExtends.SetRoomCustomPropsByElem(startTimeKey, startTimestamp);
+        }
+
         public string recordSceneName;
         IEnumerator LoadRecordScene()
         {
             yield return new WaitForSeconds(1f);
 
+            //Destroy scene objects in local client(since game is ended).
             for (int i = sceneObjParent.childCount - 1; i >= 0; i--)
                 Destroy(sceneObjParent.GetChild(i).gameObject);
             SceneManager.LoadScene(recordSceneName);
