@@ -12,25 +12,18 @@ namespace com.MJT.FindTheThief
 
     #region Route Properties Enum
 
-    public enum RouteType { In_Room, Room_to_Room, Room_to_Stair, Stair_to_Room, Stair_to_Stair }
-    public enum StairType { Up, Down, None }
-    public enum StairSide { Left, Right, None }
+    public enum ERouteType { In_Room, Room_to_Room, Room_to_Stair, Stair_to_Room, Stair_to_Stair }
+    public enum EStairType { Up, Down, None }
+    public enum EStairSide { Left, Right, None }
 
     #endregion
 
     #region Item Properties Enum
 
-    public enum ItemColor { Red, Blue, Yellow }
-    public enum ItemAge { Ancient, Middle, Modern }
-    public enum ItemUsage { Art, Daily, War }
+    public enum EItemColor { Red, Blue, Yellow }
+    public enum EItemAge { Ancient, Middle, Modern }
+    public enum EItemUsage { Art, Daily, War }
 
-    #endregion
-
-    #region Skill Names
-    /*
-    public enum ThiefSkills { Smoke, SecretDoor, Num }
-    public enum DetectiveSkills { FastMoving, ItemChange, Num }
-    */
     #endregion
 
 

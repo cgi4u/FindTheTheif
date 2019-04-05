@@ -69,7 +69,6 @@ namespace com.MJT.FindTheThief
 
         #endregion
 
-
         /// <summary>
         /// The list  of items that the local player discovered in game.
         /// </summary>
@@ -90,8 +89,8 @@ namespace com.MJT.FindTheThief
         #region Intrinsic Item Properties
 
         [SerializeField]
-        private ItemColor myColor;
-        public ItemColor Color
+        private EItemColor myColor;
+        public EItemColor Color
         {
             get
             {
@@ -100,8 +99,8 @@ namespace com.MJT.FindTheThief
         }
 
         [SerializeField]
-        private ItemAge myAge;
-        public ItemAge Age
+        private EItemAge myAge;
+        public EItemAge Age
         {
             get
             {
@@ -110,8 +109,8 @@ namespace com.MJT.FindTheThief
         }
 
         [SerializeField]
-        private ItemUsage myUsage;
-        public ItemUsage Usage
+        private EItemUsage myUsage;
+        public EItemUsage Usage
         {
             get
             {

@@ -32,6 +32,11 @@ namespace com.MJT.FindTheThief
 
         public NPCPrefabSet NPCPrefabs;
 
+        /// <summary>
+        /// Set this thief's figure same as the randomly picked NPC prefab.
+        /// Should be called as RPC to apply this change for all players.
+        /// </summary>
+        /// <param name="NPCIdx">randomly picked NPC's index in NPC prefab list.</param>
         [PunRPC]
         private void SetSpriteAndAnimation(int NPCIdx)
         {

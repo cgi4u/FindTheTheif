@@ -10,11 +10,11 @@ namespace com.MJT.FindTheThief
     public class Route : MonoBehaviour
     {
         [SerializeField]
-        private RouteType routeType;
+        private ERouteType routeType;
         /// <summary>
         /// Type of this route(In Room, Room to Room, Stair to Room, Room to Stair, Stair to Stair)
         /// </summary>
-        public RouteType RouteType
+        public ERouteType RouteType
         {
             get
             {
@@ -84,11 +84,11 @@ namespace com.MJT.FindTheThief
         #region Stair to Room / Room to Stair Route Properties
 
         [SerializeField]
-        private StairType stairType;
+        private EStairType stairType;
         /// <summary>
         /// The type of stair(up, down) where this route starts or ends.(used by Stair to Room and Room to Stair Routes)
         /// </summary>
-        public StairType StairType
+        public EStairType StairType
         {
             get
             {
@@ -97,11 +97,11 @@ namespace com.MJT.FindTheThief
         }
         
         [SerializeField]
-        private StairSide stairSide;
+        private EStairSide stairSide;
         /// <summary>
         /// The side of stair(left, right) where this route starts or ends.(used by Stair to Room and Room to Stair Routes)
         /// </summary>
-        public StairSide StairSide
+        public EStairSide StairSide
         {
             get
             {

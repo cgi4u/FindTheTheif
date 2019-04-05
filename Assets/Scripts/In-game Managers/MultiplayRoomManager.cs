@@ -245,6 +245,7 @@ namespace com.MJT.FindTheThief
 
             // Initilize discoverd item list.
             ItemController.ResetDescoverdItems();
+            PutItemPoint.ResetActivatedPointList();
 
             // Game initiation by the master client.
             if (PhotonNetwork.isMasterClient)
@@ -379,13 +380,13 @@ namespace com.MJT.FindTheThief
             switch (category)
             {
                 case 0:
-                    Debug.Log("Selected property: " + (ItemColor)selectedProp);
+                    Debug.Log("Selected property: " + (EItemColor)selectedProp);
                     break;
                 case 1:
-                    Debug.Log("Selected property: " + (ItemAge)selectedProp);
+                    Debug.Log("Selected property: " + (EItemAge)selectedProp);
                     break;
                 case 2:
-                    Debug.Log("Selected property: " + (ItemUsage)selectedProp);
+                    Debug.Log("Selected property: " + (EItemUsage)selectedProp);
                     break;
             }
 
@@ -403,15 +404,15 @@ namespace com.MJT.FindTheThief
                 switch (category)
                 {
                     case 0:
-                        if (itemController.Color == (ItemColor)selectedProp)
+                        if (itemController.Color == (EItemColor)selectedProp)
                             ItemsHaveProp.Add(item);
                         break;
                     case 1:
-                        if (itemController.Age == (ItemAge)selectedProp)
+                        if (itemController.Age == (EItemAge)selectedProp)
                             ItemsHaveProp.Add(item);
                         break;
                     case 2:
-                        if (itemController.Usage == (ItemUsage)selectedProp)
+                        if (itemController.Usage == (EItemUsage)selectedProp)
                             ItemsHaveProp.Add(item);
                         break;
                 }
@@ -496,7 +497,10 @@ namespace com.MJT.FindTheThief
             foreach (int floor in roomsInFloor.Keys)
             {
                 int r = Random.Range(0, roomsInFloor[floor].Count);
-                photonView.RPC("ActivatePutItemPointInRoom", PhotonTargets.All, roomsInFloor[floor][r]);
+                int randRoomIdx = roomsInFloor[floor][r];
+                int randPutPointIdx = Random.Range(0, mapDataManager.Rooms[randRoomIdx].PutItemPoints.Length);
+                //issue: 인덱스 오류남
+                photonView.RPC("ActivatePutItemPointInRoom", PhotonTargets.All, randRoomIdx, randPutPointIdx);
             }
         }
 
@@ -514,10 +518,15 @@ namespace com.MJT.FindTheThief
                 uiManager.RenewTargetItemList(targetItems);
         }
 
+        /// <summary>
+        /// Activate randomly picked item put point for thief players.
+        /// </summary>
+        /// <param name="roomIdx">Randomly picked room index.</param>
+        /// <param name="pointIdx">Randomly picked item put point index.</param>
         [PunRPC]
-        private void ActivatePutItemPointInRoom(int roomIndex)
+        private void ActivatePutItemPointInRoom(int roomIdx, int pointIdx)
         {
-            mapDataManager.Rooms[roomIndex].PutItemPoint.Activated = true;
+            mapDataManager.Rooms[roomIdx].PutItemPoints[pointIdx].Activate();
         }
 
         private void GenLocalPlayerAndReady()

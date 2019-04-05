@@ -16,6 +16,7 @@ namespace com.MJT.FindTheThief
             MultiplayRoomManager.Instance.photonView
                 .RPC("StealSuccess", PhotonTargets.AllViaServer, PhotonNetwork.player.ID, localThief.StoleItem.GenPoint.Index);
             localThief.photonView.RPC("PutItemInPoint", PhotonTargets.All);
+            PutItemPoint.SetPointPopup(false);
 
             gameObject.SetActive(false);
         }

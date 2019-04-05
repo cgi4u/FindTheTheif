@@ -58,12 +58,12 @@ namespace com.MJT.FindTheThief
         }
 
         [SerializeField]
-        private PutItemPoint putItemPoint;
-        public PutItemPoint PutItemPoint
+        private PutItemPoint[] putItemPoints;
+        public PutItemPoint[] PutItemPoints
         {
             get
             {
-                return putItemPoint;
+                return putItemPoints;
             }
         }
 

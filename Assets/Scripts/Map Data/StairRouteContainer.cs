@@ -50,17 +50,17 @@ namespace com.MJT.FindTheThief
             }
         }
 
-        public Route[] RoutesWithSideAndType(StairSide stairSide, StairType stairType)
+        public Route[] RoutesWithSideAndType(EStairSide stairSide, EStairType stairType)
         {
-            if (stairSide  == StairSide.Left && stairType == StairType.Down)
+            if (stairSide  == EStairSide.Left && stairType == EStairType.Down)
             {
                 return leftDownRoutes;
             }
-            else if (stairSide == StairSide.Left && stairType == StairType.Up)
+            else if (stairSide == EStairSide.Left && stairType == EStairType.Up)
             {
                 return leftUpRoutes;
             }
-            else if (stairSide == StairSide.Right && stairType == StairType.Down)
+            else if (stairSide == EStairSide.Right && stairType == EStairType.Down)
             {
                 return rightDownRoutes;
             }

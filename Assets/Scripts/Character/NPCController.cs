@@ -42,11 +42,11 @@ namespace com.MJT.FindTheThief
 
             switch (curRoute.RouteType)
             {
-                case RouteType.In_Room:
+                case ERouteType.In_Room:
                     nextRoom = curRoute.CurRoom;
                     break;
-                case RouteType.Room_to_Room:
-                case RouteType.Stair_to_Room:
+                case ERouteType.Room_to_Room:
+                case ERouteType.Stair_to_Room:
                     nextRoom = curRoute.EndRoom;
                     break;
                 default:
@@ -237,7 +237,7 @@ namespace com.MJT.FindTheThief
                 }
 
                 // Check only one main direction in In-Room Route.
-                if (curRoute.RouteType == RouteType.In_Room)
+                if (curRoute.RouteType == ERouteType.In_Room)
                     break;
             }
 
@@ -301,7 +301,7 @@ namespace com.MJT.FindTheThief
 
             if (curNodeNum == curRoute.NodeSet.Length - 1)       // Route ends, get next route.
             {
-                if (curRoute.RouteType == RouteType.In_Room)    // Currunt root is In Room Route -> Next can be Room to Room/Stair
+                if (curRoute.RouteType == ERouteType.In_Room)    // Currunt root is In Room Route -> Next can be Room to Room/Stair
                 {
                     prevRoom = curRoute.CurRoom;
                     nextRoom = (prevRoom + randomSelector1 % (mapDataManager.Rooms.Count - 1) + 1) % mapDataManager.Rooms.Count;
@@ -320,17 +320,17 @@ namespace com.MJT.FindTheThief
                     }
                     else        // The next room is in one of the other floors -> Room to Stair route
                     {
-                        StairSide stairSide;
+                        EStairSide stairSide;
                         if (stairSelector == 0)
-                            stairSide = StairSide.Left;
+                            stairSide = EStairSide.Left;
                         else
-                            stairSide = StairSide.Right;
+                            stairSide = EStairSide.Right;
 
-                        StairType stairType;
+                        EStairType stairType;
                         if (mapDataManager.Rooms[nextRoom].Floor < curFloor)
-                            stairType = StairType.Down;
+                            stairType = EStairType.Down;
                         else
-                            stairType = StairType.Up;
+                            stairType = EStairType.Up;
 
                         Route[] toNextStairRoutes = mapDataManager.Rooms[prevRoom].ToStairRoutes.RoutesWithSideAndType(stairSide, stairType);
 
@@ -343,21 +343,21 @@ namespace com.MJT.FindTheThief
                         curRoute = toNextStairRoutes[randomSelector2 % toNextStairRoutes.Length];
                     }
                 }
-                else if (curRoute.RouteType == RouteType.Room_to_Stair || curRoute.RouteType == RouteType.Stair_to_Stair)   // Current route is To Stair Route -> Next can be Stair to Room/Stair
+                else if (curRoute.RouteType == ERouteType.Room_to_Stair || curRoute.RouteType == ERouteType.Stair_to_Stair)   // Current route is To Stair Route -> Next can be Stair to Room/Stair
                 {
-                    if (curRoute.StairType == StairType.Down)       // Current route ends with down stair
+                    if (curRoute.StairType == EStairType.Down)       // Current route ends with down stair
                         curFloor -= 1;
                     else
                         curFloor += 1;
 
                     if (mapDataManager.Rooms[nextRoom].Floor == curFloor)   // The target room is in this floor -> Stair to Room Route
                     {
-                        StairSide stairSide = curRoute.StairSide;
-                        StairType stairType;
-                        if (curRoute.StairType == StairType.Up)
-                            stairType = StairType.Down;
+                        EStairSide stairSide = curRoute.StairSide;
+                        EStairType stairType;
+                        if (curRoute.StairType == EStairType.Up)
+                            stairType = EStairType.Down;
                         else
-                            stairType = StairType.Up;
+                            stairType = EStairType.Up;
 
                         Vector2 entryOffset = new Vector2(0.5f, 0f);
                         if (Vector2.Distance(transform.position, (Vector2)curRoute.NodeSet[curRoute.NodeSet.Length - 1].transform.position - entryOffset)
@@ -396,7 +396,7 @@ namespace com.MJT.FindTheThief
                                     {
                                         posConfirmed = false;
 
-                                        if (stairType == StairType.Down)
+                                        if (stairType == EStairType.Down)
                                             newPos += Vector2.up;
                                         else
                                             newPos += Vector2.down;
@@ -406,7 +406,7 @@ namespace com.MJT.FindTheThief
                                 }
                             }
 
-                            if (stairType == StairType.Down)
+                            if (stairType == EStairType.Down)
                                 direction = Vector2.up;
                             else
                                 direction = Vector2.down;
@@ -422,12 +422,12 @@ namespace com.MJT.FindTheThief
                     }
                     else   // The target room isn't in this floor -> Stair to Stair Route
                     {
-                        StairSide stairSide = curRoute.StairSide;
-                        StairType stairType;
-                        if (curRoute.StairType == StairType.Up)
-                            stairType = StairType.Up;
+                        EStairSide stairSide = curRoute.StairSide;
+                        EStairType stairType;
+                        if (curRoute.StairType == EStairType.Up)
+                            stairType = EStairType.Up;
                         else
-                            stairType = StairType.Down;
+                            stairType = EStairType.Down;
 
                         Vector2 entryOffset = new Vector2(0.5f, 0f);
                         if (Vector2.Distance(transform.position, (Vector2)curRoute.NodeSet[curRoute.NodeSet.Length - 1].transform.position - entryOffset)
@@ -466,7 +466,7 @@ namespace com.MJT.FindTheThief
                                     {
                                         posConfirmed = false;
 
-                                        if (stairType == StairType.Up)
+                                        if (stairType == EStairType.Up)
                                             newPos += Vector2.up;
                                         else
                                             newPos += Vector2.down;
@@ -476,7 +476,7 @@ namespace com.MJT.FindTheThief
                                 }
                             }
 
-                            if (stairType == StairType.Up)
+                            if (stairType == EStairType.Up)
                                 direction = Vector2.up;
                             else
                                 direction = Vector2.down;
@@ -491,7 +491,7 @@ namespace com.MJT.FindTheThief
                         }
                     }
                 }
-                else if (curRoute.RouteType == RouteType.Stair_to_Room || curRoute.RouteType == RouteType.Room_to_Room)    // The current route is To Room Route -> Next is In Room Route
+                else if (curRoute.RouteType == ERouteType.Stair_to_Room || curRoute.RouteType == ERouteType.Room_to_Room)    // The current route is To Room Route -> Next is In Room Route
                 {
                     curRoute = mapDataManager.Rooms[nextRoom].InRoomRoute;
 

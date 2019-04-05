@@ -13,6 +13,7 @@ namespace com.MJT.FindTheThief
         {
             ThiefController.LocalThief.photonView.
                 RPC("StealItemInPoint", PhotonTargets.AllViaServer, CurGenPoint.Index);
+            PutItemPoint.SetPointPopup(true);
 
             gameObject.SetActive(false);
         }

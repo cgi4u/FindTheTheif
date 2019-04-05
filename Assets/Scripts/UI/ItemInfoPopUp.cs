@@ -31,13 +31,13 @@ namespace com.MJT.FindTheThief
             //Modify color text in pop-up.
             switch (item.Color)
             {
-                case ItemColor.Red:
+                case EItemColor.Red:
                     colorText.text = "빨강";
                     break;
-                case ItemColor.Blue:
+                case EItemColor.Blue:
                     colorText.text = "파랑";
                     break;
-                case ItemColor.Yellow:
+                case EItemColor.Yellow:
                     colorText.text = "노랑";
                     break;
             }
@@ -45,13 +45,13 @@ namespace com.MJT.FindTheThief
             //Modify age text in pop-up.
             switch (item.Age)
             {
-                case ItemAge.Ancient:
+                case EItemAge.Ancient:
                     ageText.text = "고대";
                     break;
-                case ItemAge.Middle:
+                case EItemAge.Middle:
                     ageText.text = "중근세";
                     break;
-                case ItemAge.Modern:
+                case EItemAge.Modern:
                     ageText.text = "현대";
                     break;
             }
@@ -59,13 +59,13 @@ namespace com.MJT.FindTheThief
             //Modify age text in pop-up.
             switch (item.Usage)
             {
-                case ItemUsage.Art:
+                case EItemUsage.Art:
                     usageText.text = "예술";
                     break;
-                case ItemUsage.Daily:
+                case EItemUsage.Daily:
                     usageText.text = "생활";
                     break;
-                case ItemUsage.War:
+                case EItemUsage.War:
                     usageText.text = "전쟁";
                     break;
             }
