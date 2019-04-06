@@ -74,7 +74,7 @@ namespace com.MJT.FindTheThief
 
             //Only works when local thief player walks in front of this point
             ThiefController thiefPlayer = collision.gameObject.GetComponent<ThiefController>();
-            if (thiefPlayer != null && thiefPlayer == ThiefController.LocalThief && thiefPlayer.StoleItem == null)
+            if (thiefPlayer != null && thiefPlayer == ThiefController.LocalThief && thiefPlayer.ItemInHand == null)
             {
                 UIManager.Instance.SetStealPopUp(this);
             }
@@ -88,7 +88,7 @@ namespace com.MJT.FindTheThief
 
             //Only works when local player walks out front of this point
             ThiefController thiefPlayer = collision.gameObject.GetComponent<ThiefController>();
-            if (thiefPlayer != null && thiefPlayer == ThiefController.LocalThief && thiefPlayer.StoleItem == null)
+            if (thiefPlayer != null && thiefPlayer == ThiefController.LocalThief && thiefPlayer.ItemInHand == null)
             {
                 UIManager.Instance.RemoveStealPopUp();
             }

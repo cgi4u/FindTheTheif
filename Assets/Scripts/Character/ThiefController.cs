@@ -45,7 +45,7 @@ namespace com.MJT.FindTheThief
         }
 
         private ItemController itemInHand;
-        public ItemController StoleItem
+        public ItemController ItemInHand
         {
             get
             {

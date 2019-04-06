@@ -169,7 +169,7 @@ namespace com.MJT.FindTheThief
         {
             stealPopUp.CurGenPoint = curGenPoint;
 
-            Vector3 screenPoint = Camera.main.WorldToScreenPoint(curGenPoint.transform.position + new Vector3(0, 3, 0));
+            Vector3 screenPoint = Camera.main.WorldToScreenPoint(curGenPoint.transform.position + new Vector3(0, 2, 0));
             stealPopUp.transform.position = screenPoint;
             stealPopUp.gameObject.SetActive(true);
         }

@@ -39,7 +39,7 @@ namespace com.MJT.FindTheThief
             if (activated == false) return;
 
             ThiefController thiefPlayer = collision.gameObject.GetComponent<ThiefController>();
-            if (thiefPlayer != null && thiefPlayer == ThiefController.LocalThief && thiefPlayer.StoleItem != null)
+            if (thiefPlayer != null && thiefPlayer == ThiefController.LocalThief && thiefPlayer.ItemInHand != null)
             {
                 UIManager.Instance.SetPutItemPopUp(this);
             }
@@ -50,7 +50,7 @@ namespace com.MJT.FindTheThief
             if (activated == false) return;
 
             ThiefController thiefPlayer = collision.gameObject.GetComponent<ThiefController>();
-            if (thiefPlayer != null && thiefPlayer == ThiefController.LocalThief && thiefPlayer.StoleItem != null)
+            if (thiefPlayer != null && thiefPlayer == ThiefController.LocalThief && thiefPlayer.ItemInHand != null)
             {
                 UIManager.Instance.RemovePutItemPopUp();
             }
