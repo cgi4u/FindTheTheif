@@ -84,7 +84,7 @@ MonoBehaviour:
   loginSceneName: Launcher
   thiefPrefab: {fileID: 4203696217380748978, guid: 525f72b978b9e7941acdcbf8b1145f7b,
     type: 3}
-  detectivePrefab: {fileID: 1536311355630938, guid: 4a2bb6044e24a974eb687461314d3ef0,
+  detectivePrefab: {fileID: 1386074402946928712, guid: dc8f3990e0319e54aa9f836c5abed1c3,
     type: 3}
   recordSceneName: Record Scene
 --- !u!114 &772954727031319434

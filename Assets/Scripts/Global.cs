@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-using Hashtable = ExitGames.Client.Photon.Hashtable;
-
 namespace com.MJT.FindTheThief
 { 
     public enum ETeam { Undefined, Detective, Thief }
@@ -36,7 +34,7 @@ namespace com.MJT.FindTheThief
         public static readonly int maxSkillNum = 2;
     }
 
-    public static class Globals
+    public static class GlobalFunctions
     {
 
         /// <summary>
@@ -69,35 +67,6 @@ namespace com.MJT.FindTheThief
                 list[r1] = list[r2];
                 list[r2] = temp;
             }
-        }
-    }
-
-    public static class PhotonExtends
-    { 
-        public static void SetRoomCustomProp(object key, object value)
-        {
-            if (!PhotonNetwork.inRoom)
-            {
-                Debug.LogError("SetRoomCustomPropsByElem must be called in a Photon game room.");
-                return;
-            }
-
-            Hashtable roomCp = PhotonNetwork.room.CustomProperties;
-            roomCp[key] = value;
-            PhotonNetwork.room.SetCustomProperties(roomCp);
-        }
-
-        public static void SetLocalPlayerProp(object key, object value)
-        {
-            if (!PhotonNetwork.connected)
-            {
-                Debug.LogError("SetLocalPlayerPropsByElem must be called in Photon server.");
-                return;
-            }
-
-            Hashtable playerCp = PhotonNetwork.player.CustomProperties;
-            playerCp[key] = value;
-            PhotonNetwork.player.SetCustomProperties(playerCp);
         }
     }
 }

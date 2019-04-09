@@ -95,7 +95,21 @@ namespace com.MJT.FindTheThief
 
         protected Vector2 startPoint;
         protected Vector2 targetPoint;
-        public float moveSpeed;
+
+        [SerializeField]
+        private float moveSpeed;
+        public float MoveSpeed
+        {
+            get
+            {
+                return moveSpeed;
+            }
+            set
+            {
+                moveSpeed = value;
+            }
+        }
+
         private bool isMoving = false;
 
         [SerializeField]

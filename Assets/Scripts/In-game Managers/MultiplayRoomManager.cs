@@ -107,7 +107,7 @@ namespace com.MJT.FindTheThief
                 for (int i = 0; i < PhotonNetwork.playerList.Length; i++)
                     randomPlayerSelector[i] = PhotonNetwork.playerList[i].ID;
 
-                Globals.RandomizeArray<int>(randomPlayerSelector);
+                GlobalFunctions.RandomizeArray<int>(randomPlayerSelector);
 
                 if (randomPlayerSelector[0] == PhotonNetwork.player.ID)
                     SetTeamOfPlayers();
@@ -190,7 +190,7 @@ namespace com.MJT.FindTheThief
                 thiefSelector[i - offset] = PhotonNetwork.playerList[i].ID;
             }
 
-            Globals.RandomizeArray<int>(thiefSelector);
+            GlobalFunctions.RandomizeArray<int>(thiefSelector);
 
             // Select thieves(master client + others)
             PhotonExtends.SetLocalPlayerProp(TeamKey, (int)ETeam.Thief);
@@ -284,11 +284,11 @@ namespace com.MJT.FindTheThief
             int[] thiefGenPointSelector = new int[mapDataManager.ThiefGenertaionPoints.Count];
             for (int i = 0; i < thiefGenPointSelector.Length; i++)
                 thiefGenPointSelector[i] = i;
-            Globals.RandomizeArray<int>(thiefGenPointSelector);
+            GlobalFunctions.RandomizeArray<int>(thiefGenPointSelector);
 
             for (int i = 0; i < NPCPrefabs.Count; i++)
                 randomNPCSelector.Add(i);
-            Globals.RandomizeList<int>(randomNPCSelector);
+            GlobalFunctions.RandomizeList<int>(randomNPCSelector);
 
             //Set the avatar of the thief player from NPC list and remove selected NPCs from the list.
             //And set the generation points of the thief players.
@@ -420,7 +420,7 @@ namespace com.MJT.FindTheThief
 
 
             // Select steal target/non-target items to generate; 
-            Globals.RandomizeList<GameObject>(ItemsHaveProp);
+            GlobalFunctions.RandomizeList<GameObject>(ItemsHaveProp);
             List<GameObject> targetItems = new List<GameObject>();
             for (int i = 0; i < targetItemNum; i++)
                 targetItems.Add(ItemsHaveProp[i]);
@@ -431,14 +431,14 @@ namespace com.MJT.FindTheThief
                 if (!targetItems.Contains(itemPrefabs[i]))
                     nonTargetItems.Add(itemPrefabs[i]);
             }
-            Globals.RandomizeList<GameObject>(nonTargetItems);
+            GlobalFunctions.RandomizeList<GameObject>(nonTargetItems);
 
 
             // Select generation points where the target items are generated.
             int[] targetItemPointSelector = new int[numOfItemGenPoint];
             for (int i = 0; i < numOfItemGenPoint; i++)
                 targetItemPointSelector[i] = i;
-            Globals.RandomizeArray<int>(targetItemPointSelector);
+            GlobalFunctions.RandomizeArray<int>(targetItemPointSelector);
 
             List<int> targetItemPoints = new List<int>();
             List<ExhibitRoom> roomContainTargetItem = new List<ExhibitRoom>();

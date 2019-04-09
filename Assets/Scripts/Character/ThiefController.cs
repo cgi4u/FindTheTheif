@@ -24,6 +24,7 @@ namespace com.MJT.FindTheThief
             if (localThief != null)
             {
                 Debug.LogError("Multiple instantiation of the local thief player.");
+                PhotonExtends.Destroy(gameObject);
                 return;
             }
 

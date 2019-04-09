@@ -204,7 +204,7 @@ namespace com.MJT.FindTheThief
             for (int i = 0; i < nPCGenPoints.Count; i++)
                 NPCGenPointSelector[i] = i;
 
-            Globals.RandomizeArray<int>(NPCGenPointSelector);
+            GlobalFunctions.RandomizeArray<int>(NPCGenPointSelector);
 
             //Routing Manager Singlton 생성
             if (instance == null)
@@ -239,7 +239,7 @@ namespace com.MJT.FindTheThief
         public void InitNPCGenPoint()
         {
             assignedPointNum = 0;
-            Globals.RandomizeArray<int>(NPCGenPointSelector);
+            GlobalFunctions.RandomizeArray<int>(NPCGenPointSelector);
         }
     }
 }

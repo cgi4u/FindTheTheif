@@ -109,7 +109,7 @@ namespace com.MJT.FindTheThief
 
         private void FastMove()
         {
-            Debug.Log("Use FastMoving");
+            DetectiveController.LocalDetective.SpeedBoost();
         }
 
         private void ItemChange()
