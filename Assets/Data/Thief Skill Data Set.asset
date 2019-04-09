@@ -14,13 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   set:
   - code: 0
-    methodName: Smoke
+    skillName: 2
     icon: {fileID: 21300000, guid: 08fa213e181a8f545b36c1834d51642f, type: 3}
-    type: 2
-    typeData: 10
   - code: 1
-    methodName: SecretPath
+    skillName: 3
     icon: {fileID: 21300000, guid: e6c421c41964bf44ea4d403c370f61d9, type: 3}
-    type: 2
-    typeData: 2
   team: 2

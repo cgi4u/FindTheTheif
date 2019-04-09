@@ -14,13 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   set:
   - code: 0
-    methodName: FastMove
+    skillName: 0
     icon: {fileID: 21300000, guid: 4722898c833f38545b82806cf130e659, type: 3}
-    type: 1
-    typeData: 5000
   - code: 1
-    methodName: ItemChange
+    skillName: 1
     icon: {fileID: 21300000, guid: 4af7a84cd04cc0c46bda2fa0e410db8d, type: 3}
-    type: 2
-    typeData: 3
   team: 1

@@ -323,7 +323,25 @@ namespace com.MJT.FindTheThief
         {
             ratioBar.GetComponent<Image>().fillAmount = ratio;
         }
-        
+
+
+        #endregion
+
+        #region Skill Implementation
+
+        float oldSpeed;
+        public void BoostSpeed(float magnification, int seconds)
+        {
+            oldSpeed = moveSpeed;
+            moveSpeed = moveSpeed * magnification;
+        }
+
+        private IEnumerator RestoreSpeed(int seconds)
+        {
+            yield return new WaitForSeconds(seconds);
+
+            moveSpeed = oldSpeed;
+        }
 
         #endregion
     }
