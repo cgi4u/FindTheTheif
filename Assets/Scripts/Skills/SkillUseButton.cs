@@ -47,10 +47,13 @@ namespace com.MJT.FindTheThief
 
         public void SetButtonDown()
         {
-            GetComponent<Image>().sprite = usableSprite;
+            GetComponent<Image>().sprite = unusableSprite;
             skillIcon.rectTransform.position -= imageOffsetVec;
             remainingCountText.rectTransform.position -= imageOffsetVec;
+        }
 
+        public void ActivateSkill()
+        {
             enabledSkill.Activate();
         }
 
@@ -90,6 +93,7 @@ namespace com.MJT.FindTheThief
                 seconds--;
             }
 
+            remainingDelayText.gameObject.SetActive(false);
             button.interactable = true;
             SetButtonUp();
         }

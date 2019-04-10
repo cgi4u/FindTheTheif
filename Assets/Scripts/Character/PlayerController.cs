@@ -334,6 +334,7 @@ namespace com.MJT.FindTheThief
         {
             oldSpeed = moveSpeed;
             moveSpeed = moveSpeed * magnification;
+            StartCoroutine(RestoreSpeed(seconds));
         }
 
         private IEnumerator RestoreSpeed(int seconds)

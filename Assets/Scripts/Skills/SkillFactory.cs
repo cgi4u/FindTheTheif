@@ -52,7 +52,9 @@ namespace com.MJT.FindTheThief
     public class DummySkill : Skill
     {
         public DummySkill(SkillUseButton _button) : base(_button)
-        { }
+        {
+            button.SetRemainingCount(count);
+        }
 
         int count = 5;
         public override void Activate()
