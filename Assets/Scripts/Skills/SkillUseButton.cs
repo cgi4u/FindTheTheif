@@ -22,14 +22,12 @@ namespace com.MJT.FindTheThief
         public Text remainingDelayText;
 
         bool usable = false;
-        Button button;
 
         Skill enabledSkill;
 
         protected void Awake()
         {
             imageOffsetVec = new Vector3(0f, GetComponent<RectTransform>().rect.height * imageOffsetRatio, 0f);
-            button = GetComponent<Button>();
         }
 
         public void Init(SkillData _skillData)
@@ -38,15 +36,19 @@ namespace com.MJT.FindTheThief
             skillIcon.sprite = skillData.Icon;
 
             enabledSkill = SkillFactory.GetSkill(skillData.SkillName, this);
+
+            usable = true;
         }
 
         public void SetPassive()
         {
-            button.interactable = false;
+            usable = false;
         }
 
         public void SetButtonDown()
         {
+            if (!usable) return;
+
             GetComponent<Image>().sprite = unusableSprite;
             skillIcon.rectTransform.position -= imageOffsetVec;
             remainingCountText.rectTransform.position -= imageOffsetVec;
@@ -54,11 +56,15 @@ namespace com.MJT.FindTheThief
 
         public void ActivateSkill()
         {
+            if (!usable) return;
+
             enabledSkill.Activate();
         }
 
         public void SetButtonUp()
         {
+            if (!usable) return;
+
             GetComponent<Image>().sprite = usableSprite;
             skillIcon.rectTransform.position += imageOffsetVec;
             remainingCountText.rectTransform.position += imageOffsetVec;
@@ -70,7 +76,7 @@ namespace com.MJT.FindTheThief
             remainingCountText.gameObject.SetActive(true);
             if (count == 0)
             {
-                button.interactable = false;
+                usable = false;
                 SetButtonDown();
             }
         }
@@ -78,7 +84,7 @@ namespace com.MJT.FindTheThief
         public void SetRemainingDelayTime(int seconds)
         {
             remainingDelayText.gameObject.SetActive(true);
-            button.interactable = false;
+            usable = false;
             SetButtonDown();
 
             StartCoroutine(SetActiveAfterSeconds(seconds));
@@ -94,7 +100,7 @@ namespace com.MJT.FindTheThief
             }
 
             remainingDelayText.gameObject.SetActive(false);
-            button.interactable = true;
+            usable = true;
             SetButtonUp();
         }
     }

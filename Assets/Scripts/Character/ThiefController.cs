@@ -79,5 +79,46 @@ namespace com.MJT.FindTheThief
             if (photonView.isMine)
                 PhotonNetwork.Destroy(this.gameObject);
         }
+
+        #region Skill Implementation
+
+        public GameObject secretPath;
+        private GameObject unlinkedPath = null;
+
+        public bool MakeSecretPath()
+        {
+            if (!CheckCurPos())
+            {
+                Debug.Log("There is already a secret path in current site.");
+                return false;
+            }
+
+            GameObject newPath = Instantiate(secretPath, transform.position, Quaternion.identity);
+            if (unlinkedPath != null)
+            {
+                unlinkedPath.GetComponent<SecretPathController>().Link(newPath.GetComponent<SecretPathController>());
+                newPath.GetComponent<SecretPathController>().Link(unlinkedPath.GetComponent<SecretPathController>());
+
+                unlinkedPath = null;
+            }
+            else
+                unlinkedPath = newPath;
+
+            return true;
+        }
+
+        private bool CheckCurPos()
+        {
+            RaycastHit2D[] cols = Physics2D.BoxCastAll(transform.position, new Vector2(1f, 1f), 0, new Vector2(0f, 0f)); 
+            for (int i = 0; i < cols.Length; i++)
+            {
+                if (cols[i].collider.GetComponent<SecretPathController>() != null)
+                    return false;
+            }
+
+            return true;
+        }
+
+        #endregion
     }
 }
