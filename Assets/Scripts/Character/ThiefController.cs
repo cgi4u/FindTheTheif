@@ -87,9 +87,11 @@ namespace com.MJT.FindTheThief
 
         public bool MakeSecretPath()
         {
-            if (!CheckCurPos())
+            if (!CheckCurPos()
+                || Mathf.Floor(transform.position.x) != transform.position.x 
+                || Mathf.Floor(transform.position.y) != transform.position.y)
             {
-                Debug.Log("There is already a secret path in current site.");
+                Debug.Log("Secret path cannot be generated in current site.");
                 return false;
             }
 
@@ -120,5 +122,7 @@ namespace com.MJT.FindTheThief
         }
 
         #endregion
+
+
     }
 }

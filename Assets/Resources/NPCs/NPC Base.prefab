@@ -13,13 +13,12 @@ GameObject:
   - component: {fileID: 1900755372417909914}
   - component: {fileID: 1900755372417909915}
   - component: {fileID: 1900755372417909912}
-  - component: {fileID: 1900755372417909913}
   - component: {fileID: 6461677395318321203}
   - component: {fileID: 4624130643943377836}
   - component: {fileID: 3274405943293473993}
   - component: {fileID: 2142032587828764921}
   m_Layer: 8
-  m_Name: NPC RedCap
+  m_Name: NPC Base
   m_TagString: NPC
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -74,7 +73,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -81647635
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300146, guid: f132a7ae3e2e0f145bbbe3712199bcc7, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -149,27 +148,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.95, y: 0.95}
   m_EdgeRadius: 0
---- !u!50 &1900755372417909913
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1900755372417909919}
-  m_BodyType: 1
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 1
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
 --- !u!114 &6461677395318321203
 MonoBehaviour:
   m_ObjectHideFlags: 0

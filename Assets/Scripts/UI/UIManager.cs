@@ -466,5 +466,48 @@ namespace com.MJT.FindTheThief
         {
             errorLabel.text = errorMsg;
         }
+
+        #region Skill Initialization
+
+        public SkillDataSet thiefSkillDataSet;
+        public SkillDataSet detectiveSkillDataSet;
+
+        public SkillUseButton[] skillButtons;
+        public void SetSkillButtons(ETeam team)
+        {
+            if (skillButtons.Length != Constants.maxSkillNum)
+            {
+                Debug.LogError("Number of skill buttons must be same with the maximum number of usable skill in a game.");
+                return;
+            }
+
+            for (int i = 0; i < Constants.maxSkillNum; i++)
+            {
+                //Get saved skill code
+                int selectedSkillIdx = PlayerPrefs.GetInt(MultiplayRoomManager.Instance.MyTeam + " Skill " + i);
+
+                SkillData selectedSkillData;
+                if (team == ETeam.Detective)
+                    selectedSkillData = detectiveSkillDataSet.Get(selectedSkillIdx);
+                else
+                    selectedSkillData = thiefSkillDataSet.Get(selectedSkillIdx);
+
+                skillButtons[i].Init(selectedSkillData);
+            }
+        }
+
+        #endregion
+
+        public GameObject smokeScreen;
+
+        public void ActivateSmokeScreen()
+        {
+            smokeScreen.SetActive(true);
+        }
+
+        public void DeActivateSmokeScreen()
+        {
+            smokeScreen.SetActive(false);
+        }
     }
 }

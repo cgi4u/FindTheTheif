@@ -212,6 +212,7 @@ namespace com.MJT.FindTheThief
 
             //Set UI Informations and deactive the interactive UI before game start).
             uiManager.SetTeamLabel(myTeam);
+            uiManager.SetSkillButtons(myTeam);
             uiManager.RenewThievesNum(thievesNum);
             uiManager.DeactivateUIGroup();
 

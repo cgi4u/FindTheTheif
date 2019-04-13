@@ -213,6 +213,14 @@ namespace com.MJT.FindTheThief
                         transform.position = newPos;
                         break;
                     }
+
+                    SecretPathController secretPath = hit.collider.gameObject.GetComponent<SecretPathController>();
+                    Vector3 linkedPos;
+                    if (secretPath != null && (linkedPos = secretPath.GetLinkedPos()).z == 0f)
+                    {
+                        transform.position = linkedPos;
+                        break;
+                    }
                 }
 
                 if (curDirection != EMoveDirection.Stop)
@@ -296,6 +304,11 @@ namespace com.MJT.FindTheThief
         }
 
         #endregion
+
+        /*private void OnTriggerEnter2D(Collider2D collision)
+        {
+            Debug.Log("Trigger: " + collision.gameObject.name);
+        }*/
 
         #region Photon Synchronization
 

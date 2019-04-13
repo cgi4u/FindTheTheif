@@ -76,16 +76,16 @@ namespace com.MJT.FindTheThief
             remainingCountText.gameObject.SetActive(true);
             if (count == 0)
             {
-                usable = false;
                 SetButtonDown();
+                usable = false;
             }
         }
 
         public void SetRemainingDelayTime(int seconds)
         {
             remainingDelayText.gameObject.SetActive(true);
-            usable = false;
             SetButtonDown();
+            usable = false;
 
             StartCoroutine(SetActiveAfterSeconds(seconds));
         }
