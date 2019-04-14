@@ -81,4 +81,5 @@ MonoBehaviour:
   - StealSuccess
   - ResendStartTime
   - PostponeStartTime
+  - CheckIfThePlayerIncluded
   DisableAutoOpenWizard: 1

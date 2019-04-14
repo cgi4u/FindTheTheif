@@ -9,8 +9,6 @@ namespace com.MJT.FindTheThief
     public class SkillDataSet : ScriptableObject
     {
         [SerializeField]
-        private SkillData[] set;
-        [SerializeField]
         private ETeam team;
         public ETeam Team
         {
@@ -19,6 +17,20 @@ namespace com.MJT.FindTheThief
                 return team;
             }
         }
+
+        [SerializeField]
+        private SkillData defaultSkill;
+        public SkillData DefaultSkill
+        {
+            get
+            {
+                return defaultSkill;
+            }
+        }
+
+        [SerializeField]
+        private SkillData[] set;
+        
 
         private void Awake()
         {

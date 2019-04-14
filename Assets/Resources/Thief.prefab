@@ -27,6 +27,8 @@ MonoBehaviour:
   NPCPrefabs: {fileID: 11400000, guid: 11fefd89de77be3479ad3da5b8d5842d, type: 2}
   secretPath: {fileID: 3889001023237346580, guid: 3772bd4c8c552ad4a9ba89f09627c7f0,
     type: 3}
+  smokePrefab: {fileID: 593354461508851902, guid: 834334cae3d39f146be3ae840a6e0e3f,
+    type: 3}
 --- !u!1001 &4202969183899360232
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -37,6 +37,11 @@ namespace com.MJT.FindTheThief
             int curWidth = Screen.width;
             uiScale = (float)curWidth / refWidth;
 
+            quadrantAngles[0] = GlobalFunctions.GetAngle(new Vector2(Screen.width / 2, Screen.height / 2), new Vector2(0f, 0f));
+            quadrantAngles[1] = GlobalFunctions.GetAngle(new Vector2(-Screen.width / 2, Screen.height / 2), new Vector2(0f, 0f));
+            quadrantAngles[2] = -quadrantAngles[1];
+            quadrantAngles[3] = -quadrantAngles[0];
+
             moveButtonPanelRect = ConvertToScreenRect(moveButtonPanel);
 
             arrestPopUp.gameObject.SetActive(false);
@@ -467,37 +472,6 @@ namespace com.MJT.FindTheThief
             errorLabel.text = errorMsg;
         }
 
-        #region Skill Initialization
-
-        public SkillDataSet thiefSkillDataSet;
-        public SkillDataSet detectiveSkillDataSet;
-
-        public SkillUseButton[] skillButtons;
-        public void SetSkillButtons(ETeam team)
-        {
-            if (skillButtons.Length != Constants.maxSkillNum)
-            {
-                Debug.LogError("Number of skill buttons must be same with the maximum number of usable skill in a game.");
-                return;
-            }
-
-            for (int i = 0; i < Constants.maxSkillNum; i++)
-            {
-                //Get saved skill code
-                int selectedSkillIdx = PlayerPrefs.GetInt(MultiplayRoomManager.Instance.MyTeam + " Skill " + i);
-
-                SkillData selectedSkillData;
-                if (team == ETeam.Detective)
-                    selectedSkillData = detectiveSkillDataSet.Get(selectedSkillIdx);
-                else
-                    selectedSkillData = thiefSkillDataSet.Get(selectedSkillIdx);
-
-                skillButtons[i].Init(selectedSkillData);
-            }
-        }
-
-        #endregion
-
         public GameObject smokeScreen;
 
         public void ActivateSmokeScreen()
@@ -509,5 +483,66 @@ namespace com.MJT.FindTheThief
         {
             smokeScreen.SetActive(false);
         }
+
+        #region Skill Initialization
+
+        [Header("Setting For Skill Buttons")]
+
+        public SkillDataSet thiefSkillDataSet;
+        public SkillDataSet detectiveSkillDataSet;
+
+        public SkillUseButton defaultSkillButton;
+        public SkillUseButton[] enabledSkillButtons;
+        public void SetSkillButtons(ETeam team)
+        {
+            if (enabledSkillButtons.Length != Constants.maxSkillNum)
+            {
+                Debug.LogError("Number of skill buttons must be same with the maximum number of usable skill in a game.");
+                return;
+            }
+
+            SkillDataSet skillDataSet;
+            if (team == ETeam.Thief)
+                skillDataSet = thiefSkillDataSet;
+            else
+                skillDataSet = detectiveSkillDataSet;
+
+            defaultSkillButton.Init(skillDataSet.DefaultSkill);
+            for (int i = 0; i < enabledSkillButtons.Length; i++)
+            {
+                //Get saved skill code
+                int selectedSkillIdx = PlayerPrefs.GetInt(MultiplayRoomManager.Instance.MyTeam + " Skill " + i);
+                SkillData selectedSkillData = skillDataSet.Get(selectedSkillIdx);
+                enabledSkillButtons[i].Init(selectedSkillData);
+            }
+        }
+
+        #endregion
+
+        public Image SensingAlert;
+        float[] quadrantAngles = new float[4];
+        
+        public void SetSensingAlert(Vector2 diffVec)
+        {
+            float m;
+            float angle = GlobalFunctions.GetAngle(diffVec, new Vector2());
+            if (angle >= quadrantAngles[2] && angle < quadrantAngles[3])
+                m = (-Screen.height / 2) / diffVec.y;
+            else if (angle >= quadrantAngles[3] && angle < quadrantAngles[0])
+                m = (Screen.width / 2) / diffVec.x;
+            else if (angle >= quadrantAngles[0] && angle < quadrantAngles[1])
+                m = (Screen.height / 2) / diffVec.y;
+            else
+                m = (-Screen.width / 2) / diffVec.x;
+
+            SensingAlert.rectTransform.anchoredPosition = diffVec * m;
+            SensingAlert.gameObject.SetActive(true);
+        }
+
+        public void DeactiveSensingAlert()
+        {
+            SensingAlert.gameObject.SetActive(false);
+        }
+        
     }
 }

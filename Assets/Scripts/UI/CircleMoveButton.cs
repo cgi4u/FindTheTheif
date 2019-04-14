@@ -34,8 +34,7 @@ namespace com.MJT.FindTheThief
                 && Vector2.Distance(transform.position, Input.mousePosition) / radius >= minTouchRatio
                 && Vector2.Distance(transform.position, Input.mousePosition) / radius <= maxTouchRatio)
             {
-                float angle = Mathf.Atan2(Input.mousePosition.y - transform.position.y,
-                                            Input.mousePosition.x - transform.position.x) * Mathf.Rad2Deg;
+                float angle = GlobalFunctions.GetAngle(Input.mousePosition, transform.position);
 
                 if (angle >= -135f && angle < -45f && curDirection != EMoveDirection.Down)
                 {

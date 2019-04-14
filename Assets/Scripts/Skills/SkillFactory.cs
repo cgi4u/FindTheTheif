@@ -10,7 +10,9 @@ namespace com.MJT.FindTheThief
         FastMove,
         ItemChange,
         Smoke,
-        SecretPath
+        SecretPath,
+        Arrest,
+        Sensing
     }
 
     public static class SkillFactory
@@ -22,6 +24,10 @@ namespace com.MJT.FindTheThief
                     return new FastMove(button);
                 case ESkillName.SecretPath:
                     return new SecretPath(button);
+                case ESkillName.Smoke:
+                    return new Smoke(button);
+                case ESkillName.Sensing:
+                    return new Sensing(button);
                 default:
                     return new DummySkill(button);
             }
@@ -37,6 +43,18 @@ namespace com.MJT.FindTheThief
         }
 
         public abstract void Activate();
+    }
+
+    public class Sensing : Skill
+    {
+        public Sensing(SkillUseButton _button) : base(_button)
+        { }
+
+        public override void Activate()
+        {
+            ThiefController.LocalThief.SetSensingDuringSeconds(1000f);
+            button.SetRemainingDelayTime(30);
+        }
     }
 
     public class FastMove : Skill
@@ -61,10 +79,25 @@ namespace com.MJT.FindTheThief
         int count = 2;
         public override void Activate()
         {
-            if (ThiefController.LocalThief.MakeSecretPath())
+            if (ThiefController.LocalThief.MakeSmoke())
             {
                 count -= 1;
                 button.SetRemainingCount(count / 2 + count % 2);
+            }
+        }
+    }
+
+    public class Smoke : Skill
+    {
+        public Smoke(SkillUseButton _button) : base(_button)
+        {
+        }
+
+        public override void Activate()
+        {
+            if (ThiefController.LocalThief.MakeSmoke())
+            {
+                button.SetRemainingDelayTime(30);
             }
         }
     }

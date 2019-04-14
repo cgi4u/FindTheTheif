@@ -12,11 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e0557f538104254ea7632b61c930f87, type: 3}
   m_Name: Thief Skill Data Set
   m_EditorClassIdentifier: 
+  team: 2
+  defaultSkill:
+    code: -1
+    skillName: 5
+    icon: {fileID: 21300000, guid: b04e8cde4e30a5740b4ba464758533f3, type: 3}
   set:
-  - code: 0
-    skillName: 2
-    icon: {fileID: 21300000, guid: 08fa213e181a8f545b36c1834d51642f, type: 3}
   - code: 1
     skillName: 3
     icon: {fileID: 21300000, guid: e6c421c41964bf44ea4d403c370f61d9, type: 3}
-  team: 2
+  - code: 1
+    skillName: 2
+    icon: {fileID: 21300000, guid: 08fa213e181a8f545b36c1834d51642f, type: 3}

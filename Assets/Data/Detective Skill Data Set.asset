@@ -12,11 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e0557f538104254ea7632b61c930f87, type: 3}
   m_Name: Detective Skill Data Set
   m_EditorClassIdentifier: 
+  team: 1
+  defaultSkill:
+    code: -1
+    skillName: 4
+    icon: {fileID: 21300000, guid: ac60f6ecc7fc99b46b166144c459ad66, type: 3}
   set:
-  - code: 0
-    skillName: 0
-    icon: {fileID: 21300000, guid: 4722898c833f38545b82806cf130e659, type: 3}
   - code: 1
     skillName: 1
     icon: {fileID: 21300000, guid: 4af7a84cd04cc0c46bda2fa0e410db8d, type: 3}
-  team: 1
+  - code: 1
+    skillName: 0
+    icon: {fileID: 21300000, guid: 4722898c833f38545b82806cf130e659, type: 3}

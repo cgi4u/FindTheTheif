@@ -91,7 +91,7 @@ namespace com.MJT.FindTheThief
                 || Mathf.Floor(transform.position.x) != transform.position.x 
                 || Mathf.Floor(transform.position.y) != transform.position.y)
             {
-                Debug.Log("Secret path cannot be generated in current site.");
+                Debug.LogError("Secret path cannot be generated in current site.");
                 return false;
             }
 
@@ -119,6 +119,36 @@ namespace com.MJT.FindTheThief
             }
 
             return true;
+        }
+
+        public GameObject smokePrefab;
+
+        public bool MakeSmoke()
+        {
+            if (Mathf.Floor(transform.position.x) != transform.position.x
+                || Mathf.Floor(transform.position.y) != transform.position.y)
+            {
+                Debug.LogError("Smoke cannot be generated in current site.");
+                return false;
+            }
+
+            GameObject newSmoke = PhotonNetwork.Instantiate(smokePrefab.name, transform.position, Quaternion.identity, 0);
+            newSmoke.GetComponent<SmokeController>().Init(15f);
+
+            return true;
+        }
+
+        public void SetSensingDuringSeconds(float seconds)
+        {
+            DetectiveController.SensingMode = true;
+            StartCoroutine(EndSensingAfterSeconds(seconds));
+        }
+
+        private IEnumerator EndSensingAfterSeconds(float seconds)
+        {
+            yield return new WaitForSeconds(seconds);
+            DetectiveController.SensingMode = false;
+            UIManager.Instance.DeactiveSensingAlert();
         }
 
         #endregion

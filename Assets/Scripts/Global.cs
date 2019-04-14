@@ -36,6 +36,10 @@ namespace com.MJT.FindTheThief
 
     public static class GlobalFunctions
     {
+        public static float GetAngle(Vector2 a, Vector2 b)
+        {
+            return Mathf.Atan2(a.y - b.y, a.x - b.x) * Mathf.Rad2Deg;
+        }
 
         /// <summary>
         /// Randomly shuffle elements of 1-dimensional array. 

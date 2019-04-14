@@ -16,6 +16,8 @@ namespace com.MJT.FindTheThief
             }
         }
 
+        public static bool SensingMode { get; set; } = false;
+
         PlayerController player;
         private void Awake()
         {
@@ -31,6 +33,14 @@ namespace com.MJT.FindTheThief
 
             localDetective = this;
             player = GetComponent<PlayerController>();
+        }
+
+        private void Update()
+        {
+            if (SensingMode)
+            {
+                UIManager.Instance.SetSensingAlert(transform.position - ThiefController.LocalThief.transform.position);
+            }
         }
 
         #region Methods for Detective Skills
@@ -53,6 +63,6 @@ namespace com.MJT.FindTheThief
             player.MoveSpeed = oldSpeed;
         }
 
-        #endregion  
+        #endregion
     }
 }
