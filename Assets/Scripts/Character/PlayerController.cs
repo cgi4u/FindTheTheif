@@ -335,9 +335,6 @@ namespace com.MJT.FindTheThief
                 startPoint = (Vector2)stream.ReceiveNext();
                 targetPoint = (Vector2)stream.ReceiveNext();
                 CurFloor = (int)stream.ReceiveNext();
-
-                if (oldFloor != CurFloor)
-                    UIManager.Instance.CheckForFloorChange(this);
             }
         }
 

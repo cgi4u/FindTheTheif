@@ -18,6 +18,9 @@ namespace com.MJT.FindTheThief
 
         public bool isFlicker;
 
+        PlayerController sensingTarget;
+        int oldFloorDiff = int.MinValue;
+
         public Image sameFloorSign;
         public RectTransform upstairGroup;
         public Text upstairText;
@@ -26,8 +29,24 @@ namespace com.MJT.FindTheThief
 
         bool alphaDescending = true;
         float alphaChangeSpeed = 1f;
+
+        public void SetTarget(PlayerController target)
+        {
+            sensingTarget = target;
+        }
+
         void Update()
         {
+            if (sensingTarget == null) return;
+
+            int curFloorDiff = PlayerController.LocalPlayer.CurFloor - sensingTarget.CurFloor;
+            if (oldFloorDiff != curFloorDiff)
+            {
+                oldFloorDiff = curFloorDiff;
+                ChangeFloorMode(sensingTarget.CurFloor);
+            }
+            SetPosAndCycle();
+
             if (!isFlicker || !sameFloorSign.gameObject.GetActive()) return;
 
             Color curColor = sameFloorSign.color;
@@ -54,15 +73,15 @@ namespace com.MJT.FindTheThief
 
         static readonly float maxSensingDist = 40f;
 
-        public void SetPosAndCycle(Vector3 diffVec)
+        public void SetPosAndCycle()
         {
-            if (sameFloorSign == null) return;
+            Vector3 diffVec = sensingTarget.transform.position - PlayerController.LocalPlayer.transform.position;
 
             float dist = diffVec.magnitude;
             dist = Mathf.Min(dist, maxSensingDist);
             float m = (maxSensingDist - dist) / maxSensingDist;
             alphaChangeSpeed = 0.5f + 4.5f * m;
-            float signScale = 1.0f + 1.0f * m;
+            float signScale = 1.0f + 2.0f * m;
 
             float angle = GlobalFunctions.GetAngle(diffVec, new Vector2());
             if (angle >= quadrantAngles[2] && angle < quadrantAngles[3])
@@ -80,7 +99,7 @@ namespace com.MJT.FindTheThief
             downstairGroup.anchoredPosition = diffVec * m + new Vector3(0f, downstairGroup.rect.height / 2);
         }
 
-        public void ChangeFloorMode(int floor)
+        private void ChangeFloorMode(int floor)
         {
             if (floor < PlayerController.LocalPlayer.CurFloor)
             {

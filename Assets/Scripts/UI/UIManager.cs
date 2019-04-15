@@ -37,11 +37,6 @@ namespace com.MJT.FindTheThief
             int curWidth = Screen.width;
             uiScale = (float)curWidth / refWidth;
 
-            quadrantAngles[0] = GlobalFunctions.GetAngle(new Vector2(Screen.width / 2, Screen.height / 2), new Vector2(0f, 0f));
-            quadrantAngles[1] = GlobalFunctions.GetAngle(new Vector2(-Screen.width / 2, Screen.height / 2), new Vector2(0f, 0f));
-            quadrantAngles[2] = -quadrantAngles[1];
-            quadrantAngles[3] = -quadrantAngles[0];
-
             moveButtonPanelRect = ConvertToScreenRect(moveButtonPanel);
 
             arrestPopUp.gameObject.SetActive(false);
@@ -70,13 +65,6 @@ namespace com.MJT.FindTheThief
         {
             if (!observerMode)
             {
-                foreach (KeyValuePair<PlayerController, AlertSign> pair in sensingPairs)
-                {
-                    if (pair.Key.gameObject == null)
-                        sensingPairs.Remove(pair.Key);
-                    pair.Value.SetPosAndCycle(pair.Key.transform.position - PlayerController.LocalPlayer.transform.position);
-                }
-
                 if (Application.platform == RuntimePlatform.Android)
                 {
                     if (Input.touchCount > 0)
@@ -526,9 +514,9 @@ namespace com.MJT.FindTheThief
 
         #endregion
 
+        #region Sensing Alert For Skills
+
         public GameObject sensingAlertPrefab;
-        float[] quadrantAngles = new float[4];
-        Dictionary<PlayerController, AlertSign> sensingPairs = new Dictionary<PlayerController, AlertSign>();
 
         public void SetAlertDuringSeconds(PlayerController sensingTarget, float seconds)
         {
@@ -537,27 +525,18 @@ namespace com.MJT.FindTheThief
             newAlertObj.transform.position = transform.position;
 
             AlertSign newAlert = newAlertObj.GetComponent<AlertSign>();
-            newAlert.ChangeFloorMode(sensingTarget.CurFloor);
-            sensingPairs.Add(sensingTarget, newAlert);
-            StartCoroutine(RemoveAlertAfterSeconds(sensingTarget, seconds));
+            newAlert.SetTarget(sensingTarget);
+
+            StartCoroutine(RemoveAlertAfterSeconds(newAlertObj, seconds));
         }
 
-        private IEnumerator RemoveAlertAfterSeconds(PlayerController sensingTarget, float seconds)
+        private IEnumerator RemoveAlertAfterSeconds(GameObject targetObj, float seconds)
         {
             yield return new WaitForSeconds(seconds);
-
-            AlertSign alertRemoved = sensingPairs[sensingTarget];
-            sensingPairs.Remove(sensingTarget);
-            Destroy(alertRemoved.gameObject);
+            Destroy(targetObj);
         }
 
-        public void CheckForFloorChange(PlayerController targetPlayer)
-        {
-            if (sensingPairs.ContainsKey(targetPlayer))
-            {
-                sensingPairs[targetPlayer].ChangeFloorMode(targetPlayer.CurFloor);
-            }
-        }
+        #endregion
     }
 
     /*
