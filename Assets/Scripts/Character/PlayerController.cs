@@ -114,6 +114,7 @@ namespace com.MJT.FindTheThief
 
         [SerializeField]
         private EMoveDirection curDirection = EMoveDirection.Stop;
+
         public void ChangeMoveDirection(EMoveDirection direction)
         {
             curDirection = direction;
@@ -171,6 +172,8 @@ namespace com.MJT.FindTheThief
             btnCount -= 1;
         }
 
+        public int CurFloor { get; set; }
+
         private void Move()
         {
             //설정 속도에 따라 움직일 위치를 계산(MoveTowards) 이후 이동
@@ -210,6 +213,11 @@ namespace com.MJT.FindTheThief
                             }
                         }
 
+                        if (stairPoint.IsToUpstair)
+                            CurFloor += 1;
+                        else
+                            CurFloor -= 1;
+                        Debug.Log(CurFloor);
                         transform.position = newPos;
                         break;
                     }
@@ -318,11 +326,18 @@ namespace com.MJT.FindTheThief
             {
                 stream.SendNext(startPoint);
                 stream.SendNext(targetPoint);
+                stream.SendNext(CurFloor);
             }
             else
             {
+                int oldFloor = CurFloor;
+
                 startPoint = (Vector2)stream.ReceiveNext();
                 targetPoint = (Vector2)stream.ReceiveNext();
+                CurFloor = (int)stream.ReceiveNext();
+
+                if (oldFloor != CurFloor)
+                    UIManager.Instance.CheckForFloorChange(this);
             }
         }
 

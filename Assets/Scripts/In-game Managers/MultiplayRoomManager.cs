@@ -244,9 +244,10 @@ namespace com.MJT.FindTheThief
 
             masterPriority.AddRange(detectivePriority);
 
-            // Initilize discoverd item list.
+            // Initilize other local conditions
             ItemController.ResetDescoverdItems();
             PutItemPoint.ResetActivatedPointList();
+            DetectiveController.PlayerInstances.Clear();
 
             // Game initiation by the master client.
             if (PhotonNetwork.isMasterClient)
@@ -536,10 +537,16 @@ namespace com.MJT.FindTheThief
             Debug.Log("We are Instantiating LocalPlayer from " + SceneManager.GetActiveScene().name);
             Debug.Log("You are a " + myTeam);
             if (myTeam == ETeam.Detective)
-                PhotonNetwork.Instantiate(detectivePrefab.name, mapDataManager.DetectiveGenerationPoints[genPointIdx].position, Quaternion.identity, 0);
+            {
+                GameObject myDetective = PhotonNetwork.Instantiate(detectivePrefab.name, 
+                    mapDataManager.DetectiveGenerationPoints[genPointIdx].position, Quaternion.identity, 0);
+                myDetective.GetComponent<PlayerController>().CurFloor = 1;
+            }
             else if (myTeam == ETeam.Thief)
             {
-                GameObject myTheif = PhotonNetwork.Instantiate(thiefPrefab.name, mapDataManager.ThiefGenertaionPoints[genPointIdx].position, Quaternion.identity, 0);
+                GameObject myTheif = PhotonNetwork.Instantiate(thiefPrefab.name,
+                    mapDataManager.ThiefGenertaionPoints[genPointIdx].position, Quaternion.identity, 0);
+                myTheif.GetComponent<PlayerController>().CurFloor = mapDataManager.ThiefGenerationPointsFloor[genPointIdx];
 
                 int NPCIdx = (int)PhotonNetwork.player.CustomProperties[theifFigureIdxKey];
                 PhotonView.Get(myTheif).RPC("SetSpriteAndAnimation", PhotonTargets.All, NPCIdx);

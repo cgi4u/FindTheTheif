@@ -85,6 +85,15 @@ namespace com.MJT.FindTheThief
                 return thiefGenertaionPoints;
             }
         }
+        [SerializeField]
+        private List<int> thiefGenerationPointsFloor;
+        public List<int> ThiefGenerationPointsFloor
+        {
+            get
+            {
+                return thiefGenerationPointsFloor;
+            }
+        }
 
         [SerializeField]
         private List<Transform> detectiveGenerationPoints;

@@ -70,6 +70,13 @@ namespace com.MJT.FindTheThief
         {
             if (!observerMode)
             {
+                foreach (KeyValuePair<PlayerController, AlertSign> pair in sensingPairs)
+                {
+                    if (pair.Key.gameObject == null)
+                        sensingPairs.Remove(pair.Key);
+                    pair.Value.SetPosAndCycle(pair.Key.transform.position - PlayerController.LocalPlayer.transform.position);
+                }
+
                 if (Application.platform == RuntimePlatform.Android)
                 {
                     if (Input.touchCount > 0)
@@ -519,30 +526,63 @@ namespace com.MJT.FindTheThief
 
         #endregion
 
-        public Image SensingAlert;
+        public GameObject sensingAlertPrefab;
         float[] quadrantAngles = new float[4];
-        
-        public void SetSensingAlert(Vector2 diffVec)
-        {
-            float m;
-            float angle = GlobalFunctions.GetAngle(diffVec, new Vector2());
-            if (angle >= quadrantAngles[2] && angle < quadrantAngles[3])
-                m = (-Screen.height / 2) / diffVec.y;
-            else if (angle >= quadrantAngles[3] && angle < quadrantAngles[0])
-                m = (Screen.width / 2) / diffVec.x;
-            else if (angle >= quadrantAngles[0] && angle < quadrantAngles[1])
-                m = (Screen.height / 2) / diffVec.y;
-            else
-                m = (-Screen.width / 2) / diffVec.x;
+        Dictionary<PlayerController, AlertSign> sensingPairs = new Dictionary<PlayerController, AlertSign>();
 
-            SensingAlert.rectTransform.anchoredPosition = diffVec * m;
-            SensingAlert.gameObject.SetActive(true);
+        public void SetAlertDuringSeconds(PlayerController sensingTarget, float seconds)
+        {
+            GameObject newAlertObj = Instantiate(sensingAlertPrefab);
+            newAlertObj.transform.SetParent(transform);
+            newAlertObj.transform.position = transform.position;
+
+            AlertSign newAlert = newAlertObj.GetComponent<AlertSign>();
+            newAlert.ChangeFloorMode(sensingTarget.CurFloor);
+            sensingPairs.Add(sensingTarget, newAlert);
+            StartCoroutine(RemoveAlertAfterSeconds(sensingTarget, seconds));
         }
 
-        public void DeactiveSensingAlert()
+        private IEnumerator RemoveAlertAfterSeconds(PlayerController sensingTarget, float seconds)
         {
-            SensingAlert.gameObject.SetActive(false);
+            yield return new WaitForSeconds(seconds);
+
+            AlertSign alertRemoved = sensingPairs[sensingTarget];
+            sensingPairs.Remove(sensingTarget);
+            Destroy(alertRemoved.gameObject);
         }
-        
+
+        public void CheckForFloorChange(PlayerController targetPlayer)
+        {
+            if (sensingPairs.ContainsKey(targetPlayer))
+            {
+                sensingPairs[targetPlayer].ChangeFloorMode(targetPlayer.CurFloor);
+            }
+        }
     }
+
+    /*
+    public class SensingPair
+    {
+        GameObject target;
+        public GameObject Target
+        {
+            get
+            {
+                return target;
+            }
+        }
+        Image alertImage;
+
+        public SensingPair(GameObject _target, Image _alertImage)
+        {
+            target = _target;
+            alertImage = _alertImage;
+        }
+
+        public void ChangePos(Vector3 pos)
+        {
+            alertImage.rectTransform.anchoredPosition = pos;
+        }
+    }
+    */
 }

@@ -52,7 +52,8 @@ namespace com.MJT.FindTheThief
 
         public override void Activate()
         {
-            ThiefController.LocalThief.SetSensingDuringSeconds(1000f);
+            foreach (PlayerController detetivePlayer in DetectiveController.PlayerInstances)
+                UIManager.Instance.SetAlertDuringSeconds(detetivePlayer, 1000f);
             button.SetRemainingDelayTime(30);
         }
     }

@@ -16,11 +16,22 @@ namespace com.MJT.FindTheThief
             }
         }
 
-        public static bool SensingMode { get; set; } = false;
+        private static List<PlayerController> playerInstances = new List<PlayerController>();
+        public static List<PlayerController> PlayerInstances
+        {
+            get
+            {
+                return playerInstances;
+            }
+        }
+        private bool sensingMode = false;
+        private bool sensingAlretIsSet = false;
 
         PlayerController player;
         private void Awake()
         {
+            playerInstances.Add(GetComponent<PlayerController>());
+
             if (!photonView.isMine)
                 return;
 
@@ -35,34 +46,29 @@ namespace com.MJT.FindTheThief
             player = GetComponent<PlayerController>();
         }
 
+        /*
         private void Update()
         {
-            if (SensingMode)
+            
+            if (sensingMode)
             {
                 UIManager.Instance.SetSensingAlert(transform.position - ThiefController.LocalThief.transform.position);
             }
+            
         }
 
-        #region Methods for Detective Skills
-
-        float oldSpeed;
-        [SerializeField]
-        float boostSpeed;
-        public void SpeedBoost()
+        public void SetSensingDuringSeconds(float seconds)
         {
-            oldSpeed = player.MoveSpeed;
-            player.MoveSpeed = boostSpeed;
-            StartCoroutine("ReturnSpeed");
+            sensingMode = true;
+            StartCoroutine(EndSensingAfterSeconds(seconds));
         }
 
-        [SerializeField]
-        float speedBoostTime;
-        private IEnumerator ReturnSpeed()
+        private IEnumerator EndSensingAfterSeconds(float seconds)
         {
-            yield return new WaitForSeconds(speedBoostTime);
-            player.MoveSpeed = oldSpeed;
+            yield return new WaitForSeconds(seconds);
+            sensingMode = false;
+            UIManager.Instance.DeactiveSensingAlert();
         }
-
-        #endregion
+        */
     }
 }

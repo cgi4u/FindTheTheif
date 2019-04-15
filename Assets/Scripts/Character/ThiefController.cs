@@ -16,6 +16,8 @@ namespace com.MJT.FindTheThief
             }
         }
 
+        private bool sensingMode = false;
+
         private void Awake()
         {
             if (!photonView.isMine)
@@ -136,19 +138,6 @@ namespace com.MJT.FindTheThief
             newSmoke.GetComponent<SmokeController>().Init(15f);
 
             return true;
-        }
-
-        public void SetSensingDuringSeconds(float seconds)
-        {
-            DetectiveController.SensingMode = true;
-            StartCoroutine(EndSensingAfterSeconds(seconds));
-        }
-
-        private IEnumerator EndSensingAfterSeconds(float seconds)
-        {
-            yield return new WaitForSeconds(seconds);
-            DetectiveController.SensingMode = false;
-            UIManager.Instance.DeactiveSensingAlert();
         }
 
         #endregion
