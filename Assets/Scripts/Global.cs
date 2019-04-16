@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace com.MJT.FindTheThief
-{ 
+{
     public enum ETeam { Undefined, Detective, Thief }
     public enum EMoveDirection { Stop, Down, Right, Up, Left }
     public enum EGameState { None, Team_Set, Initialized, Ready, ReadyChecked, Preparing, Started, Game_Set };

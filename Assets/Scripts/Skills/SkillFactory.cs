@@ -12,7 +12,8 @@ namespace com.MJT.FindTheThief
         Smoke,
         SecretPath,
         Arrest,
-        Sensing
+        Sensing,
+        TrapItem
     }
 
     public static class SkillFactory
@@ -22,12 +23,14 @@ namespace com.MJT.FindTheThief
             switch (name) {
                 case ESkillName.FastMove:
                     return new FastMove(button);
+                case ESkillName.TrapItem:
+                    return new TrapItem(button);
+                case ESkillName.Sensing:
+                    return new Sensing(button);
                 case ESkillName.SecretPath:
                     return new SecretPath(button);
                 case ESkillName.Smoke:
                     return new Smoke(button);
-                case ESkillName.Sensing:
-                    return new Sensing(button);
                 default:
                     return new DummySkill(button);
             }
@@ -45,18 +48,7 @@ namespace com.MJT.FindTheThief
         public abstract void Activate();
     }
 
-    public class Sensing : Skill
-    {
-        public Sensing(SkillUseButton _button) : base(_button)
-        { }
-
-        public override void Activate()
-        {
-            foreach (PlayerController detetivePlayer in DetectiveController.PlayerInstances)
-                UIManager.Instance.SetAlertDuringSeconds(detetivePlayer, 10f);
-            button.SetRemainingDelayTime(30);
-        }
-    }
+    #region Detetive Skills
 
     public class FastMove : Skill
     {
@@ -66,6 +58,43 @@ namespace com.MJT.FindTheThief
         public override void Activate()
         {
             PlayerController.LocalPlayer.BoostSpeed(1.5f, 10);
+            button.SetRemainingDelayTime(30);
+        }
+    }
+
+    public class TrapItem : Skill
+    {
+        public TrapItem(SkillUseButton _button) : base(_button)
+        {
+            button.SetRemainingCount(count);
+        }
+
+        int count = 5;
+        public override void Activate()
+        {
+            ItemController.ActivatePickModeForAllItems(PrintItemName);
+            button.SetRemainingCount(--count);
+        }
+
+        private void PrintItemName(ItemController item)
+        {
+            Debug.Log(item.gameObject.name);
+            ItemController.DeactivatePickModeForAllItems();
+        }
+    }
+
+    #endregion
+
+    #region Thief Skills
+
+    public class Sensing : Skill
+    {
+        public Sensing(SkillUseButton _button) : base(_button)
+        { }
+
+        public override void Activate()
+        {
+            DetectiveController.SetAlertForAllInstances(10f);
             button.SetRemainingDelayTime(30);
         }
     }
@@ -102,6 +131,8 @@ namespace com.MJT.FindTheThief
             }
         }
     }
+
+    #endregion
 
     public class DummySkill : Skill
     {

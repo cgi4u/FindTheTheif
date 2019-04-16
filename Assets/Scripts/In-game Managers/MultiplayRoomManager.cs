@@ -64,7 +64,7 @@ namespace com.MJT.FindTheThief
             }
 
             // Modify PhotonNetwork settings according to in-game mode.
-            PhotonNetwork.BackgroundTimeout = 10f;
+            PhotonNetwork.BackgroundTimeout = 1000f;
             PhotonNetwork.sendRate = 10;
             PhotonNetwork.sendRateOnSerialize = 10;
 
@@ -247,7 +247,7 @@ namespace com.MJT.FindTheThief
             // Initilize other local conditions
             ItemController.ResetDescoverdItems();
             PutItemPoint.ResetActivatedPointList();
-            DetectiveController.PlayerInstances.Clear();
+            DetectiveController.ResetPlayerInstances();
 
             // Game initiation by the master client.
             if (PhotonNetwork.isMasterClient)

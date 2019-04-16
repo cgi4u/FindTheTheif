@@ -17,17 +17,15 @@ namespace com.MJT.FindTheThief
         }
 
         private static List<PlayerController> playerInstances = new List<PlayerController>();
-        public static List<PlayerController> PlayerInstances
-        {
-            get
-            {
-                return playerInstances;
-            }
-        }
-        private bool sensingMode = false;
-        private bool sensingAlretIsSet = false;
 
-        PlayerController player;
+        public static void ResetPlayerInstances() { playerInstances.Clear(); }
+
+        public static void SetAlertForAllInstances(float seconds)
+        {
+            foreach (PlayerController player in playerInstances)
+                UIManager.Instance.SetAlertDuringSeconds(player, seconds);
+        }
+
         private void Awake()
         {
             playerInstances.Add(GetComponent<PlayerController>());
@@ -43,7 +41,6 @@ namespace com.MJT.FindTheThief
             }
 
             localDetective = this;
-            player = GetComponent<PlayerController>();
         }
 
         /*

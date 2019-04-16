@@ -176,8 +176,10 @@ namespace com.MJT.FindTheThief
         {
             if (PhotonNetwork.connected)
                 transform.parent = MultiplayRoomManager.Instance.SceneObjParent;
+            instances.Add(this);
 
             orgSprite = GetComponent<SpriteRenderer>().sprite;
+            Debug.Log(GetComponent<SpriteRenderer>().color);
         }
 
         private void Start()
@@ -247,15 +249,13 @@ namespace com.MJT.FindTheThief
             UIManager.Instance.RenewDiscoverdItemList(discoveredItems);
         }
 
-        /*
-        private void OnMouseUp()
-        {
-            UIManager.Instance.SetItemPopUp(this, Input.mousePosition);
-        }
-        */
-
         private void Update()
         {
+            if (pickModeMethod != null)
+            {
+
+            }
+
             if (Application.platform == RuntimePlatform.Android)
             {
                 if (Input.touchCount > 0)
@@ -265,7 +265,15 @@ namespace com.MJT.FindTheThief
                         Touch curTouch = Input.GetTouch(i);
                         Vector2 touchedWorldPoint = Camera.main.ScreenToWorldPoint(curTouch.position);
                         if (curTouch.phase == TouchPhase.Ended && touchArea.Contains(touchedWorldPoint))
-                            UIManager.Instance.SetItemPopUp(this, Input.GetTouch(i).position);
+                        {
+                            if (!pickMode)
+                                UIManager.Instance.SetItemPopUp(this, Input.GetTouch(i).position);
+                            else
+                            {
+                                SetPickMode(false);
+                                pickModeMethod(this);
+                            }
+                        }
                     }
                 }
             }
@@ -273,12 +281,54 @@ namespace com.MJT.FindTheThief
             {
                 if (Input.GetMouseButtonUp(0))
                 {
+
                     Vector2 clickedWorldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                     if (touchArea.Contains(clickedWorldPoint))
-                        UIManager.Instance.SetItemPopUp(this, Input.mousePosition);
+                    {
+                        if (!pickMode)
+                            UIManager.Instance.SetItemPopUp(this, Input.mousePosition);
+                        else
+                        {
+                            SetPickMode(false);
+                            pickModeMethod(this);
+                        }
+                    }
                 }
             }
         }
+
+        #region Item Pick Mode For Skills
+
+        public delegate void PickItemMethod(ItemController item);
+        static List<ItemController> instances = new List<ItemController>();
+
+        static PickItemMethod pickModeMethod = null;
+
+        bool pickMode = false;
+        public GameObject pickModeIndicator;
+
+        public void ClearInstances() { instances.Clear(); }
+
+        public static void ActivatePickModeForAllItems(PickItemMethod method)
+        {
+            pickModeMethod = method;
+            foreach (ItemController item in instances)
+                item.SetPickMode(true);
+        }
+
+        public static void DeactivatePickModeForAllItems()
+        {
+            foreach (ItemController item in instances)
+                item.SetPickMode(false);
+        }
+
+        private void SetPickMode(bool state)
+        {
+            pickMode = state;
+            pickModeIndicator.SetActive(state);
+        }
+
+        #endregion
     }
 }
 

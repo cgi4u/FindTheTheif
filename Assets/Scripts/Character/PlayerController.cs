@@ -313,11 +313,6 @@ namespace com.MJT.FindTheThief
 
         #endregion
 
-        /*private void OnTriggerEnter2D(Collider2D collision)
-        {
-            Debug.Log("Trigger: " + collision.gameObject.name);
-        }*/
-
         #region Photon Synchronization
 
         public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
