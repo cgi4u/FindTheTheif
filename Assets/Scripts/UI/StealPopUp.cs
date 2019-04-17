@@ -8,7 +8,10 @@ namespace com.MJT.FindTheThief
     public class StealPopUp : MonoBehaviour
     {
         public ItemGenPoint CurGenPoint { get; set; }
-            
+        
+        /// <summary>
+        /// Called when the item steal button is pushed. Set item to thief player and activate put point popup.
+        /// </summary>
         public void OnStealButton()
         {
             ThiefController.LocalThief.photonView.

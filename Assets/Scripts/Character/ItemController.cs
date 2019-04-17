@@ -77,7 +77,7 @@ namespace com.MJT.FindTheThief
         [SerializeField]
         private Sprite orgSprite;
         [SerializeField]
-        protected Sprite transparentSprite;
+        protected Sprite stolenSprite;
 
         [SerializeField]
         private Vector2 touchAreaSize;
@@ -196,13 +196,16 @@ namespace com.MJT.FindTheThief
             MapDataManager.Instance.ItemGenPoints[itemGenPointIdx].SetItem(this);
         }
 
+        /// <summary>
+        /// Change this item's state to stolen.
+        /// </summary>
         public void Stolen()
         {
             IsStolen = true;
 
             // Change sprite to the transparent.
             SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
-            spriteRenderer.sprite = transparentSprite;
+            spriteRenderer.sprite = stolenSprite;
             if (spriteRenderer.isVisible)
             {
                 spriteRenderer.enabled = false;
@@ -210,6 +213,9 @@ namespace com.MJT.FindTheThief
             }
         }
 
+        /// <summary>
+        /// Restore this item's state from stolen to normal.
+        /// </summary>
         public void Restored()
         {
             IsStolen = false;
@@ -230,20 +236,14 @@ namespace com.MJT.FindTheThief
             if (!discoveredItems.Contains(this))
             {
                 if (!IsStolen)
-                {
                     discoveredItems.Add(this);
-                }
             }
             else
             {
                 if (IsStolen)
-                {
                     IsStolenChecked = true;
-                }
                 else
-                {
                     IsStolenChecked = false;
-                }
             }
 
             UIManager.Instance.RenewDiscoverdItemList(discoveredItems);
@@ -251,11 +251,6 @@ namespace com.MJT.FindTheThief
 
         private void Update()
         {
-            if (pickModeMethod != null)
-            {
-
-            }
-
             if (Application.platform == RuntimePlatform.Android)
             {
                 if (Input.touchCount > 0)
@@ -297,6 +292,8 @@ namespace com.MJT.FindTheThief
             }
         }
 
+        public int TrapedPlayer { get; set; } = -1;
+
         #region Item Pick Mode For Skills
 
         public delegate void PickItemMethod(ItemController item);
@@ -309,19 +306,35 @@ namespace com.MJT.FindTheThief
 
         public void ClearInstances() { instances.Clear(); }
 
+        /// <summary>
+        /// Set item pick mode used for skills. Method is called when an item is selected.
+        /// </summary>
+        /// <param name="method">Called when item is selected while item pick mode is on. 
+        ///                     Selected ItemController should be passed as the parameter of this method. </param>
         public static void ActivatePickModeForAllItems(PickItemMethod method)
         {
             pickModeMethod = method;
             foreach (ItemController item in instances)
+            {
+                if (item.IsStolen) continue;
+
                 item.SetPickMode(true);
+            }
         }
 
+        /// <summary>
+        /// Deactivate pick item mode.
+        /// </summary>
         public static void DeactivatePickModeForAllItems()
         {
             foreach (ItemController item in instances)
                 item.SetPickMode(false);
         }
 
+        /// <summary>
+        /// Activate/Deactivate item pick mode/indicator for an item.
+        /// </summary>
+        /// <param name="state">Pick mode activated when true, deactivated when false.</param>
         private void SetPickMode(bool state)
         {
             pickMode = state;

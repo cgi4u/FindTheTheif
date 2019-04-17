@@ -514,7 +514,7 @@ namespace com.MJT.FindTheThief
 
         #endregion
 
-        #region Sensing Alert For Skills
+        #region Alert For Skills
 
         public GameObject sensingAlertPrefab;
 
@@ -534,6 +534,18 @@ namespace com.MJT.FindTheThief
         {
             yield return new WaitForSeconds(seconds);
             Destroy(targetObj);
+        }
+
+        public GameObject SetAlertAndReturnObj(PlayerController sensingTarget)
+        {
+            GameObject newAlertObj = Instantiate(sensingAlertPrefab);
+            newAlertObj.transform.SetParent(transform);
+            newAlertObj.transform.position = transform.position;
+
+            AlertSign newAlert = newAlertObj.GetComponent<AlertSign>();
+            newAlert.SetTarget(sensingTarget);
+
+            return newAlertObj;
         }
 
         #endregion

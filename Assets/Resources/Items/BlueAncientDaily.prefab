@@ -37,6 +37,11 @@ PrefabInstance:
       propertyPath: myUsage
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6009032931105501773, guid: f45d73c9e53777343926b98126757bb1,
+        type: 3}
+      propertyPath: pickModeIndicator
+      value: 
+      objectReference: {fileID: 3449472903722571827}
     - target: {fileID: 6009032931105501775, guid: f45d73c9e53777343926b98126757bb1,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -118,6 +123,11 @@ PrefabInstance:
       propertyPath: m_Color.b
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2162052617892102322, guid: f45d73c9e53777343926b98126757bb1,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1398978320534156988, guid: f45d73c9e53777343926b98126757bb1,
         type: 3}
       propertyPath: m_PositionModel.SynchronizeEnabled
@@ -135,3 +145,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f45d73c9e53777343926b98126757bb1, type: 3}
+--- !u!1 &3449472903722571827 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2162052617892102322, guid: f45d73c9e53777343926b98126757bb1,
+    type: 3}
+  m_PrefabInstance: {fileID: 3593830939497699457}
+  m_PrefabAsset: {fileID: 0}

@@ -48,6 +48,9 @@ namespace com.MJT.FindTheThief
         }
 
         private ItemController itemInHand;
+        /// <summary>
+        /// The item stolen by this thief. Null when this thief doesn't have any item.
+        /// </summary>
         public ItemController ItemInHand
         {
             get
@@ -56,17 +59,31 @@ namespace com.MJT.FindTheThief
             }
         }
 
+        GameObject sensingAlert = null;
+
         [PunRPC]
         public void StealItemInPoint(int itemPoint)
         {
             itemInHand = MapDataManager.Instance.ItemGenPoints[itemPoint].Item;
             itemInHand.Stolen();
+
+            if (itemInHand.TrapedPlayer == PhotonNetwork.player.ID)
+            {
+                sensingAlert = UIManager.Instance.SetAlertAndReturnObj(GetComponent<PlayerController>());
+            }
         }
 
         [PunRPC]
         public void PutItemInPoint()
         {
             itemInHand = null;
+            CheckAndDestroyAlert();
+        }
+
+        private void CheckAndDestroyAlert()
+        {
+            if (sensingAlert != null)
+                Destroy(sensingAlert);
         }
 
         /// <summary>
@@ -80,6 +97,11 @@ namespace com.MJT.FindTheThief
 
             if (photonView.isMine)
                 PhotonNetwork.Destroy(this.gameObject);
+        }
+
+        private void OnDestroy()
+        {
+            CheckAndDestroyAlert();
         }
 
         #region Skill Implementation

@@ -16,6 +16,9 @@ namespace com.MJT.FindTheThief
         TrapItem
     }
 
+    /// <summary>
+    /// Generate skill class instances.
+    /// </summary>
     public static class SkillFactory
     { 
         public static Skill GetSkill(ESkillName name, SkillUseButton button)
@@ -37,6 +40,9 @@ namespace com.MJT.FindTheThief
         }
     }
 
+    /// <summary>
+    /// Class that implements skill effect. Should be used like composition with a SkillUseButton.
+    /// </summary>
     public abstract class Skill
     {
         protected SkillUseButton button;
@@ -69,7 +75,7 @@ namespace com.MJT.FindTheThief
             button.SetRemainingCount(count);
         }
 
-        int count = 5;
+        int count = 1;
         public override void Activate()
         {
             ItemController.ActivatePickModeForAllItems(PrintItemName);
@@ -78,7 +84,7 @@ namespace com.MJT.FindTheThief
 
         private void PrintItemName(ItemController item)
         {
-            Debug.Log(item.gameObject.name);
+            item.TrapedPlayer = PhotonNetwork.player.ID;
             ItemController.DeactivatePickModeForAllItems();
         }
     }
