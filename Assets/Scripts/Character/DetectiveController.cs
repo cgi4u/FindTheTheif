@@ -42,30 +42,5 @@ namespace com.MJT.FindTheThief
 
             localDetective = this;
         }
-
-        /*
-        private void Update()
-        {
-            
-            if (sensingMode)
-            {
-                UIManager.Instance.SetSensingAlert(transform.position - ThiefController.LocalThief.transform.position);
-            }
-            
-        }
-
-        public void SetSensingDuringSeconds(float seconds)
-        {
-            sensingMode = true;
-            StartCoroutine(EndSensingAfterSeconds(seconds));
-        }
-
-        private IEnumerator EndSensingAfterSeconds(float seconds)
-        {
-            yield return new WaitForSeconds(seconds);
-            sensingMode = false;
-            UIManager.Instance.DeactiveSensingAlert();
-        }
-        */
     }
 }

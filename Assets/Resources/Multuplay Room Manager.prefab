@@ -80,6 +80,7 @@ MonoBehaviour:
   targetItems: []
   timestampForPrepare: 5000
   timestampPerGame: 300000
+  arrestPhaseTiming: d06c040080a90300
   lobbySceneName: Lobby
   loginSceneName: Launcher
   thiefPrefab: {fileID: 4203696217380748978, guid: 525f72b978b9e7941acdcbf8b1145f7b,

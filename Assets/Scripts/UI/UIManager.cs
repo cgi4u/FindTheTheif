@@ -7,6 +7,8 @@ using UnityEngine.UI;
 
 namespace com.MJT.FindTheThief
 {
+    using static ItemProperties;
+
     public class UIManager : MonoBehaviour
     {
         static UIManager instance;
@@ -93,10 +95,6 @@ namespace com.MJT.FindTheThief
                 {
                     if (Input.GetMouseButtonDown(0))
                     {
-                        //Debug.Log(Input.mousePosition);
-                        //if (moveButtonPanelRect.Contains(Input.mousePosition))
-                        //Debug.Log("Contained in the mouse panel.");
-
                         if (arrestPopUp.gameObject.GetActive() && IsTouchPointValid(Input.mousePosition, ConvertToScreenRect(arrestPopUpPanel)))
                         {
                             arrestPopUp.gameObject.SetActive(false);
@@ -115,13 +113,11 @@ namespace com.MJT.FindTheThief
             {
                 if (Input.GetMouseButtonDown(0))
                 {
-                    Debug.Log("Touch Start");
                     touching = true;
                     prevTouchPoint = Input.mousePosition;
                 }
                 else if (Input.GetMouseButtonUp(0))
                 {
-                    Debug.Log("Touch End");
                     touching = false;
                 }
 
@@ -153,13 +149,13 @@ namespace com.MJT.FindTheThief
 
         public ItemInfoPopUp itemInfoPopUp;
         private RectTransform itemInfoPopUpPanel;
+
         public void SetItemPopUp(ItemController item, Vector3 point)
         {
             if (!IsTouchPointValid(point, Rect.zero))
                 return;
 
             itemInfoPopUp.SetAttributes(item);
-
             itemInfoPopUp.transform.position = point;
             itemInfoPopUp.gameObject.SetActive(true);
         }
@@ -271,7 +267,12 @@ namespace com.MJT.FindTheThief
 
         #region Item Information Panel
 
+        public DiscoveredItemPanel[] discoverdItemPanels;
+        
+        
+
         public Text discoverdItemList;
+
         public void RenewDiscoverdItemList(List<ItemController> discoveredItems)
         {
             discoverdItemList.text =  "확인한 아이템: ";
@@ -289,6 +290,7 @@ namespace com.MJT.FindTheThief
         /// Information panel for items to steal(visible by thieves only)
         /// </summary>
         public Text targetItemList;
+
         public void RenewTargetItemList(List<ItemController> targetItems)
         {
             targetItemList.gameObject.SetActive(true);
@@ -376,6 +378,8 @@ namespace com.MJT.FindTheThief
         {
             thievesNumLabel.text = "남은 도둑: " + thievesNum;
         }
+
+        public Color testColor;
 
         private string ItemInfoToString(ItemController item)
         {

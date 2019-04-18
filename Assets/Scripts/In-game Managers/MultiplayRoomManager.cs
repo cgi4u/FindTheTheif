@@ -7,6 +7,8 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 namespace com.MJT.FindTheThief
 {
+    using static ItemProperties;
+
     public class MultiplayRoomManager : Photon.PunBehaviour
     {
         /// <summary>
@@ -43,8 +45,8 @@ namespace com.MJT.FindTheThief
         readonly string pauseKey = "Paused";
 
         /*
-        static readonly string remainingThievesKey = "Remaining Thieves Number";
-        static readonly string remainingTargetsKey = "Remainig Target Items Number";
+        readonly string remainingThievesKey = "Remaining Thieves Number";
+        readonly string remainingTargetsKey = "Remainig Target Items Number";
         */
 
         #endregion
@@ -245,7 +247,7 @@ namespace com.MJT.FindTheThief
             masterPriority.AddRange(detectivePriority);
 
             // Initilize other local conditions
-            ItemController.ResetDescoverdItems();
+            ItemController.ResetItemList();
             PutItemPoint.ResetActivatedPointList();
             DetectiveController.ResetPlayerInstances();
 
@@ -575,6 +577,18 @@ namespace com.MJT.FindTheThief
         private int timestampPerGame;
         private int startTimestamp;
 
+        private int arrestCount;
+        public int ArrestCount
+        {
+            get
+            {
+                return arrestCount;
+            }
+        }
+        [SerializeField]
+        private int[] arrestPhaseTiming;
+        private int curPhase = 0;
+
         int curTimestamp;
         int prevTimestamp;
         private void Start()
@@ -583,6 +597,7 @@ namespace com.MJT.FindTheThief
         }
 
         int readyWaitTimeStamp = 0;
+
         private void Update()
         {
             //Debug.Log(PhotonNetwork.networkingPeer.RoundTripTime);
@@ -641,7 +656,17 @@ namespace com.MJT.FindTheThief
                     break;
                 case EGameState.Started:
                     // Renew time label, view current remaining time.
-                    uiManager.RenewTimeLabel((timestampPerGame - (curTimestamp - startTimestamp)) / 1000);
+                    int leftTimeStamps = (timestampPerGame - (curTimestamp - startTimestamp));
+                    uiManager.RenewTimeLabel(leftTimeStamps / 1000);
+
+                    if (arrestButton != null && 
+                        curPhase < arrestPhaseTiming.Length && leftTimeStamps < arrestPhaseTiming[curPhase])
+                    {
+                        arrestButton.SetRemainingCount(++arrestCount);
+                        arrestButton.SetButtonUp(false);
+                        curPhase += 1;
+                    }
+                    
                     break;
                 default:
                     break;
@@ -730,10 +755,28 @@ namespace com.MJT.FindTheThief
         #region Detective Gameplay Networking(Arrest Thief)
 
         int arrestedThievesNum = 0;
+        SkillUseButton arrestButton = null;
+        
+        public void InitArrestSetting(SkillUseButton button, int initArrestCount)
+        {
+            arrestCount = initArrestCount;
+            arrestButton = button;
+
+            arrestButton.SetRemainingCount(ArrestCount);
+        }
 
         [PunRPC]
-        public void ArrestSuccess(int detectiveID, int thiefID)
+        public void TryToArrest(int detectiveID, int thiefID)
         {
+            if (detectiveID == PhotonNetwork.player.ID)
+                arrestButton.SetRemainingCount(--arrestCount);
+
+            if (thiefID == -1)
+            {
+                uiManager.SetErrorMsg("Detective " + PhotonPlayer.Find(detectiveID).NickName + " failed to arrest.");
+                return;
+            }
+
             if (PhotonPlayer.Find(thiefID) == null)
             {
                 Debug.LogError("Arrest failed. Wrong Thief ID.");
@@ -745,26 +788,18 @@ namespace com.MJT.FindTheThief
             uiManager.RenewThievesNum(thievesNum - arrestedThievesNum);
 
             if (detectiveID == PhotonNetwork.player.ID)
-            {
                 SetPlayerRecord(curTimestamp - startTimestamp);
-            }
 
-            if (PhotonNetwork.player.ID == thiefID)
+            /*if (PhotonNetwork.player.ID == thiefID)
             {
                 uiManager.SetObserverModeUI();
-            }
+            }*/
 
             if (thievesNum == arrestedThievesNum)
             {
                 PhotonExtends.SetRoomCustomProp(winTeamKey, (int)ETeam.Detective);
                 PhotonExtends.SetRoomCustomProp(gameSetKey, true);
             }
-        } 
-
-        [PunRPC]
-        public void ArrestFailed(int detectiveID)
-        {
-            uiManager.SetErrorMsg("Detective " + PhotonPlayer.Find(detectiveID).NickName + " failed to arrest.");
         }
 
         #endregion

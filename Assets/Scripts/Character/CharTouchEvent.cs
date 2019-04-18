@@ -6,21 +6,10 @@ namespace com.MJT.FindTheThief
 {
     public class CharTouchEvent : MonoBehaviour
     {
-
-        /*
-        protected void OnMouseUp()
-        {
-            if (MultiplayRoomManager.Instance.MyTeam != Team.Detective)
-                return;
-            
-            UIManager.Instance.SetArrestPopUp(gameObject, Input.mousePosition);
-        }
-        */
-
         private void Update()
         {
-            if (PhotonNetwork.connected 
-                && MultiplayRoomManager.Instance.MyTeam != ETeam.Detective)
+            if (PhotonNetwork.connected && 
+                (MultiplayRoomManager.Instance.MyTeam != ETeam.Detective || MultiplayRoomManager.Instance.ArrestCount <= 0))
                 return;
 
             Sprite curSprite = GetComponent<SpriteRenderer>().sprite;

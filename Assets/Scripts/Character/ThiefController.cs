@@ -65,12 +65,10 @@ namespace com.MJT.FindTheThief
         public void StealItemInPoint(int itemPoint)
         {
             itemInHand = MapDataManager.Instance.ItemGenPoints[itemPoint].Item;
-            itemInHand.Stolen();
-
-            if (itemInHand.TrapedPlayer == PhotonNetwork.player.ID)
-            {
+            if (itemInHand.IsTrapped)
                 sensingAlert = UIManager.Instance.SetAlertAndReturnObj(GetComponent<PlayerController>());
-            }
+
+            itemInHand.Stolen();
         }
 
         [PunRPC]

@@ -82,4 +82,5 @@ MonoBehaviour:
   - ResendStartTime
   - PostponeStartTime
   - CheckIfThePlayerIncluded
+  - TryToArrest
   DisableAutoOpenWizard: 1

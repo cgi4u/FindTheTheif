@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 namespace com.MJT.FindTheThief
 {
+    using static ItemProperties;
+
     [RequireComponent(typeof(RectTransform))]
     public class ItemInfoPopUp : MonoBehaviour
     {
@@ -28,47 +30,11 @@ namespace com.MJT.FindTheThief
 
         public void SetAttributes(ItemController item)
         {
-            //Modify color text in pop-up.
-            switch (item.Color)
-            {
-                case EItemColor.Red:
-                    colorText.text = "빨강";
-                    break;
-                case EItemColor.Blue:
-                    colorText.text = "파랑";
-                    break;
-                case EItemColor.Yellow:
-                    colorText.text = "노랑";
-                    break;
-            }
-            
-            //Modify age text in pop-up.
-            switch (item.Age)
-            {
-                case EItemAge.Ancient:
-                    ageText.text = "고대";
-                    break;
-                case EItemAge.Middle:
-                    ageText.text = "중근세";
-                    break;
-                case EItemAge.Modern:
-                    ageText.text = "현대";
-                    break;
-            }
+            ItemPropStrings itemPropStrings = item.GetPropStrings(false);
 
-            //Modify age text in pop-up.
-            switch (item.Usage)
-            {
-                case EItemUsage.Art:
-                    usageText.text = "예술";
-                    break;
-                case EItemUsage.Daily:
-                    usageText.text = "생활";
-                    break;
-                case EItemUsage.War:
-                    usageText.text = "전쟁";
-                    break;
-            }
+            colorText.text = itemPropStrings.ColorString;
+            ageText.text = itemPropStrings.AgeString;
+            usageText.text = itemPropStrings.UsageString;
         }
     }
 }

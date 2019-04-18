@@ -20,6 +20,7 @@ namespace com.MJT.FindTheThief
 
         private void Awake()
         {
+
             orgAnchorPos = GetComponent<RectTransform>().anchoredPosition;
         }
 
@@ -30,15 +31,11 @@ namespace com.MJT.FindTheThief
         
         public void OnArrestButton()
         {
-            Debug.Log("Try to arrest.");
+            int thiefID = -1;
             if (selectedThief != null)
-            {
-                MultiplayRoomManager.Instance.photonView.RPC("ArrestSuccess", PhotonTargets.AllViaServer, 
-                    PhotonNetwork.player.ID, selectedThief.photonView.ownerId);
-                selectedThief.photonView.RPC("Arrested", PhotonTargets.AllViaServer);
-            }
-            else
-                MultiplayRoomManager.Instance.photonView.RPC("ArrestFailed", PhotonTargets.All, PhotonNetwork.player.ID);
+                thiefID = selectedThief.photonView.ownerId;
+
+            MultiplayRoomManager.Instance.photonView.RPC("TryToArrest", PhotonTargets.AllViaServer, PhotonNetwork.player.ID, thiefID);
 
             GetComponent<RectTransform>().anchoredPosition = orgAnchorPos;
             gameObject.SetActive(false);

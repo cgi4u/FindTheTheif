@@ -4,71 +4,11 @@ using UnityEngine;
 
 namespace com.MJT.FindTheThief
 {
+    using static ItemProperties;
+
     public class ItemController : Photon.PunBehaviour
     {
-        #region Item Properties
-
-        public static readonly int ItemPropTypeNum = 3;
-        public static readonly int ItemPropNumPerType = 3;
-
-        /*
-        public static string GetItemPropName(int type, int num, bool shortMode)
-        {
-            switch (type)
-            {
-                case 0:
-                    switch (num)
-                    {
-                        case 0:
-                            if (shortMode)
-                                return "빨";
-                            else
-                                return "빨강";
-                        case 1:
-                            if (shortMode)
-                                return "파";
-                            else
-                                return "파랑";
-                        case 2:
-                            if (shortMode)
-                                return "노";
-                            else
-                                return "노랑";
-                        default:
-                            Debug.LogError("Invalid item property value.");
-                            return null;
-                    }
-                case 1:
-                    switch (num)
-                    {
-                        case 0:
-                            if (shortMode)
-                                return "고";
-                            else
-                                return "고대";
-                        case 1:
-                            if (shortMode)
-                                return "";
-                            else
-                                return "파랑";
-                        case 2:
-                            if (shortMode)
-                                return "노";
-                            else
-                                return "노랑";
-                        default:
-                            Debug.LogError("Invalid item property value.");
-                            return null;
-                    }
-                    break;
-                case 2:
-                    break;
-            }
-        }
-        */
-
-        #endregion
-
+        static List<ItemController> instances = new List<ItemController>();
         /// <summary>
         /// The list  of items that the local player discovered in game.
         /// </summary>
@@ -137,15 +77,24 @@ namespace com.MJT.FindTheThief
         /// <summary>
         /// Prioirty in the discovered item list. Be changed when the stolen item has a same item property with this item.
         /// </summary>
-        public int Prioirty = 0;
+        private int prioirty = 0;
+        private int rank = 1;
+        public int Rank
+        {
+            get
+            {
+                return rank;
+            }
+        }
 
         #endregion
 
         /// <summary>
         /// Reset discovered / stolen item list for each game.
         /// </summary>
-        public static void ResetDescoverdItems()
+        public static void ResetItemList()
         {
+            instances.Clear();
             discoveredItems.Clear();
         }
 
@@ -158,17 +107,25 @@ namespace com.MJT.FindTheThief
             if (discoveredItems.Contains(stolen))
                 discoveredItems.Remove(stolen);
 
-            foreach (ItemController discovered in discoveredItems)
+            foreach (ItemController item in instances)
             {
-                if (discovered.Color == stolen.Color)
-                    discovered.Prioirty += 1;
-                if (discovered.Age == stolen.Age)
-                    discovered.Prioirty += 1;
-                if (discovered.Usage == stolen.Usage)
-                    discovered.Prioirty += 1;
+                if (item.myColor == stolen.myColor)
+                    item.prioirty += 1;
+                if (item.myAge == stolen.myAge)
+                    item.prioirty += 1;
+                if (item.myUsage == stolen.myUsage)
+                    item.prioirty += 1;
             }
 
-            discoveredItems.Sort((x, y) => (y.Prioirty.CompareTo(x.Prioirty)));
+            instances.Sort((x, y) => (y.prioirty.CompareTo(x.prioirty)));
+            int curRank = 0;
+            for (int i = 0; i <= instances.Count; i++)
+            {
+                if (i != 0 && instances[i - 1] != instances[i])
+                    curRank += 1;
+                instances[i].rank = curRank;
+            }
+
             UIManager.Instance.RenewDiscoverdItemList(discoveredItems);
         }
 
@@ -211,6 +168,9 @@ namespace com.MJT.FindTheThief
                 spriteRenderer.enabled = false;
                 spriteRenderer.enabled = true;
             }
+
+            isTrapped = false;
+            targetSign.SetActive(false);
         }
 
         /// <summary>
@@ -292,19 +252,88 @@ namespace com.MJT.FindTheThief
             }
         }
 
-        public int TrapedPlayer { get; set; } = -1;
+        public ItemPropStrings GetPropStrings(bool shortMode)
+        {
+            ItemPropStrings itemPropStrings;
+
+            itemPropStrings.ColorString = "";
+            itemPropStrings.AgeString = "";
+            itemPropStrings.UsageString = "";
+
+            switch (myColor)
+            {
+                case EItemColor.Red:
+                    itemPropStrings.ColorString = "빨강";
+                    break;
+                case EItemColor.Blue:
+                    itemPropStrings.ColorString = "파랑";
+                    break;
+                case EItemColor.Yellow:
+                    itemPropStrings.ColorString = "노랑";
+                    break;
+            }
+
+            //Modify age text in pop-up.
+            switch (myAge)
+            {
+                case EItemAge.Ancient:
+                    itemPropStrings.AgeString = "고대";
+                    break;
+                case EItemAge.Middle:
+                    itemPropStrings.AgeString = "중근세";
+                    break;
+                case EItemAge.Modern:
+                    itemPropStrings.AgeString = "현대";
+                    break;
+            }
+
+            //Modify age text in pop-up.
+            switch (myUsage)
+            {
+                case EItemUsage.Art:
+                    itemPropStrings.UsageString = "예술";
+                    break;
+                case EItemUsage.Daily:
+                    itemPropStrings.UsageString = "생활";
+                    break;
+                case EItemUsage.War:
+                    itemPropStrings.UsageString = "전쟁";
+                    break;
+            }
+
+            if (shortMode)
+            {
+                itemPropStrings.ColorString = itemPropStrings.ColorString.Substring(0, 1);
+                itemPropStrings.AgeString = itemPropStrings.AgeString.Substring(0, 1);
+                itemPropStrings.UsageString = itemPropStrings.UsageString.Substring(0, 1);
+            }
+
+            return itemPropStrings;
+        }
+
+        private bool isTrapped = false;
+        public bool IsTrapped
+        {
+            get
+            {
+                return isTrapped;
+            }
+        }
+        public GameObject targetSign;
+
+        public void SetTrap()
+        {
+            isTrapped = true;
+            targetSign.SetActive(true);
+        }
 
         #region Item Pick Mode For Skills
 
         public delegate void PickItemMethod(ItemController item);
-        static List<ItemController> instances = new List<ItemController>();
 
         static PickItemMethod pickModeMethod = null;
-
         bool pickMode = false;
         public GameObject pickModeIndicator;
-
-        public void ClearInstances() { instances.Clear(); }
 
         /// <summary>
         /// Set item pick mode used for skills. Method is called when an item is selected.

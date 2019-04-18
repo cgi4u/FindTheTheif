@@ -40,6 +40,16 @@ namespace com.MJT.FindTheThief
         /// </summary>
         public int Index { get; set; }
 
+        [SerializeField]
+        private int num;
+        public int Num
+        {
+            get
+            {
+                return num;
+            }
+        }
+
         private void Awake()
         {
             room = GetComponentInParent<ExhibitRoom>();

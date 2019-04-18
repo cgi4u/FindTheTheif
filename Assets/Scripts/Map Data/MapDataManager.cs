@@ -85,6 +85,8 @@ namespace com.MJT.FindTheThief
                 return thiefGenertaionPoints;
             }
         }
+
+        //이슈: 도둑 생성 포인트의 층을 수동으로 유지중, 반드시 수정 필요.
         [SerializeField]
         private List<int> thiefGenerationPointsFloor;
         public List<int> ThiefGenerationPointsFloor

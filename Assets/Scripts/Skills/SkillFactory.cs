@@ -24,6 +24,8 @@ namespace com.MJT.FindTheThief
         public static Skill GetSkill(ESkillName name, SkillUseButton button)
         {
             switch (name) {
+                case ESkillName.Arrest:
+                    return new Arrest(button);
                 case ESkillName.FastMove:
                     return new FastMove(button);
                 case ESkillName.TrapItem:
@@ -56,6 +58,21 @@ namespace com.MJT.FindTheThief
 
     #region Detetive Skills
 
+    public class Arrest : Skill
+    {
+        readonly int initCount = 1;
+        public Arrest(SkillUseButton _button) : base(_button)
+        {
+            _button.SetPassive();
+            MultiplayRoomManager.Instance.InitArrestSetting(_button, initCount);
+        }
+
+        public override void Activate()
+        {
+
+        }
+    }
+
     public class FastMove : Skill
     {
         public FastMove(SkillUseButton _button) : base(_button)
@@ -75,17 +92,17 @@ namespace com.MJT.FindTheThief
             button.SetRemainingCount(count);
         }
 
-        int count = 1;
+        int count = 2;
         public override void Activate()
         {
             ItemController.ActivatePickModeForAllItems(PrintItemName);
-            button.SetRemainingCount(--count);
         }
 
         private void PrintItemName(ItemController item)
         {
-            item.TrapedPlayer = PhotonNetwork.player.ID;
+            item.SetTrap();
             ItemController.DeactivatePickModeForAllItems();
+            button.SetRemainingCount(--count);
         }
     }
 
