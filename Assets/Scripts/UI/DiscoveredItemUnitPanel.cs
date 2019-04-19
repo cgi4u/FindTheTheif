@@ -11,11 +11,17 @@ namespace com.MJT.FindTheThief
     [RequireComponent(typeof(RectTransform))]
     public class DiscoveredItemUnitPanel : MonoBehaviour
     {
+
+        bool discovered = false;
         public GameObject undiscoverdMark;
 
         public Image spriteImage;
-        public Text floorAndRoom;
-        public Text rank;
+
+        public GameObject floorAndRoomPanel;
+        public Text floorAndRoomText;
+
+        public GameObject rankPanel;
+        public Text rankText;
 
         public Image colorPropPanel;
         public Text colorPropText;
@@ -26,33 +32,64 @@ namespace com.MJT.FindTheThief
         public Image usagePropPanel;
         public Text usagePropText;
 
+        public GameObject stolenMark;
+
         public void SetItemInfo(ItemController item)
         {
+            rankPanel.SetActive(true);
+            string ordinalRank;
+            switch (item.Rank % 4)
+            {
+                case 1:
+                    ordinalRank = item.Rank + "st";
+                    break;
+                case 2:
+                    ordinalRank = item.Rank + "nd";
+                    break;
+                case 3:
+                    ordinalRank = item.Rank + "rd";
+                    break;
+                default:
+                    ordinalRank = item.Rank + "th";
+                    break;
+            }
+            rankText.text = ordinalRank;
+
+            if (discovered) return;
+
+            discovered = true;
             undiscoverdMark.SetActive(false);
 
             spriteImage.gameObject.SetActive(true);
             spriteImage.sprite = item.GetComponent<SpriteRenderer>().sprite;
-            floorAndRoom.gameObject.SetActive(true);
-            floorAndRoom.text = item.GenPoint.Room.Floor + " - " + item.GenPoint.Room.Num;
-            rank.gameObject.SetActive(true);
-            rank.text = item.Rank.ToString();
 
-            ItemPropStrings itemPropStrings = item.GetPropStrings(true);
+            floorAndRoomPanel.SetActive(true);
+            floorAndRoomText.text = item.GenPoint.Room.Floor + " - " + item.GenPoint.Room.Num;
 
             colorPropPanel.gameObject.SetActive(true);
             colorPropPanel.color = UIColorForProp(item.Color);
             colorPropText.gameObject.SetActive(true);
-            colorPropText.text = itemPropStrings.ColorString;
+            colorPropText.text = UITextForProp(item.Color, true);
 
             agePropPanel.gameObject.SetActive(true);
             agePropPanel.color = UIColorForProp(item.Age);
             agePropText.gameObject.SetActive(true);
-            agePropText.text = itemPropStrings.AgeString;
+            agePropText.text = UITextForProp(item.Age, true);
 
             usagePropPanel.gameObject.SetActive(true);
             usagePropPanel.color = UIColorForProp(item.Usage);
             usagePropText.gameObject.SetActive(true);
-            usagePropText.text = itemPropStrings.UsageString;
+            usagePropText.text = UITextForProp(item.Usage, true);
+        }
+
+        public void SetStolenMark()
+        {
+            stolenMark.SetActive(true);
+        }
+
+        public void RemoveStolenMark()
+        {
+            stolenMark.SetActive(false);
         }
     }
 }

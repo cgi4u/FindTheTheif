@@ -104,9 +104,6 @@ namespace com.MJT.FindTheThief
         /// <param name="stolen"></param>
         public static void RenewDiscoveredItemPrioirty(ItemController stolen)
         {
-            if (discoveredItems.Contains(stolen))
-                discoveredItems.Remove(stolen);
-
             foreach (ItemController item in instances)
             {
                 if (item.myColor == stolen.myColor)
@@ -118,10 +115,10 @@ namespace com.MJT.FindTheThief
             }
 
             instances.Sort((x, y) => (y.prioirty.CompareTo(x.prioirty)));
-            int curRank = 0;
-            for (int i = 0; i <= instances.Count; i++)
+            int curRank = 1;
+            for (int i = 0; i < instances.Count; i++)
             {
-                if (i != 0 && instances[i - 1] != instances[i])
+                if (i != 0 && instances[i - 1].prioirty != instances[i].prioirty)
                     curRank += 1;
                 instances[i].rank = curRank;
             }
@@ -252,6 +249,7 @@ namespace com.MJT.FindTheThief
             }
         }
 
+        /*
         public ItemPropStrings GetPropStrings(bool shortMode)
         {
             ItemPropStrings itemPropStrings;
@@ -310,6 +308,7 @@ namespace com.MJT.FindTheThief
 
             return itemPropStrings;
         }
+        */
 
         private bool isTrapped = false;
         public bool IsTrapped

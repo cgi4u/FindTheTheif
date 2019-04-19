@@ -268,9 +268,24 @@ namespace com.MJT.FindTheThief
         #region Item Information Panel
 
         public DiscoveredItemPanel[] discoverdItemPanels;
-        
-        
+        int curPanel = 0;
 
+        public void ChangeDiscoveredPanelFloor()
+        {
+            discoverdItemPanels[curPanel].gameObject.SetActive(false);
+            curPanel = (curPanel + 1) % discoverdItemPanels.Length;
+            discoverdItemPanels[curPanel].gameObject.SetActive(true);
+        }
+
+        public void RenewDiscoverdItemList(List<ItemController> discoveredItems)
+        {
+            for (int i = 0; i < discoverdItemPanels.Length; i++)
+            {
+                discoverdItemPanels[i].Renew(discoveredItems, i+1);
+            }
+        }
+
+        /*
         public Text discoverdItemList;
 
         public void RenewDiscoverdItemList(List<ItemController> discoveredItems)
@@ -285,6 +300,7 @@ namespace com.MJT.FindTheThief
                 }
             }
         }
+        */
 
         /// <summary>
         /// Information panel for items to steal(visible by thieves only)
@@ -300,6 +316,13 @@ namespace com.MJT.FindTheThief
             {
                 this.targetItemList.text += "\n" + ItemInfoToString(item);
             }
+        }
+
+        public StolenItemPanel stolenItemPanel;
+
+        public void RenewStolenItemPanel(List<ItemController> stolenItems)
+        {
+            stolenItemPanel.Renew(stolenItems);
         }
 
         /// <summary>
@@ -378,8 +401,6 @@ namespace com.MJT.FindTheThief
         {
             thievesNumLabel.text = "남은 도둑: " + thievesNum;
         }
-
-        public Color testColor;
 
         private string ItemInfoToString(ItemController item)
         {

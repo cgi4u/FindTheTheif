@@ -59,6 +59,8 @@ namespace com.MJT.FindTheThief
 
         private void Awake()
         {
+            
+
             if (!PhotonNetwork.connected)
             {
                 Debug.LogError("Multiplay manager must be used in online environment.");
@@ -816,7 +818,7 @@ namespace com.MJT.FindTheThief
             ItemController stolenItem = mapDataManager.ItemGenPoints[pointOfStolenItem].Item;
             stolenItems.Add(stolenItem);
             ItemController.RenewDiscoveredItemPrioirty(stolenItem);
-            uiManager.RenewStolenItemList(stolenItems);
+            uiManager.RenewStolenItemPanel(stolenItems);
 
             uiManager.SetErrorMsg("Item " + stolenItem.name + " is stolen.");
 

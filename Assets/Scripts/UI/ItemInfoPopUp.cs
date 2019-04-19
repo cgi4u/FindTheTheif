@@ -30,11 +30,9 @@ namespace com.MJT.FindTheThief
 
         public void SetAttributes(ItemController item)
         {
-            ItemPropStrings itemPropStrings = item.GetPropStrings(false);
-
-            colorText.text = itemPropStrings.ColorString;
-            ageText.text = itemPropStrings.AgeString;
-            usageText.text = itemPropStrings.UsageString;
+            colorText.text = UITextForProp(item.Color, false);
+            ageText.text = UITextForProp(item.Age, false);
+            usageText.text = UITextForProp(item.Usage, false);
         }
     }
 }
