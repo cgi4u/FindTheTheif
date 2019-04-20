@@ -132,7 +132,7 @@ namespace com.MJT.FindTheThief
         int count = 2;
         public override void Activate()
         {
-            if (ThiefController.LocalThief.MakeSmoke())
+            if (ThiefController.LocalThief.MakeSecretPath())
             {
                 count -= 1;
                 button.SetRemainingCount(count / 2 + count % 2);

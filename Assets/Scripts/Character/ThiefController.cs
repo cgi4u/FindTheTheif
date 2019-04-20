@@ -147,14 +147,8 @@ namespace com.MJT.FindTheThief
 
         public bool MakeSmoke()
         {
-            if (Mathf.Floor(transform.position.x) != transform.position.x
-                || Mathf.Floor(transform.position.y) != transform.position.y)
-            {
-                Debug.LogError("Smoke cannot be generated in current site.");
-                return false;
-            }
-
-            GameObject newSmoke = PhotonNetwork.Instantiate(smokePrefab.name, transform.position, Quaternion.identity, 0);
+            GameObject newSmoke = PhotonNetwork.Instantiate(smokePrefab.name, 
+                new Vector2(Mathf.Floor(transform.position.x), Mathf.Floor(transform.position.y)), Quaternion.identity, 0);
             newSmoke.GetComponent<SmokeController>().Init(15f);
 
             return true;
