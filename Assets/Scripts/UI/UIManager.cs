@@ -187,9 +187,6 @@ namespace com.MJT.FindTheThief
             putItemPopUp.gameObject.SetActive(false);
         }
 
-         
-
-        Rect screentRect = new Rect(0, 0, Screen.width, Screen.height);
         /// <summary>
         /// Move pop-up screens following the character's move.
         /// </summary>
@@ -204,12 +201,6 @@ namespace com.MJT.FindTheThief
                 oldWorldPoint = Camera.main.ScreenToWorldPoint(arrestPopUp.transform.position);
                 oldWorldPoint -= move;
                 arrestPopUp.transform.position = Camera.main.WorldToScreenPoint(oldWorldPoint);
-
-
-                if (!screentRect.Contains(arrestPopUp.transform.position))
-                {
-                    arrestPopUp.gameObject.SetActive(false);
-                }
             }
 
             // Move item information pop-up.
