@@ -16,6 +16,7 @@ namespace com.MJT.FindTheThief
         {
             ThiefController.LocalThief.photonView.
                 RPC("StealItemInPoint", PhotonTargets.AllViaServer, CurGenPoint.Index);
+            //MultiplayRoomManager.Instance.photonView.RPC("SetStealAlert", PhotonTargets.All, CurGenPoint.Index);
             PutItemPoint.SetPointPopup(true);
 
             gameObject.SetActive(false);

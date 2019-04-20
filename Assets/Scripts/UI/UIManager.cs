@@ -50,8 +50,6 @@ namespace com.MJT.FindTheThief
             stealPopUp.gameObject.SetActive(false);
             putItemPopUp.gameObject.SetActive(false);
 
-            targetItemList.gameObject.SetActive(false);
-
             blackPanel.SetActive(false);
             winPanel.SetActive(false);
             losePanel.SetActive(false);
@@ -268,6 +266,7 @@ namespace com.MJT.FindTheThief
         #region Item Information Panel
 
         public DiscoveredItemPanel[] discoverdItemPanels;
+        public Text[] changeButtonTexts;
         int curPanel = 0;
 
         public void ChangeDiscoveredPanelFloor()
@@ -275,14 +274,31 @@ namespace com.MJT.FindTheThief
             discoverdItemPanels[curPanel].gameObject.SetActive(false);
             curPanel = (curPanel + 1) % discoverdItemPanels.Length;
             discoverdItemPanels[curPanel].gameObject.SetActive(true);
+
+            foreach (Text buttonText in changeButtonTexts)
+            {
+                buttonText.text = "현재: " + (curPanel + 1) + "층\n";
+                buttonText.text += "층 변경";
+            }
         }
 
         public void RenewDiscoverdItemList(List<ItemController> discoveredItems)
         {
             for (int i = 0; i < discoverdItemPanels.Length; i++)
-            {
                 discoverdItemPanels[i].Renew(discoveredItems, i+1);
-            }
+        }
+
+        public void SetTargetItemInPanel(List<ItemController> targetItems)
+        {
+            for (int i = 0; i < discoverdItemPanels.Length; i++)
+                discoverdItemPanels[i].RenewTargets(targetItems, i + 1);
+        }
+
+        public StolenItemPanel stolenItemPanel;
+
+        public void RenewStolenItemPanel(List<ItemController> stolenItems)
+        {
+            stolenItemPanel.Renew(stolenItems);
         }
 
         /*
@@ -300,7 +316,7 @@ namespace com.MJT.FindTheThief
                 }
             }
         }
-        */
+        
 
         /// <summary>
         /// Information panel for items to steal(visible by thieves only)
@@ -318,13 +334,6 @@ namespace com.MJT.FindTheThief
             }
         }
 
-        public StolenItemPanel stolenItemPanel;
-
-        public void RenewStolenItemPanel(List<ItemController> stolenItems)
-        {
-            stolenItemPanel.Renew(stolenItems);
-        }
-
         /// <summary>
         /// Information panel for items stolen in this game.
         /// </summary>
@@ -337,6 +346,7 @@ namespace com.MJT.FindTheThief
                 stolenItemList.text += "\n" + ItemInfoToString(item);
             }
         }
+        */
 
         #endregion
 
@@ -476,7 +486,6 @@ namespace com.MJT.FindTheThief
         {
             Debug.Log("Start Observer Mode.");
 
-            targetItemList.gameObject.SetActive(false);
             moveButtonPanel.gameObject.SetActive(false);
 
             observerMode = true;
@@ -486,10 +495,25 @@ namespace com.MJT.FindTheThief
         /// <summary>
         /// Label to use check error in device environmnet(Should not work in release version)
         /// </summary>
-        public Text errorLabel;
-        public void SetErrorMsg(string errorMsg)
+        public Text alertText;
+        Coroutine curAlertCoroutine = null;
+
+        public void SetAlert(string alretMsg)
         {
-            errorLabel.text = errorMsg;
+            alertText.gameObject.SetActive(true);
+            alertText.text = alretMsg;
+
+            if (curAlertCoroutine != null)
+                StopCoroutine(curAlertCoroutine);
+            curAlertCoroutine = StartCoroutine(RemoveAlert(5f));
+        }
+
+        private IEnumerator RemoveAlert(float seconds)
+        {
+            yield return new WaitForSeconds(seconds);
+
+            alertText.gameObject.SetActive(false);
+            curAlertCoroutine = null;
         }
 
         public GameObject smokeScreen;

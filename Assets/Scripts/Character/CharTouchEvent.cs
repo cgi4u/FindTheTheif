@@ -34,6 +34,8 @@ namespace com.MJT.FindTheThief
                 if (Input.GetMouseButtonUp(0))
                 {
                     Vector2 clickedWorldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                    Debug.Log(touchArea);
+                    Debug.Log(clickedWorldPoint);
                     if (touchArea.Contains(clickedWorldPoint))
                         UIManager.Instance.SetArrestPopUp(gameObject, Input.mousePosition);
                 }

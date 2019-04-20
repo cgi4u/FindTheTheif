@@ -521,7 +521,7 @@ namespace com.MJT.FindTheThief
                 targetItems.Add(mapDataManager.ItemGenPoints[targetItemPoints[i]].Item);
 
             if ((ETeam)PhotonNetwork.player.CustomProperties[TeamKey] == ETeam.Thief)
-                uiManager.RenewTargetItemList(targetItems);
+                uiManager.SetTargetItemInPanel(targetItems);
         }
 
         /// <summary>
@@ -775,7 +775,7 @@ namespace com.MJT.FindTheThief
 
             if (thiefID == -1)
             {
-                uiManager.SetErrorMsg("Detective " + PhotonPlayer.Find(detectiveID).NickName + " failed to arrest.");
+                uiManager.SetAlert("탐정 " + PhotonPlayer.Find(detectiveID).NickName + "이 도둑 체포 실패!");
                 return;
             }
 
@@ -785,7 +785,7 @@ namespace com.MJT.FindTheThief
                 return;
             }
 
-            uiManager.SetErrorMsg("Thief " + thiefID + " is arrested.");
+            uiManager.SetAlert("도둑 " + PhotonPlayer.Find(detectiveID).NickName + " 체포!");
             arrestedThievesNum += 1;
             uiManager.RenewThievesNum(thievesNum - arrestedThievesNum);
 
@@ -808,10 +808,19 @@ namespace com.MJT.FindTheThief
 
         #region Thief Gameplay Networking(Steal Item)
 
+        [PunRPC]
+        public void SetStealAlert(int pointOfStolenItem)
+        {
+            int floor = mapDataManager.ItemGenPoints[pointOfStolenItem].Room.Floor;
+            int roomNum = mapDataManager.ItemGenPoints[pointOfStolenItem].Room.Num;
+            uiManager.SetAlert(floor + "층 " + roomNum + "번 방에서 도난 발생!");
+        }
+
         /// <summary>
         /// The list of items stolen(not just carried by thief, but put into the destination point.)
         /// </summary>
         private List<ItemController> stolenItems = new List<ItemController>();
+
         [PunRPC]
         public void StealSuccess(int thiefID, int pointOfStolenItem)
         {
@@ -820,13 +829,13 @@ namespace com.MJT.FindTheThief
             ItemController.RenewDiscoveredItemPrioirty(stolenItem);
             uiManager.RenewStolenItemPanel(stolenItems);
 
-            uiManager.SetErrorMsg("Item " + stolenItem.name + " is stolen.");
+            uiManager.SetAlert("도둑이 아이템 회수에 성공했습니다.");
 
             if (targetItems.Contains(stolenItem))
             {
                 targetItems.Remove(stolenItem);
-                if (myTeam == ETeam.Thief)
-                    uiManager.RenewTargetItemList(targetItems);
+                /*if (myTeam == ETeam.Thief)
+                    uiManager.RenewTargetItemList(targetItems);*/
 
                 if (thiefID == PhotonNetwork.player.ID)
                 {

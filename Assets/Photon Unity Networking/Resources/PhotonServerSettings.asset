@@ -83,4 +83,5 @@ MonoBehaviour:
   - PostponeStartTime
   - CheckIfThePlayerIncluded
   - TryToArrest
+  - SetStealAlert
   DisableAutoOpenWizard: 1

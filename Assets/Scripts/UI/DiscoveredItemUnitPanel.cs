@@ -11,7 +11,6 @@ namespace com.MJT.FindTheThief
     [RequireComponent(typeof(RectTransform))]
     public class DiscoveredItemUnitPanel : MonoBehaviour
     {
-
         bool discovered = false;
         public GameObject undiscoverdMark;
 
@@ -31,8 +30,6 @@ namespace com.MJT.FindTheThief
 
         public Image usagePropPanel;
         public Text usagePropText;
-
-        public GameObject stolenMark;
 
         public void SetItemInfo(ItemController item)
         {
@@ -82,6 +79,8 @@ namespace com.MJT.FindTheThief
             usagePropText.text = UITextForProp(item.Usage, true);
         }
 
+        public GameObject stolenMark;
+
         public void SetStolenMark()
         {
             stolenMark.SetActive(true);
@@ -90,6 +89,14 @@ namespace com.MJT.FindTheThief
         public void RemoveStolenMark()
         {
             stolenMark.SetActive(false);
+        }
+
+        public GameObject targetMark;
+
+        public void SetAsTarget()
+        {
+            GetComponent<Image>().color = Color.red;
+            targetMark.SetActive(true);
         }
     }
 }
