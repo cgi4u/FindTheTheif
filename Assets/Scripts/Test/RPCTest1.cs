@@ -5,7 +5,7 @@ using UnityEngine;
 namespace com.MJT.FindTheThief
 {
     public class RPCTest1 : Photon.PunBehaviour
-    {
+    { 
         public void OnCheckButton()
         {
             photonView.RPC("Check", PhotonTargets.All);

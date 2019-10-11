@@ -33,16 +33,17 @@ namespace com.MJT.FindTheThief
         {
             raycastBox = GetComponent<BoxCollider2D>().size;   // To ignore collisions on edges
 
-            if (!PhotonNetwork.connected || photonView.isMine)
+            if (PhotonNetwork.connected && !photonView.isMine)
+                return;
+
+            if (localPlayer != null)
             {
-                if (localPlayer == null)
-                {
-                    localPlayer = this;
-                    Debug.Log("Local Player Set");
-                }
-                else
-                    Debug.Log("Error: Multiple instantiation of the local player.");
+                Debug.LogError("Multiple instantiation of the local player.");
+                return;
             }
+
+            localPlayer = this;
+            Debug.Log("Local player is set.");
         }
 
         // Use this for initialization

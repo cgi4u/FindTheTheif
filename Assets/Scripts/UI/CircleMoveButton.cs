@@ -1,15 +1,48 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 using UnityEngine.UI;
 
 namespace com.MJT.FindTheThief
 {
-    public class CircleMoveButton : MonoBehaviour
+    public class SpriteForDirection: SerializableDictionary<EMoveDirection, Sprite> { }
+
+    public class CircleMoveButton: MonoBehaviour
     {
         private float radius;
         Image image;
+
+        public float minTouchRatio;
+        public float maxTouchRatio;
+
+        public Sprite stopSprite;
+        public Sprite downSprite;
+        public Sprite rightSprite;
+        public Sprite upSprite;
+        public Sprite leftSprite;
+
+        [SerializeField]
+        private SpriteForDirection spriteForDirection;
+
+        [SerializeField]
+        private EMoveDirection currentDirection;
+        private EMoveDirection CurrentDirection
+        {
+            get
+            {
+                return this.currentDirection;
+            }
+
+            set
+            {
+                if (this.currentDirection == value) return;
+                this.currentDirection = value;
+                //this.image.sprite = spriteForDirection[0];
+                PlayerController.LocalPlayer.ChangeMoveDirection(value);
+            }
+        }
+
         private void Awake()
         {
             image = GetComponent<Image>();
@@ -17,57 +50,28 @@ namespace com.MJT.FindTheThief
                                 GetComponent<RectTransform>().rect.width) / 2;
         }
 
-        public float minTouchRatio;
-        public float maxTouchRatio;
-
-        public Sprite defaultSprite;
-        public Sprite downSprite;
-        public Sprite rightSprite;
-        public Sprite upSprite;
-        public Sprite leftSprite;
-
-        [SerializeField]
-        private EMoveDirection curDirection = EMoveDirection.Stop;
         private void Update()
         {
-            if (Input.GetMouseButton(0)
-                && Vector2.Distance(transform.position, Input.mousePosition) / radius >= minTouchRatio
-                && Vector2.Distance(transform.position, Input.mousePosition) / radius <= maxTouchRatio)
+            if (!Input.GetMouseButton(0))
             {
-                float angle = GlobalFunctions.GetAngle(Input.mousePosition, transform.position);
-
-                if (angle >= -135f && angle < -45f && curDirection != EMoveDirection.Down)
-                {
-                    image.sprite = downSprite;
-                    OnDirectionChange(EMoveDirection.Down);
-                }
-                else if (angle >= -45f && angle < 45f && curDirection != EMoveDirection.Right)
-                {
-                    image.sprite = rightSprite;
-                    OnDirectionChange(EMoveDirection.Right);
-                }
-                else if (angle >= 45f && angle < 135f && curDirection != EMoveDirection.Up)
-                {
-                    image.sprite = upSprite;
-                    OnDirectionChange(EMoveDirection.Up);
-                }
-                else if ((angle >= 135f || angle < -135f) && curDirection != EMoveDirection.Left)
-                {
-                    image.sprite = leftSprite;
-                    OnDirectionChange(EMoveDirection.Left);
-                }
+                CurrentDirection = EMoveDirection.Stop;
+                return;
             }
-            else if (curDirection != EMoveDirection.Stop)
-            {
-                image.sprite = defaultSprite;
-                OnDirectionChange(EMoveDirection.Stop);
-            }
-        }
 
-        private void OnDirectionChange(EMoveDirection direction)
-        {
-            curDirection = direction;
-            PlayerController.LocalPlayer.ChangeMoveDirection(curDirection);
+            float touchRatio = Vector2.Distance(transform.position, Input.mousePosition) / radius;
+            if (touchRatio < minTouchRatio || touchRatio > maxTouchRatio)
+                return;
+
+            float angle = GlobalFunctions.GetAngle(Input.mousePosition, transform.position);
+
+            if (angle >= -135f && angle < -45f)
+                CurrentDirection = EMoveDirection.Down;
+            else if (angle >= -45f && angle < 45f)
+                CurrentDirection = EMoveDirection.Right;
+            else if (angle >= 45f && angle < 135f)
+                CurrentDirection = EMoveDirection.Up;
+            else if (angle >= 135f || angle < -135f)
+                CurrentDirection = EMoveDirection.Left;
         }
     }
 }

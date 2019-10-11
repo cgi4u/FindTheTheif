@@ -6,6 +6,12 @@ using UnityEngine.EventSystems;
 
 namespace com.MJT.FindTheThief
 {
+    public interface IMoveButtonDelegate
+    {
+        void OnMoveButtonPushed(EMoveDirection direction);
+        void OnMoveButtonReleased(EMoveDirection direction);
+    }
+
     public class MoveButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
 
