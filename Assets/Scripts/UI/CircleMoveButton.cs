@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 namespace com.MJT.FindTheThief
 {
+    [Serializable]
     public class SpriteForDirection: SerializableDictionary<EMoveDirection, Sprite> { }
 
     public class CircleMoveButton: MonoBehaviour
@@ -38,7 +39,7 @@ namespace com.MJT.FindTheThief
             {
                 if (this.currentDirection == value) return;
                 this.currentDirection = value;
-                //this.image.sprite = spriteForDirection[0];
+                this.image.sprite = spriteForDirection[value];
                 PlayerController.LocalPlayer.ChangeMoveDirection(value);
             }
         }
@@ -46,6 +47,7 @@ namespace com.MJT.FindTheThief
         private void Awake()
         {
             image = GetComponent<Image>();
+            image.sprite = spriteForDirection[CurrentDirection];
             radius = Mathf.Min(GetComponent<RectTransform>().rect.height,
                                 GetComponent<RectTransform>().rect.width) / 2;
         }
