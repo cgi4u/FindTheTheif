@@ -49,19 +49,12 @@ namespace com.MJT.FindTheThief
         // Use this for initialization
         void Start()
         {
-            CameraWork _cameraWork = this.gameObject.GetComponent<CameraWork>();
+            CameraWork cameraWork = this.gameObject.GetComponent<CameraWork>();
 
-            if (_cameraWork != null)
-            {
-                if (photonView.isMine)
-                {
-                    _cameraWork.OnStartFollowing();
-                }
-            }
-            else
-            {
-                Debug.LogError("<Color=Red><a>Missing</a></Color> CameraWork Component on playerPrefab.", this);
-            }
+            Debug.Assert(cameraWork != null, "Missing CameraWork Component on playerPrefab.");
+
+            if (photonView.isMine)
+                cameraWork.OnStartFollowing();
         }
 
         #endregion
@@ -70,10 +63,7 @@ namespace com.MJT.FindTheThief
         void Update()
         {
             if (isMoving)
-            {
-                //GetComponent<PhotonTransformView>().SetSynchronizedValues(moveSpeed * direction, 0f);
                 Move();
-            }
             else if (curDirection != EMoveDirection.Stop)
                 SetNewTargetPoint();
 
@@ -179,7 +169,6 @@ namespace com.MJT.FindTheThief
         {
             //설정 속도에 따라 움직일 위치를 계산(MoveTowards) 이후 이동
             transform.position = Vector2.MoveTowards(transform.position, targetPoint, moveSpeed * Time.deltaTime);
-            //SetRatioBarValue(Vector2.Distance(transform.position, startPoint) / Vector2.Distance(startPoint, targetPoint));
 
             //목적지에 도달했을 경우 버튼 입력 상황에 따라 목적지를 재계산하거나 멈춤
             if (transform.position.Equals(targetPoint))

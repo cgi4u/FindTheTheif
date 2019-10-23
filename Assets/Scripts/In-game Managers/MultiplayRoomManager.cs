@@ -59,13 +59,8 @@ namespace com.MJT.FindTheThief
 
         private void Awake()
         {
-            
 
-            if (!PhotonNetwork.connected)
-            {
-                Debug.LogError("Multiplay manager must be used in online environment.");
-                return;
-            }
+            Debug.Assert(!PhotonNetwork.connected, "Multiplay manager must be used in online environment.");
 
             // Modify PhotonNetwork settings according to in-game mode.
             PhotonNetwork.BackgroundTimeout = 1000f;
@@ -73,16 +68,8 @@ namespace com.MJT.FindTheThief
             PhotonNetwork.sendRateOnSerialize = 10;
 
             //Set the singleton
-            if (instance == null)
-            {
-                instance = this;
-            }
-            else
-            {
-                Debug.LogError("Multiple instantiation of the room Manager.");
-                PhotonNetwork.Destroy(this.gameObject);
-                return;
-            }
+            Debug.Assert(instance != null, "Multiple instantiation of the room Manager.");
+            instance = this;
 
             mapDataManager = MapDataManager.Instance;
             uiManager = UIManager.Instance;
