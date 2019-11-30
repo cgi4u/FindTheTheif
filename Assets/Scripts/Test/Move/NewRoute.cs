@@ -15,26 +15,11 @@ namespace com.MJT.FindTheThief
         public ERouteType RouteType => routeType;
 
         [SerializeField]
-        private Transform[] nodes;
-        public Transform[] Nodes => nodes;
+        private List<NewSubroute> subRoutes;
+        public List<NewSubroute> SubRoutes => subRoutes;
 
-        [Serializable]
-        class RouteToOhterRoom
-        {
-            [SerializeField]
-            List<NewRoute> subRoutes;
-        }
-
-        static readonly int roomCount = 3;
         [SerializeField]
-        private List<RouteToOhterRoom> routes;
-
-        private void Awake()
-        {
-            /* Initialize for weighted random */
-            
-        }
-
-
+        private List<NewRoute> nextRoutes;
+        public List<NewRoute> NextRoutes => nextRoutes;
     }
 }

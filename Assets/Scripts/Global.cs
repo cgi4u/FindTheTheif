@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace com.MJT.FindTheThief
@@ -15,6 +14,26 @@ namespace com.MJT.FindTheThief
     public enum EStairSide { Left, Right, None }
 
     #endregion
+
+    public static class EnumExtensions
+    {
+        public static Vector2 VectorForDirection(EMoveDirection direction)
+        {
+            switch (direction)
+            { 
+                case EMoveDirection.Down:
+                    return Vector2.down;
+                case EMoveDirection.Right:
+                    return Vector2.right;
+                case EMoveDirection.Up:
+                    return Vector2.up;
+                case EMoveDirection.Left:
+                    return Vector2.left;
+                default:
+                    return new Vector2();
+            }
+        }
+    }
 
     public static class Constants
     {

@@ -154,12 +154,6 @@ namespace com.MJT.FindTheThief
         {
             startPoint = targetPoint;
 
-            /*
-            // prevent location error can be caused by master client change.
-            startPoint.x = Mathf.Round(startPoint.x);
-            startPoint.y = Mathf.Round(startPoint.y);
-            */
-
             if (direction == Vector2.down)
             {
                 directions[0] = Vector2.down; directions[1] = Vector2.left;
@@ -181,7 +175,6 @@ namespace com.MJT.FindTheThief
                 directions[2] = Vector2.left; directions[3] = Vector2.down;
             }
 
-            //issue
             Vector2 nextNodePos = (Vector2)curRoute.NodeSet[curNodeNum + 1].DefaultPos;
             for (int i = 1; i < directions.Length; i++)
             {
